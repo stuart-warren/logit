@@ -21,5 +21,7 @@ MDC.put("tags", "other");
 logger.debug("Hello World!");
 ```
 and logs should come out in logstash json_event v1 format
-``{"message":"Hello World!","tags":"other","@timestamp":"2013-09-22T16:51:47.950Z","level":"DEBUG","metrics":{"com.website.www.500Errors":1},"thread":"main","logger":"com.stuartwarren.logit.LogIt","@version":"1"}``
+```
+{"message":"Hello World!","tags":"other","@timestamp":"2013-09-22T16:51:47.950Z","level":"DEBUG","metrics":{"com.website.www.500Errors":1},"thread":"main","logger":"com.stuartwarren.logit.LogIt","@version":"1"}
+```
 Note: @timestamp is changed to UTC from whatever timezone you are in.
