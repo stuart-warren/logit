@@ -71,6 +71,7 @@ public class LogstashV1Log extends CommonLog {
 		this.tags = tags;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void addEventData(String key, Object val) {
 		if (val instanceof HashMap) {
 			if (!((HashMap<String, Object>) val).isEmpty()) {

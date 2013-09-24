@@ -17,7 +17,7 @@ public class CommonLog {
 //  private String username = getUsername();
     private Timestamp timestamp;
     private String ndc;
-    private Map<String,Object> mdc;
+    private Map<String, Object> mdc;
     private HashMap<String, Object> exceptionInformation;
     private HashMap<String, Object> locationInformation;
     private String level;
@@ -53,14 +53,14 @@ public class CommonLog {
 	/**
 	 * @return the mdc
 	 */
-	public Map<String,Object> getMdc() {
+	public Map<String, Object> getMdc() {
 		return mdc;
 	}
 	/**
-	 * @param mdc the mdc to set
+	 * @param properties the mdc to set
 	 */
-	public void setMdc(Map<String,Object> mdc) {
-		this.mdc = mdc;
+	public void setMdc(Map<String, Object> properties) {
+		this.mdc = properties;
 	}
 	/**
 	 * @return the exceptionInformation

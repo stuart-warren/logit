@@ -3,6 +3,9 @@
  */
 package com.stuartwarren.logit.log4j1.logstash;
 
+import java.util.Map;
+
+import org.apache.log4j.Level;
 import org.apache.log4j.spi.LoggingEvent;
 
 import com.stuartwarren.logit.CommonLayout;
@@ -27,8 +30,12 @@ public class LogstashV1Layout extends CommonLayout {
 	public String format(LoggingEvent loggingEvent) {
 		LogstashV1Log ll = new LogstashV1Log();
 		ll.setVersion(logstashVersion);
-		ll.setLevel(loggingEvent.getLevel().toString());
-		ll.setMdc(loggingEvent.getProperties());
+		Level level = loggingEvent.getLevel();
+		addLocationInformation(level);
+		ll.setLevel(level.toString());
+		@SuppressWarnings("unchecked")
+		Map<String, Object> properties = loggingEvent.getProperties();
+		ll.setMdc(properties);
 		ll.setTimestamp(loggingEvent.getTimeStamp());
 		ll.setNdc(loggingEvent.getNDC());
 		ll.setExceptionInformation(exceptionInformation(loggingEvent));

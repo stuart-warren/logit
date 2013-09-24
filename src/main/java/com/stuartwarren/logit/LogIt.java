@@ -18,7 +18,10 @@ public class LogIt {
 		MDC.put("tags", "other");
 		logger.debug("Hello World!");
 		MDC.clear();
-		logger.debug("Hi there");
+		logger.info("Hi there");
+		logger.warn("Hi there");
+		logger.error("Hi there");
+		logger.fatal("Hi there");
 	}
 
 }

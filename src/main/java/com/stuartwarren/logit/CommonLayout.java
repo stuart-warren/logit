@@ -4,9 +4,11 @@
 package com.stuartwarren.logit;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Layout;
+import org.apache.log4j.Level;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
@@ -19,16 +21,23 @@ import org.apache.log4j.spi.ThrowableInformation;
 public class CommonLayout extends Layout {
 	
 
-    private boolean ignoreThrowable = false;
-    private boolean locationInfo = false;
-    private boolean activeIgnoreThrowable = ignoreThrowable;
+    private boolean ignoreThrowable;
+    private boolean locationInfo;
+	protected boolean activeIgnoreThrowable;
     
     private LocationInfo info;
     
     public CommonLayout() {
-    	
+    	locationInfo = false;
+    	ignoreThrowable = false;
+    	activeIgnoreThrowable = ignoreThrowable;
     }
     
+    /**
+     * Pull out details of exception in a Hashmap (if they exist)
+     * @param loggingEvent
+     * @return
+     */
     protected HashMap<String, Object> exceptionInformation(LoggingEvent loggingEvent) {
     	HashMap<String, Object> exceptionInformation = new HashMap<String, Object>();
     	if (loggingEvent.getThrowableInformation() != null) {
@@ -47,6 +56,11 @@ public class CommonLayout extends Layout {
     	return exceptionInformation;
     }
     
+    /**
+     * Pull out execution location details (if requested). High cost method!
+     * @param loggingEvent
+     * @return
+     */
     protected HashMap<String, Object> locationInformation(LoggingEvent loggingEvent) {
     	HashMap<String, Object> locationInformation = new HashMap<String, Object>();
     	if (locationInfo) {
@@ -63,7 +77,7 @@ public class CommonLayout extends Layout {
 	 * @see org.apache.log4j.spi.OptionHandler#activateOptions()
 	 */
 	public void activateOptions() {
-		activeIgnoreThrowable = ignoreThrowable;
+		this.activeIgnoreThrowable = ignoreThrowable;
 	}
 	
 	/**
@@ -91,8 +105,11 @@ public class CommonLayout extends Layout {
 	public String format(LoggingEvent loggingEvent) {
 		CommonLog cl = new CommonLog();
 		cl.setTimestamp(loggingEvent.getTimeStamp());
-		cl.setLevel(loggingEvent.getLevel().toString());
-		cl.setMdc(loggingEvent.getProperties());
+		Level level = loggingEvent.getLevel();
+		cl.setLevel(level.toString());
+		@SuppressWarnings("unchecked")
+		Map<String,Object> properties = loggingEvent.getProperties();
+		cl.setMdc(properties);
 		cl.setNdc(loggingEvent.getNDC());
 		cl.setExceptionInformation(exceptionInformation(loggingEvent));
 		cl.setLocationInformation(locationInformation(loggingEvent));
@@ -108,6 +125,15 @@ public class CommonLayout extends Layout {
 	@Override
 	public boolean ignoresThrowable() {
 		return ignoreThrowable;
+	}
+	
+	/**
+	 * @param level
+	 */
+	protected void addLocationInformation(Level level) {
+		if (level.isGreaterOrEqual(Level.WARN)) {
+			setLocationInfo(true);
+		}
 	}
 
 }
