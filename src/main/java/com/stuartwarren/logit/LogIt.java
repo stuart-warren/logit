@@ -1,5 +1,8 @@
 package com.stuartwarren.logit;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
@@ -9,9 +12,12 @@ public class LogIt {
 	
 	public static void main(String[] args) throws InterruptedException
 	{
-		MDC.put("test", 2);
+		Map<String,Object> metricMap = new HashMap<String,Object>();
+		metricMap.put("com.website.www.500Errors", 1);
+		MDC.put("metrics", metricMap);
 		MDC.put("tags", "other");
 		logger.debug("Hello World!");
+		MDC.clear();
 		logger.debug("Hi there");
 	}
 

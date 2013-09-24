@@ -24,7 +24,6 @@ public class CommonLayout extends Layout {
     private boolean activeIgnoreThrowable = ignoreThrowable;
     
     private LocationInfo info;
-    private CommonLog cl = new CommonLog();
     
     public CommonLayout() {
     	
@@ -90,6 +89,7 @@ public class CommonLayout extends Layout {
 	 */
 	@Override
 	public String format(LoggingEvent loggingEvent) {
+		CommonLog cl = new CommonLog();
 		cl.setTimestamp(loggingEvent.getTimeStamp());
 		cl.setLevel(loggingEvent.getLevel().toString());
 		cl.setMdc(loggingEvent.getProperties());

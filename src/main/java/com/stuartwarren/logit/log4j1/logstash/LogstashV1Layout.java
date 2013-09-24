@@ -15,7 +15,6 @@ import com.stuartwarren.logit.CommonLayout;
 public class LogstashV1Layout extends CommonLayout {
 	
 	private String logstashVersion = "1";
-	private LogstashV1Log ll = new LogstashV1Log();
     
     public LogstashV1Layout() {
     	super();
@@ -26,6 +25,7 @@ public class LogstashV1Layout extends CommonLayout {
 	 */
 	@Override
 	public String format(LoggingEvent loggingEvent) {
+		LogstashV1Log ll = new LogstashV1Log();
 		ll.setVersion(logstashVersion);
 		ll.setLevel(loggingEvent.getLevel().toString());
 		ll.setMdc(loggingEvent.getProperties());
