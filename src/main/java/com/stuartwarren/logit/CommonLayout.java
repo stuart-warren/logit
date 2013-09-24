@@ -13,6 +13,8 @@ import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
+import com.stuartwarren.logit.log4j1.CommonLog;
+
 /**
  * @author Stuart Warren 
  * @date 21 Sep 2013
@@ -128,6 +130,7 @@ public class CommonLayout extends Layout {
 	}
 	
 	/**
+	 * If level is greater or equal to WARN, log more detail!
 	 * @param level
 	 */
 	protected void addLocationInformation(Level level) {

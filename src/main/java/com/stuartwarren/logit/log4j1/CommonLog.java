@@ -1,10 +1,12 @@
 /**
  * 
  */
-package com.stuartwarren.logit;
+package com.stuartwarren.logit.log4j1;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.stuartwarren.logit.Timestamp;
 
 /**
  * @author Stuart Warren 
