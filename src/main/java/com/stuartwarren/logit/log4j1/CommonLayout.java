@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.stuartwarren.logit;
+package com.stuartwarren.logit.log4j1;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,8 @@ import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
-import com.stuartwarren.logit.log4j1.CommonLog;
+import com.stuartwarren.logit.CommonLog;
+
 
 /**
  * @author Stuart Warren 

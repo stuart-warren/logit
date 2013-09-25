@@ -12,7 +12,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.stuartwarren.logit.log4j1.CommonLog;
+import com.stuartwarren.logit.CommonLog;
 
 /**
  * @author Stuart Warren 

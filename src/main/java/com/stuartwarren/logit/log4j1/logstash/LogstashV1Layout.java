@@ -8,7 +8,7 @@ import java.util.Map;
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.LoggingEvent;
 
-import com.stuartwarren.logit.CommonLayout;
+import com.stuartwarren.logit.log4j1.CommonLayout;
 
 /**
  * @author Stuart Warren 
