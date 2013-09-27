@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.stuartwarren.logit.log4j1.logstash;
+package com.stuartwarren.logit.logstash;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -108,7 +108,7 @@ public class LogstashV1Log extends CommonLog {
 		} catch (IOException e) {
 			log = e.toString();
 		}
-		return log + "\n";
+		return log;
 	}
 
 }

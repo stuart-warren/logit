@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.stuartwarren.logit.log4j1.logstash;
+package com.stuartwarren.logit.logstash;
 
 import java.util.TimeZone;
 

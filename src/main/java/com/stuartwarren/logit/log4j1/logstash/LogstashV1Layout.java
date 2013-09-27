@@ -9,6 +9,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.spi.LoggingEvent;
 
 import com.stuartwarren.logit.log4j1.CommonLayout;
+import com.stuartwarren.logit.logstash.LogstashV1Log;
 
 /**
  * @author Stuart Warren 
@@ -43,7 +44,7 @@ public class LogstashV1Layout extends CommonLayout {
 		ll.setLoggerName(loggingEvent.getLoggerName());
 		ll.setThreadName(loggingEvent.getThreadName());
 		ll.setMessage(loggingEvent.getRenderedMessage());
-		return ll.toString();
+		return ll.toString() + "\n";
 	}
 
 }

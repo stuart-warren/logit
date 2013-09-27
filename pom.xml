@@ -18,10 +18,15 @@
 	  <artifactId>slf4j-api</artifactId>
 	  <version>1.7.5</version>
     </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>0.9.18</version>
+    </dependency>
   	<dependency>
-    	<groupId>log4j</groupId>
-    	<artifactId>log4j</artifactId>
-    	<version>1.2.17</version>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
 	</dependency>
 	<dependency>
       <groupId>joda-time</groupId>
@@ -29,9 +34,9 @@
       <version>2.2</version>
     </dependency>
     <dependency>
-  		<groupId>org.codehaus.jackson</groupId>
-  		<artifactId>jackson-mapper-asl</artifactId>
-  		<version>1.8.5</version>
+  	  <groupId>org.codehaus.jackson</groupId>
+  	  <artifactId>jackson-mapper-asl</artifactId>
+  	  <version>1.8.5</version>
   	</dependency>
   	<dependency>
   	  <groupId>org.jeromq</groupId>

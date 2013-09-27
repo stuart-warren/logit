@@ -1,6 +1,8 @@
-package com.stuartwarren.logit;
+package com.stuartwarren.test_logit.log4j1;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -15,7 +17,9 @@ public class LogIt {
 		Map<String,Object> metricMap = new HashMap<String,Object>();
 		metricMap.put("com.website.www.500Errors", 1);
 		MDC.put("metrics", metricMap);
-		MDC.put("tags", "other");
+		List<String> tags = new ArrayList<String>();
+		tags.add("otherTag");
+		MDC.put("tags", tags);
 		logger.debug("Hello World!");
 		MDC.clear();
 		logger.info("Hi there");
