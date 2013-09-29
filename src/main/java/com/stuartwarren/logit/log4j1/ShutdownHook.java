@@ -12,14 +12,14 @@ import org.apache.log4j.helpers.LogLog;
  *
  */
 public class ShutdownHook {
-	 public void attachShutDownHook(){
-	  Runtime.getRuntime().addShutdownHook(new Thread() {
-	   @Override
-	   public void run() {
-	    LogLog.debug("Inside ShutDown Hook");
-	    LogManager.shutdown();
-	   }
-	  });
-	  LogLog.debug("ShutDown Hook Attached.");
-	 }
+	public void attachShutDownHook(){
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				LogLog.debug("Inside ShutDown Hook");
+				LogManager.shutdown();
+			}
+		});
+		LogLog.debug("ShutDown Hook Attached.");
+	}
 }
