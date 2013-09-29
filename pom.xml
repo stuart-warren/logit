@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.stuartwarren</groupId>
   <artifactId>logit</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.3-SNAPSHOT</version>
   <name>LogIt</name>
   <description>Java Logger to send logs in json format over zeromq</description>
 

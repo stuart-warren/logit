@@ -4,14 +4,25 @@ logit
 Library to extend Log4J1.2 by providing a json layout (for logstash) and a zeromq appender (jeromq)
 This is my first real attack at a java project, so you have been warned!
 
-v0.0.2
+v0.0.3
 
 Add to project and use the layout and appender:
 ```
-log4j.rootLogger=DEBUG, A2
-log4j.appender.A2=com.stuartwarren.logit.log4j1.zmq.ZmqAppender
-log4j.appender.A2.layout=com.stuartwarren.logit.log4j1.logstash.LogstashV1Layout
+log4j.rootLogger=DEBUG, A3
+log4j.appender.A3=com.stuartwarren.logit.log4j1.zmq.ZmqAppender
+log4j.appender.A3.SocketType=PUSHPULL
+log4j.appender.A3.Endpoints=tcp://localhost:2120,tcp://localhost:2121
+log4j.appender.A3.BindConnect=CONNECT
+log4j.appender.A3.Linger=2
+log4j.appender.A3.layout=com.stuartwarren.logit.log4j1.logstash.LogstashV1Layout
 ```
+Configure ZMQ
+
+* SocketType: PUSHPULL | PUBSUB
+* BindConnect: BIND | CONNECT
+* Linger (Time to wait to close socket)
+* Endpoints: protocol://hostname:port,protocol://hostname:port (Comma separated list)
+
 In your code, use log4j as normal (add objects to the MDC)
 ```
 Map<String,Object> metricMap = new HashMap<String,Object>();
