@@ -13,14 +13,16 @@ log4j.appender.A3=com.stuartwarren.logit.log4j1.zmq.ZmqAppender
 log4j.appender.A3.SocketType=PUSHPULL
 log4j.appender.A3.Endpoints=tcp://localhost:2120,tcp://localhost:2121
 log4j.appender.A3.BindConnect=CONNECT
-log4j.appender.A3.Linger=2
+log4j.appender.A3.SendHWM=1000
+log4j.appender.A3.Linger=1
 log4j.appender.A3.layout=com.stuartwarren.logit.log4j1.logstash.LogstashV1Layout
 ```
 Configure ZMQ
 
-* SocketType: PUSHPULL | PUBSUB
-* BindConnect: BIND | CONNECT
-* Linger (Time to wait to close socket)
+* SocketType: PUSHPULL | PUBSUB (http://zguide.zeromq.org/page:all#Messaging-Patterns)
+* BindConnect: BIND | CONNECT (http://zguide.zeromq.org/page:all#Plugging-Sockets-into-the-Topology)
+* Linger (Time to wait to close socket http://api.zeromq.org/3-2:zmq-setsockopt#toc13)
+* SendHWM (Messages to allow to queue up before block/drop http://api.zeromq.org/3-2:zmq-setsockopt#toc3)
 * Endpoints: protocol://hostname:port,protocol://hostname:port (Comma separated list)
 
 In your code, use log4j as normal (add objects to the MDC)

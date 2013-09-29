@@ -19,7 +19,7 @@ public enum SocketType {
 	private final int clientSocket;
 	private final String name;
 	
-	SocketType (int serverSocket, int clientSocket, String name) {
+	SocketType (int clientSocket, int serverSocket, String name) {
 		this.serverSocket = serverSocket;
 		this.clientSocket = clientSocket;
 		this.name = name;
