@@ -4,12 +4,12 @@ logit
 Library to extend Log4J1.2 by providing a json layout (for logstash) and a zeromq appender (jeromq)
 This is my first real attack at a java project, so you have been warned!
 
-v0.0.1
+v0.0.2
 
-Add to project and use the layout:
+Add to project and use the layout and appender:
 ```
 log4j.rootLogger=DEBUG, A2
-log4j.appender.A2=org.apache.log4j.ConsoleAppender
+log4j.appender.A2=com.stuartwarren.logit.log4j1.zmq.ZmqAppender
 log4j.appender.A2.layout=com.stuartwarren.logit.log4j1.logstash.LogstashV1Layout
 ```
 In your code, use log4j as normal (add objects to the MDC)
@@ -19,6 +19,7 @@ metricMap.put("com.website.www.500Errors", 1);
 MDC.put("metrics", metricMap);
 MDC.put("tags", "other");
 logger.debug("Hello World!");
+LogManager.shutdown();
 ```
 and logs should come out in logstash json_event v1 format
 ```
