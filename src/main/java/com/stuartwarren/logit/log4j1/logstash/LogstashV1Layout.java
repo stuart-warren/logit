@@ -30,21 +30,25 @@ public class LogstashV1Layout extends CommonLayout {
 	@Override
 	public String format(LoggingEvent loggingEvent) {
 		LogstashV1Log ll = new LogstashV1Log();
-		ll.setVersion(logstashVersion);
+		return doFormat(ll, loggingEvent) + "\n";
+	}
+	
+	private String doFormat(LogstashV1Log logs, LoggingEvent loggingEvent) {
+		logs.setVersion(logstashVersion);
 		Level level = loggingEvent.getLevel();
 		addLocationInformation(level);
-		ll.setLevel(level.toString());
+		logs.setLevel(level.toString());
 		@SuppressWarnings("unchecked")
 		Map<String, Object> properties = loggingEvent.getProperties();
-		ll.setMdc(properties);
-		ll.setTimestamp(loggingEvent.getTimeStamp());
-		ll.setNdc(loggingEvent.getNDC());
-		ll.setExceptionInformation(exceptionInformation(loggingEvent));
-		ll.setLocationInformation(locationInformation(loggingEvent));
-		ll.setLoggerName(loggingEvent.getLoggerName());
-		ll.setThreadName(loggingEvent.getThreadName());
-		ll.setMessage(loggingEvent.getRenderedMessage());
-		return ll.toString() + "\n";
+		logs.setMdc(properties);
+		logs.setTimestamp(loggingEvent.getTimeStamp());
+		logs.setNdc(loggingEvent.getNDC());
+		logs.setExceptionInformation(exceptionInformation(loggingEvent));
+		logs.setLocationInformation(locationInformation(loggingEvent));
+		logs.setLoggerName(loggingEvent.getLoggerName());
+		logs.setThreadName(loggingEvent.getThreadName());
+		logs.setMessage(loggingEvent.getRenderedMessage());
+		return logs.toString();
 	}
 
 }
