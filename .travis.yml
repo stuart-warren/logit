@@ -4,5 +4,4 @@ before_install: "wget -O settings.xml http://nexus.stuartwarren.com/mvn/settings
 jdk:
   - oraclejdk7
   - openjdk7
-  - openjdk6
 
