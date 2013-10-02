@@ -19,7 +19,7 @@ log4j.appender.A3.SendHWM=1000
 log4j.appender.A3.Linger=1
 log4j.appender.A3.layout=com.stuartwarren.logit.log4j1.logstash.LogstashV1Layout
 ```
-Configure ZMQ
+__Configure ZMQ__
 
 * SocketType: PUSHPULL | PUBSUB (http://zguide.zeromq.org/page:all#Messaging-Patterns)
 * BindConnect: BIND | CONNECT (http://zguide.zeromq.org/page:all#Plugging-Sockets-into-the-Topology)
@@ -41,3 +41,19 @@ and logs should come out in logstash json_event v1 format
 {"message":"Hello World!","tags":"other","@timestamp":"2013-09-22T16:51:47.950Z","level":"DEBUG","metrics":{"com.website.www.500Errors":1},"thread":"main","logger":"com.stuartwarren.logit.LogIt","@version":"1"}
 ```
 Note: @timestamp is changed to UTC from whatever timezone you are in.
+
+__Maven__
+
+Use repositories:
+```
+http://nexus.stuartwarren.com/nexus/content/repositories/snapshots/
+http://nexus.stuartwarren.com/nexus/content/repositories/releases/
+```
+And dependancy:
+```
+<dependency>
+  <groupId>com.stuartwarren</groupId>
+  <artifactId>logit</artifactId>
+  <version>REQUIRED_VERSION</version>
+</dependency>
+```
