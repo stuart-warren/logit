@@ -106,7 +106,7 @@
       <id>sonatype-nexus-snapshots</id>
       <name>StuartWarren Snapshots</name>
       <url>http://nexus.stuartwarren.com/nexus/content/repositories/snapshots/</url>
-      <layout>legacy</layout>
+      <layout>default</layout>
     </snapshotRepository>
   </distributionManagement>
 
