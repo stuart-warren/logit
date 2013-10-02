@@ -1,0 +1,8 @@
+language: java
+before_install: "wget -O target/travis/settings.xml http://nexus.stuartwarren.com/mvn/settings.xml"
+#script: "mvn deploy --settings target/travis/settings.xml"
+jdk:
+  - oraclejdk7
+  - openjdk7
+  - openjdk6
+

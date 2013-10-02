@@ -2,9 +2,33 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.stuartwarren</groupId>
   <artifactId>logit</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <packaging>jar</packaging>
   <name>LogIt</name>
+  <version>0.0.3-SNAPSHOT</version>
   <description>Java Logger to send logs in json format over zeromq</description>
+  <url>stuartwarren.com</url>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>https://github.com/stuart-warren/logit</url>
+    <connection>scm:git:https://github.com/stuart-warren/logit.git</connection>
+    <developerConnection>scm:git:https://github.com/stuart-warren/logit.git</developerConnection>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>stuart-warren</id>
+      <name>Stuart Warren</name>
+      <email>stuart@stuartwarren.com</email>
+    </developer>
+  </developers>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -68,5 +92,22 @@
       <version>3.1</version>
     </dependency>
   </dependencies>
+
+  <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>sonatype-nexus-releases</id>
+      <name>StuartWarren Repository</name>
+      <url>http://nexus.stuartwarren.com/nexus/content/repositories/releases/</url>
+      <layout>default</layout>
+    </repository>
+    <snapshotRepository>
+      <uniqueVersion>true</uniqueVersion>
+      <id>sonatype-nexus-snapshots</id>
+      <name>StuartWarren Snapshots</name>
+      <url>http://nexus.stuartwarren.com/nexus/content/repositories/snapshots/</url>
+      <layout>legacy</layout>
+    </snapshotRepository>
+  </distributionManagement>
 
 </project>
