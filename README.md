@@ -49,8 +49,8 @@ Use repositories:
 http://nexus.stuartwarren.com/nexus/content/repositories/snapshots/
 http://nexus.stuartwarren.com/nexus/content/repositories/releases/
 ```
-And dependancy:
-```
+And dependency:
+``` xml
 <dependency>
   <groupId>com.stuartwarren</groupId>
   <artifactId>logit</artifactId>
