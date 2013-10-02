@@ -1,7 +1,11 @@
 language: java
 before_install: "wget -O settings.xml http://nexus.stuartwarren.com/mvn/settings.xml"
-#script: "mvn deploy --settings settings.xml"
+script: "mvn deploy --settings settings.xml"
 jdk:
   - oraclejdk7
   - openjdk7
 
+env:
+  global:
+    - secure: "O4tbgTvqjhD8/mqfrk7MjtXGiDTFcvZda45/mcpyWb8YLvDxRkKczwG965hoC4zP496lyLYQ72h/cTwjm5/yGtXt7FTOOITL1UWqS9xydETyamyxU4/VEccIdoAdWOSPZO9iWA3SAO4B8z6r9PHxQCDaEDRsgbnH/296OXDYv3k="
+    - secure: "YUXy+i4tyWfXAwRx607oBtd0nW7xx33NPHS6AYEQEuugWjs0RXOOT04smtP7fzZ7X1A4S9FMc6i0Ku5Z+1vO1QPcML4f4yLP3koTQyQ0gJP28sgme8CdY715FOlsWsdEcXyYBKhEAjall7/JXdkt9l2AdU6SAKAQ840ppoS94mM="
