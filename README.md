@@ -1,6 +1,8 @@
 logit
 =====
 
+[![Build Status](https://travis-ci.org/stuart-warren/logit.png?branch=master)](https://travis-ci.org/stuart-warren/logit)
+
 Library to extend Log4J1.2 by providing a json layout (for logstash) and a zeromq appender (jeromq)
 This is my first real attack at a java project, so you have been warned!
 
