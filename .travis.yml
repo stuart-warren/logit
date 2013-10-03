@@ -1,6 +1,6 @@
 language: java
 before_install: "wget -O settings.xml http://nexus.stuartwarren.com/mvn/settings.xml"
-script: "mvn deploy --settings settings.xml"
+script: "mvn clean compile assembly:single deploy --settings settings.xml"
 jdk:
   - openjdk7
 
