@@ -50,5 +50,10 @@ public class LogstashV1Layout extends CommonLayout {
         logs.setMessage(loggingEvent.getRenderedMessage());
         return logs.toString();
     }
+    
+ 
+    public void activateOptions() {
+        super.activateOptions();
+    }
 
 }
