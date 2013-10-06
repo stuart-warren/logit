@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.stuartwarren.logit.logstash;
+package com.stuartwarren.logit.gelf.v1;
 
 import java.util.TimeZone;
 
@@ -13,24 +13,24 @@ import com.stuartwarren.logit.layout.Timestamp;
  * @author Stuart Warren
  * @date 22 Sep 2013
  */
-public class LogstashTimestamp extends Timestamp {
+public class GelfTimestamp extends Timestamp {
 
     private static final TimeZone       UTC                                           = TimeZone.getTimeZone("UTC");
-    private static final FastDateFormat ISO_DATETIME_TIME_ZONE_FORMAT_WITH_MILLIS_UTC = FastDateFormat.getInstance(
+    private static final FastDateFormat UNIX_MICROSECOND_DECIMAL_UTC = FastDateFormat.getInstance(
                                                                                           "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", UTC);
 
     private String dateFormat(long timestamp) {
-        return ISO_DATETIME_TIME_ZONE_FORMAT_WITH_MILLIS_UTC.format(timestamp);
+        return UNIX_MICROSECOND_DECIMAL_UTC.format(timestamp);
     }
 
-    public LogstashTimestamp() {
+    public GelfTimestamp() {
         super();
     }
 
     /**
      * @param timestamp
      */
-    public LogstashTimestamp(Long timestamp) {
+    public GelfTimestamp(Long timestamp) {
         super(timestamp);
     }
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.stuartwarren.logit;
+package com.stuartwarren.logit.layout;
 
 import java.util.TimeZone;
 
