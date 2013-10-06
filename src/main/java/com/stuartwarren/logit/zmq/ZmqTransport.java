@@ -37,6 +37,10 @@ public class ZmqTransport implements IAppender, IZmqTransport {
         this();
         this.socket = socket;
     }
+    
+    public ZMQ.Socket getSocket(){
+        return this.socket;
+    }
 
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.ITransport#configure()

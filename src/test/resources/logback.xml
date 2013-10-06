@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+ 
+  <appender name="ZMQ" class="com.stuartwarren.logit.logback.ZmqAppender">
+    <socketType>PUSHPULL</socketType>
+    <endpoints>tcp://localhost:2120</endpoints>
+    <bindConnect>CONNECT</bindConnect>
+    <linger>1000</linger>
+    <sendHWM>1000</sendHWM>
+    <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+      <layout class="com.stuartwarren.logit.logback.Layout">
+        <layoutType>logstashv1</layoutType>
+        <detailThreshold>INFO</detailThreshold>
+      </layout>
+    </encoder>
+  </appender>
+ 
+  <root level="debug">
+    <appender-ref ref="ZMQ" />
+  </root>
+  
+</configuration>

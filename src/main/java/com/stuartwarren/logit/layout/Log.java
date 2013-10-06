@@ -1,25 +1,24 @@
 /**
  * 
  */
-package com.stuartwarren.logit;
+package com.stuartwarren.logit.layout;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Stuart Warren
- * @date 22 Sep 2013
+ * @author Stuart Warren 
+ * @date 6 Oct 2013
+ *
  */
-public class CommonLog {
-
-    // private String hostname = getLocalHostname() ;
-    // private String username = getUsername();
-    private Timestamp               timestamp;
+public class Log {
+    
+    private long                    timestamp;
     private String                  ndc;
     private Map<String, Object>     mdc;
-    private HashMap<String, Object> exceptionInformation;
-    private HashMap<String, Object> locationInformation;
+    private ExceptionInformation           exceptionInformation;
+    private LocationInformation            locationInformation;
     private String                  level;
+    private int                     level_int;
     private String                  loggerName;
     private String                  threadName;
     private String                  message;
@@ -27,7 +26,7 @@ public class CommonLog {
     /**
      * @return the timestamp
      */
-    public Timestamp getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
@@ -36,7 +35,7 @@ public class CommonLog {
      *            the timestamp to set
      */
     public void setTimestamp(long timestamp) {
-        this.timestamp = new Timestamp(timestamp);
+        this.timestamp = timestamp;
     }
 
     /**
@@ -74,7 +73,7 @@ public class CommonLog {
     /**
      * @return the exceptionInformation
      */
-    public HashMap<String, Object> getExceptionInformation() {
+    public ExceptionInformation getExceptionInformation() {
         return exceptionInformation;
     }
 
@@ -83,7 +82,7 @@ public class CommonLog {
      *            the exceptionInformation to set
      */
     public void setExceptionInformation(
-            HashMap<String, Object> exceptionInformation) {
+            ExceptionInformation exceptionInformation) {
         this.exceptionInformation = exceptionInformation;
     }
 
@@ -107,7 +106,7 @@ public class CommonLog {
     /**
      * @return the locationInformation
      */
-    public HashMap<String, Object> getLocationInformation() {
+    public LocationInformation getLocationInformation() {
         return locationInformation;
     }
 
@@ -116,7 +115,7 @@ public class CommonLog {
      *            the locationInformation to set
      */
     public void setLocationInformation(
-            HashMap<String, Object> locationInformation) {
+            LocationInformation locationInformation) {
         this.locationInformation = locationInformation;
     }
 
@@ -135,6 +134,20 @@ public class CommonLog {
         if (null != level) {
             this.level = level;
         }
+    }
+
+    /**
+     * @return the level_int
+     */
+    public int getLevel_int() {
+        return level_int;
+    }
+
+    /**
+     * @param level_int the level_int to set
+     */
+    public void setLevel_int(int level_int) {
+        this.level_int = level_int;
     }
 
     /**
@@ -191,6 +204,7 @@ public class CommonLog {
     // }
     // return username;
     // }
+    
     public String toString() {
         StringBuffer strBuf = new StringBuffer();
         strBuf.append(getTimestamp());
@@ -210,7 +224,6 @@ public class CommonLog {
         strBuf.append(getLoggerName());
         strBuf.append(' ');
         strBuf.append(getThreadName());
-        strBuf.append("\n");
         return strBuf.toString();
     }
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.stuartwarren.logit.logstash;
+package com.stuartwarren.logit.gelf.v1;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,40 +12,24 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.stuartwarren.logit.CommonLog;
+import com.stuartwarren.logit.layout.Log;
 
 /**
  * @author Stuart Warren
  * @date 22 Sep 2013
  */
-public class LogstashV1Log extends CommonLog {
+public final class GelfV1Log extends Log {
 
-    private LogstashTimestamp       timestamp;
     private String                  version;
     private ArrayList<String>       tags;
     private HashMap<String, Object> jacksonOutput;
 
     private ObjectMapper            mapper;
 
-    public LogstashV1Log() {
+    public GelfV1Log() {
         super();
         this.mapper = new ObjectMapper();
         this.jacksonOutput = new HashMap<String, Object>();
-    }
-
-    /**
-     * @return the timestamp
-     */
-    public LogstashTimestamp getTimestamp() {
-        return timestamp;
-    }
-
-    /**
-     * @param timestamp
-     *            the timestamp to set
-     */
-    public void setTimestamp(long timestamp) {
-        this.timestamp = new LogstashTimestamp(timestamp);
     }
 
     /**
@@ -77,35 +61,52 @@ public class LogstashV1Log extends CommonLog {
     public void setTags(ArrayList<String> tags) {
         this.tags = tags;
     }
+    
+    private void addEventData(String key, Object val) {
+        addEventData(key, val, false);
+    }
 
     @SuppressWarnings("unchecked")
-    private void addEventData(String key, Object val) {
+    private void addEventData(String key, Object val, boolean builtIn) {
         if (val instanceof HashMap) {
             if (!((HashMap<String, Object>) val).isEmpty()) {
-                jacksonOutput.put(key, val);
+                if (!"id".equals(key))
+                    jacksonOutput.put("_" + key, val);
             }
         } else if (null != val) {
-            jacksonOutput.put(key, val);
+            if (!"id".equals(key)) {
+                if (builtIn) {
+                    jacksonOutput.put(key, val);
+                } else {
+                    jacksonOutput.put('_' + key, val);
+                }
+            }
         }
     }
 
     public String toString() {
-        String log;
-        // addEventData("mdc", this.getMdc());
         Map<String, Object> mdc = this.getMdc();
         for (Map.Entry<String, Object> entry : mdc.entrySet()) {
             addEventData(entry.getKey(), entry.getValue());
         }
-        addEventData("@version", this.getVersion());
-        addEventData("@timestamp", this.getTimestamp().toString());
-        addEventData("message", this.getMessage());
+        addEventData("version", this.getVersion(), true);
+        addEventData("timestamp", String.valueOf(this.getTimestamp()), true);
+        addEventData("short_message", this.getMessage(), true);
+        addEventData("facility", this.getLoggerName(), true);
+        addEventData("level", this.getLevel_int(), true);
+        try {
+            addEventData("full_message", this.getExceptionInformation().toString(), true);
+        } catch (NullPointerException e) {}
+        addEventData("host", null, true);
         addEventData("ndc", this.getNdc());
         addEventData("tags", this.getTags());
         addEventData("thread", this.getThreadName());
-        addEventData("exception", this.getExceptionInformation());
-        addEventData("location", this.getLocationInformation());
-        addEventData("logger", this.getLoggerName());
-        addEventData("level", this.getLevel());
+        try {
+            addEventData("location", this.getLocationInformation().toString());
+            addEventData("file", this.getLocationInformation().getFileName(), true);
+            addEventData("line", this.getLocationInformation().getLineNumber(), true);
+        } catch (NullPointerException e) {}
+        String log;
         try {
             log = mapper.writeValueAsString(jacksonOutput);
         } catch (JsonGenerationException e) {
@@ -115,7 +116,7 @@ public class LogstashV1Log extends CommonLog {
         } catch (IOException e) {
             log = e.toString();
         }
-        return log;
+        return log + "\n";
     }
 
 }
