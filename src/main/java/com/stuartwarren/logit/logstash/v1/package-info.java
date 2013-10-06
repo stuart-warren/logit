@@ -6,4 +6,4 @@
  * @date 25 Sep 2013
  *
  */
-package com.stuartwarren.logit.log4j1.zmq;
+package com.stuartwarren.logit.logstash.v1;

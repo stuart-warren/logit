@@ -1,10 +1,12 @@
 /**
  * 
  */
-package com.stuartwarren.logit.log4j1;
+package com.stuartwarren.logit.logback;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.helpers.LogLog;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+
 
 /**
  * @author Stuart Warren 
@@ -17,10 +19,9 @@ public class ShutdownHook {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                LogLog.debug("Inside ShutDown Hook");
-                LogManager.shutdown();
+                LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+                loggerContext.stop();
             }
         });
-        LogLog.debug("ShutDown Hook Attached.");
     }
 }
