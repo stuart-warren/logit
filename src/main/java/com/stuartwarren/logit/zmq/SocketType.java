@@ -51,7 +51,7 @@ public enum SocketType {
     public static boolean isValidType(String name) {
         boolean result = false;
         for (SocketType s : SocketType.values()) {
-            if (name.equals(s.name)) {
+            if (name.equalsIgnoreCase(s.name)) {
                 result = true;
             }
         }

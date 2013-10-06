@@ -7,8 +7,10 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.LogLog;
 
 /**
- * @author Stuart Warren
- * @date 29 Sep 2013
+ * @author Stuart Warren 
+ * @date 6 Oct 2013
+ * 
+ * Log4j1 Shutdown hook
  */
 public class ShutdownHook {
     public void attachShutDownHook() {

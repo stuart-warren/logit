@@ -10,7 +10,7 @@ public class LogIt {
         Logger logger = Logger.getLogger(LogIt.class.getName());
         System.out.println("First instruction of Program....");
         int n = 0;
-        while (n < 1000) {
+        while (n < 10) {
             n = n + 1;
             logger.info("Hi there " + n);
         }

@@ -8,20 +8,12 @@ log4j.appender.A1=org.apache.log4j.ConsoleAppender
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 log4j.appender.A1.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
 
-# A2 is using a JSON formatting layout
-log4j.appender.A2=org.apache.log4j.ConsoleAppender
-log4j.appender.A2.layout=com.stuartwarren.logit.log4j1.logstash.LogstashV1Layout
-
-# A3 is using a JSON formatting layout and sending it over zmq
-log4j.appender.A3=com.stuartwarren.logit.log4j1.zmq.ZmqAppender
-log4j.appender.A3.SocketType=PUSHPULL
-log4j.appender.A3.Endpoints=tcp://localhost:2120,tcp://localhost:2121
-log4j.appender.A3.BindConnect=CONNECT
-log4j.appender.A3.Linger=1000
-log4j.appender.A3.SendHWM=1000
-log4j.appender.A3.layout=com.stuartwarren.logit.log4j1.logstash.LogstashV1Layout
-
-# A4 is using a pattern layout and sending over zmq
-log4j.appender.A4=com.stuartwarren.logit.log4j1.zmq.ZmqAppender
-log4j.appender.A4.layout=org.apache.log4j.PatternLayout
-log4j.appender.A4.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
+# A2 uses the ZMQ appender with a pattern layout
+log4j.appender.A2=com.stuartwarren.logit.log4j1.ZmqAppender
+log4j.appender.A2.SocketType=PUSHPULL
+log4j.appender.A2.Endpoints=tcp://localhost:2120,tcp://localhost:2121
+log4j.appender.A2.BindConnect=CONNECT
+log4j.appender.A2.Linger=1000
+log4j.appender.A2.SendHWM=1000
+log4j.appender.A2.layout=org.apache.log4j.PatternLayout
+log4j.appender.A2.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
