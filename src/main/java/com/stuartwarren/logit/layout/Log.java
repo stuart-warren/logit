@@ -3,6 +3,10 @@
  */
 package com.stuartwarren.logit.layout;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -15,13 +19,15 @@ public class Log {
     private long                    timestamp;
     private String                  ndc;
     private Map<String, Object>     mdc;
-    private ExceptionInformation           exceptionInformation;
-    private LocationInformation            locationInformation;
+    private ExceptionInformation    exceptionInformation;
+    private LocationInformation     locationInformation;
     private String                  level;
     private int                     level_int;
     private String                  loggerName;
     private String                  threadName;
     private String                  message;
+    private ArrayList<String>       tags;
+    private Map<String,Object>      fields;
 
     /**
      * @return the timestamp
@@ -205,6 +211,70 @@ public class Log {
     // return username;
     // }
     
+    /**
+     * @return the tags
+     */
+    public ArrayList<String> getTags() {
+        return tags;
+    }
+
+    /**
+     * @param tags 
+     *      the tags to set
+     */
+    public void setTags(String tags) {
+        // Split string on commas. Ignore whitespace.
+        if (null != tags) {
+            this.tags = new ArrayList<String>(Arrays.asList(tags.split("\\s*,\\s*")));
+        }
+    }
+    
+    /**
+     * @param tag 
+     *      the tag to add to the list
+     */
+    public void appendTag(String tag) {
+        if (null != tag) {
+            if (null == this.tags) {
+                this.tags = new ArrayList<String>();
+            }
+            this.tags.add(tag);
+        }
+    }
+
+    /**
+     * @return the fields
+     */
+    public Map<String,Object> getFields() {
+        return fields;
+    }
+
+    /**
+     * @param fields the fields to set
+     */
+    public void setFields(String fields) {
+        // Split string on : and ,
+        //eg field1:value,field2:value
+        if (null != fields) {
+            this.fields = new LinkedHashMap<String, Object>();
+                for(String keyValue : fields.split("\\s*,\\s*")) {
+                String[] pairs = keyValue.split("\\s*:\\s*", 2);
+                this.fields.put(pairs[0], pairs.length == 1 ? "" : pairs[1]);
+            }
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void addField(String key, Object val) {
+        if (val instanceof HashMap) {
+            if (!((HashMap<String, Object>) val).isEmpty()) {
+                fields.put(key, val);
+            }
+        } else if (null != val) {
+            fields.put(key, val);
+        }
+    }
+
     public String toString() {
         StringBuffer strBuf = new StringBuffer();
         strBuf.append(getTimestamp());
@@ -224,6 +294,10 @@ public class Log {
         strBuf.append(getLoggerName());
         strBuf.append(' ');
         strBuf.append(getThreadName());
+        strBuf.append(' ');
+        strBuf.append(getTags());
+        strBuf.append(' ');
+        strBuf.append(getFields());
         return strBuf.toString();
     }
 
