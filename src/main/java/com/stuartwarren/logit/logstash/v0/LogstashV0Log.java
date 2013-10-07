@@ -4,7 +4,6 @@
 package com.stuartwarren.logit.logstash.v0;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.codehaus.jackson.JsonGenerationException;
@@ -22,9 +21,7 @@ public final class LogstashV0Log extends Log {
 
     private long                    timestamp;
     private String                  version;
-    private ArrayList<String>       tags;
     private HashMap<String, Object> jacksonOutput;
-    private HashMap<String, Object> fields;
 
     private ObjectMapper            mapper;
 
@@ -32,7 +29,6 @@ public final class LogstashV0Log extends Log {
         super();
         this.mapper = new ObjectMapper();
         this.jacksonOutput = new HashMap<String, Object>();
-        this.fields = new HashMap<String, Object>();
     }
 
     /**
@@ -67,21 +63,6 @@ public final class LogstashV0Log extends Log {
         this.version = version;
     }
 
-    /**
-     * @return the tags
-     */
-    public ArrayList<String> getTags() {
-        return tags;
-    }
-
-    /**
-     * @param tags
-     *            the tags to set
-     */
-    public void setTags(ArrayList<String> tags) {
-        this.tags = tags;
-    }
-
     @SuppressWarnings("unchecked")
     private void addEventData(String key, Object val) {
         if (val instanceof HashMap) {
@@ -90,17 +71,6 @@ public final class LogstashV0Log extends Log {
             }
         } else if (null != val) {
             jacksonOutput.put(key, val);
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    private void addField(String key, Object val) {
-        if (val instanceof HashMap) {
-            if (!((HashMap<String, Object>) val).isEmpty()) {
-                fields.put(key, val);
-            }
-        } else if (null != val) {
-            fields.put(key, val);
         }
     }
 
@@ -117,7 +87,7 @@ public final class LogstashV0Log extends Log {
         addField("location", this.getLocationInformation());
         addField("logger", this.getLoggerName());
         addField("level", this.getLevel());
-        addEventData("@fields", this.fields);
+        addEventData("@fields", this.getFields());
         try {
             log = mapper.writeValueAsString(jacksonOutput);
         } catch (JsonGenerationException e) {

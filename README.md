@@ -6,7 +6,7 @@ logit
 Library to extend Log4J1.2 (and other logging frameworks) by providing a json layout (for logstash) and a zeromq appender (jeromq)
 This is my first real attack at a java project, so you have been warned!
 
-v0.1.0
+v0.2.0
 
 Log4j1
 ------
@@ -25,6 +25,8 @@ log4j.appender.A2.SendHWM=1000
 log4j.appender.A2.layout=com.stuartwarren.logit.log4j1.Layout
 log4j.appender.A2.layout.LayoutType=logstashv1
 log4j.appender.A2.layout.DetailThreshold=INFO
+log4j.appender.A2.layout.Tags=tag1,tag2,tag3
+log4j.appender.A2.layout.Fields=field1:value1,field2:value2,field3:value3
 ```
 __Configure ZMQ__
 
@@ -33,6 +35,14 @@ __Configure ZMQ__
 * Linger (Time to wait to close socket http://api.zeromq.org/3-2:zmq-setsockopt#toc13)
 * SendHWM (Messages to allow to queue up before block/drop http://api.zeromq.org/3-2:zmq-setsockopt#toc3)
 * Endpoints: protocol://hostname:port,protocol://hostname:port (Comma separated list)
+
+__Add optional tags/fields to every log__
+
+Simply follow this format:
+```
+log4j.appender.A2.layout.Tags=tag1,tag2,tag3
+log4j.appender.A2.layout.Fields=field1:value1,field2:value2,field3:value3
+```
 
 In your code, use log4j as normal (add objects to the MDC)
 ```
@@ -70,6 +80,8 @@ logback.xml
       <layout class="com.stuartwarren.logit.logback.Layout">
         <layoutType>logstashv1</layoutType>
         <detailThreshold>INFO</detailThreshold>
+        <tags>tag1,tag2,tag3</tags>
+        <fields>field1:value1,field2:value2,field3:value3</fields>
       </layout>
     </encoder>
   </appender>

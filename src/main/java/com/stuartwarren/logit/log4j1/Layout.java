@@ -12,6 +12,7 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
 import com.stuartwarren.logit.layout.ExceptionInformation;
+import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
 import com.stuartwarren.logit.layout.LocationInformation;
 import com.stuartwarren.logit.layout.Log;
@@ -21,7 +22,7 @@ import com.stuartwarren.logit.layout.Log;
  * @date 6 Oct 2013
  *
  */
-public class Layout extends org.apache.log4j.Layout {
+public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout {
     
     private String layoutType = "log";
     private Log log;
@@ -33,6 +34,8 @@ public class Layout extends org.apache.log4j.Layout {
     private LocationInfo info;
     private LocationInformation locationInfo;
     private ExceptionInformation exceptionInfo;
+    private String fields;
+    private String tags;
     
     
     public Layout() {
@@ -75,6 +78,9 @@ public class Layout extends org.apache.log4j.Layout {
         this.log.setLoggerName(event.getLoggerName());
         this.log.setThreadName(event.getThreadName());
         this.log.setMessage(event.getRenderedMessage());
+        this.log.setTags(tags);
+        this.log.setFields(fields);
+        this.log.appendTag("log4j");
         return this.log;
     }
     
@@ -160,6 +166,34 @@ public class Layout extends org.apache.log4j.Layout {
      */
     public void setDetailThreshold(String detailThreshold) {
         this.detailThreshold = detailThreshold;
+    }
+
+    /**
+     * @return the fields
+     */
+    public String getFields() {
+        return fields;
+    }
+
+    /**
+     * @param fields the fields to set
+     */
+    public void setFields(String fields) {
+        this.fields = fields;
+    }
+
+    /**
+     * @return the tags
+     */
+    public String getTags() {
+        return tags;
+    }
+
+    /**
+     * @param tags the tags to set
+     */
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
 }
