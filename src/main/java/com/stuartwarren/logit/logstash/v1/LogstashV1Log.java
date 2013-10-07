@@ -4,7 +4,6 @@
 package com.stuartwarren.logit.logstash.v1;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +22,6 @@ public final class LogstashV1Log extends Log {
 
     private long                    timestamp;
     private String                  version;
-    private ArrayList<String>       tags;
     private HashMap<String, Object> jacksonOutput;
 
     private ObjectMapper            mapper;
@@ -64,21 +62,6 @@ public final class LogstashV1Log extends Log {
         this.version = version;
     }
 
-    /**
-     * @return the tags
-     */
-    public ArrayList<String> getTags() {
-        return tags;
-    }
-
-    /**
-     * @param tags
-     *            the tags to set
-     */
-    public void setTags(ArrayList<String> tags) {
-        this.tags = tags;
-    }
-
     @SuppressWarnings("unchecked")
     private void addEventData(String key, Object val) {
         if (val instanceof HashMap) {
@@ -92,7 +75,12 @@ public final class LogstashV1Log extends Log {
 
     public String toString() {
         String log;
-        // addEventData("mdc", this.getMdc());
+        Map<String, Object> fields = this.getFields();
+        if (null != fields) {
+            for (Map.Entry<String, Object> entry : fields.entrySet()) {
+                addEventData(entry.getKey(), entry.getValue());
+            }
+        }
         Map<String, Object> mdc = this.getMdc();
         for (Map.Entry<String, Object> entry : mdc.entrySet()) {
             addEventData(entry.getKey(), entry.getValue());

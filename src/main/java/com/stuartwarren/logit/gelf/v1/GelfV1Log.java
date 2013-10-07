@@ -4,7 +4,7 @@
 package com.stuartwarren.logit.gelf.v1;
 
 import java.io.IOException;
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +21,6 @@ import com.stuartwarren.logit.layout.Log;
 public final class GelfV1Log extends Log {
 
     private String                  version;
-    private ArrayList<String>       tags;
     private HashMap<String, Object> jacksonOutput;
 
     private ObjectMapper            mapper;
@@ -45,21 +44,6 @@ public final class GelfV1Log extends Log {
      */
     public void setVersion(String version) {
         this.version = version;
-    }
-
-    /**
-     * @return the tags
-     */
-    public ArrayList<String> getTags() {
-        return tags;
-    }
-
-    /**
-     * @param tags
-     *            the tags to set
-     */
-    public void setTags(ArrayList<String> tags) {
-        this.tags = tags;
     }
     
     private void addEventData(String key, Object val) {
@@ -85,6 +69,12 @@ public final class GelfV1Log extends Log {
     }
 
     public String toString() {
+        Map<String, Object> fields = this.getFields();
+        if (null != fields) {
+            for (Map.Entry<String, Object> entry : fields.entrySet()) {
+                addEventData(entry.getKey(), entry.getValue());
+            }
+        }
         Map<String, Object> mdc = this.getMdc();
         for (Map.Entry<String, Object> entry : mdc.entrySet()) {
             addEventData(entry.getKey(), entry.getValue());

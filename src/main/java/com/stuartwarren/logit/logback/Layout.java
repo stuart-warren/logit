@@ -14,6 +14,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
 import com.stuartwarren.logit.layout.ExceptionInformation;
+import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
 import com.stuartwarren.logit.layout.LocationInformation;
 import com.stuartwarren.logit.layout.Log;
@@ -23,14 +24,17 @@ import com.stuartwarren.logit.layout.Log;
  * @date 6 Oct 2013
  *
  */
-public class Layout extends LayoutBase<ILoggingEvent> {
+public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayout {
     
     private String layoutType = "log";
+    private String detailThreshold = Level.ERROR.toString();
+    private String fields;
+    private String tags;
+    
     private Log log;
     private LayoutFactory layoutFactory;
     private LayoutFactory layout;
     
-    private String detailThreshold = Level.ERROR.toString();
     private boolean getLocationInfo = false;
     private StackTraceElement info;
     private LocationInformation locationInfo;
@@ -75,6 +79,9 @@ public class Layout extends LayoutBase<ILoggingEvent> {
         this.log.setLoggerName(event.getLoggerName());
         this.log.setThreadName(event.getThreadName());
         this.log.setMessage(event.getFormattedMessage());
+        this.log.setTags(tags);
+        this.log.setFields(fields);
+        this.log.appendTag("logback");
         return this.log;
     }
     
@@ -151,6 +158,34 @@ public class Layout extends LayoutBase<ILoggingEvent> {
      */
     public void setDetailThreshold(String detailThreshold) {
         this.detailThreshold = detailThreshold;
+    }
+
+    /**
+     * @return the fields
+     */
+    public String getFields() {
+        return fields;
+    }
+
+    /**
+     * @param fields the fields to set
+     */
+    public void setFields(String fields) {
+        this.fields = fields;
+    }
+
+    /**
+     * @return the tags
+     */
+    public String getTags() {
+        return tags;
+    }
+
+    /**
+     * @param tags the tags to set
+     */
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
 }

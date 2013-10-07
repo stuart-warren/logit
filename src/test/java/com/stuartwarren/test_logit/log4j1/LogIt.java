@@ -26,7 +26,7 @@ public class LogIt {
 //        LogManager.shutdown();
 //        // System.exit(0);
         
-        MDC.put("tags", "other");
+        MDC.put("stuff", "other");
         logger.error("There's been an error", new NullPointerException("Fake error thrown"));
         System.exit(0);
         LogManager.shutdown();
