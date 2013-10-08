@@ -69,21 +69,6 @@ public final class GelfV1Log extends Log {
     }
 
     public String toString() {
-        Map<String, Object> fields = this.getFields();
-        if (null != fields) {
-            for (Map.Entry<String, Object> entry : fields.entrySet()) {
-                addEventData(entry.getKey(), entry.getValue());
-            }
-        }
-        try {
-            Map<String, Object> mdc = this.getMdc();
-            for (Map.Entry<String, Object> entry : mdc.entrySet()) {
-                addEventData(entry.getKey(), entry.getValue());
-            }
-        } catch (NullPointerException e) {}
-        addEventData("version", this.getVersion(), true);
-        addEventData("timestamp", String.valueOf(this.getTimestamp()), true);
-        addEventData("short_message", this.getMessage(), true);
         addEventData("facility", this.getLoggerName(), true);
         addEventData("level", this.getLevel_int(), true);
         try {
@@ -99,6 +84,21 @@ public final class GelfV1Log extends Log {
             addEventData("file", this.getLocationInformation().getFileName(), true);
             addEventData("line", this.getLocationInformation().getLineNumber(), true);
         } catch (NullPointerException e) {}
+        Map<String, Object> fields = this.getFields();
+        if (null != fields) {
+            for (Map.Entry<String, Object> entry : fields.entrySet()) {
+                addEventData(entry.getKey(), entry.getValue());
+            }
+        }
+        try {
+            Map<String, Object> mdc = this.getMdc();
+            for (Map.Entry<String, Object> entry : mdc.entrySet()) {
+                addEventData(entry.getKey(), entry.getValue());
+            }
+        } catch (NullPointerException e) {}
+        addEventData("version", this.getVersion(), true);
+        addEventData("timestamp", String.valueOf(this.getTimestamp()), true);
+        addEventData("short_message", this.getMessage(), true);
         String log;
         try {
             log = mapper.writeValueAsString(jacksonOutput);
