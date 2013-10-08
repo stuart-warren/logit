@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.stuartwarren.logit.logback;
+package com.stuartwarren.logit.zmq;
 
 import java.io.IOException;
 import java.io.OutputStream;

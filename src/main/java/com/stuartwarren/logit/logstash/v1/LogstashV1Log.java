@@ -81,10 +81,12 @@ public final class LogstashV1Log extends Log {
                 addEventData(entry.getKey(), entry.getValue());
             }
         }
-        Map<String, Object> mdc = this.getMdc();
-        for (Map.Entry<String, Object> entry : mdc.entrySet()) {
-            addEventData(entry.getKey(), entry.getValue());
-        }
+        try {
+            Map<String, Object> mdc = this.getMdc();
+            for (Map.Entry<String, Object> entry : mdc.entrySet()) {
+                addEventData(entry.getKey(), entry.getValue());
+            }
+        } catch (NullPointerException e) {}
         addEventData("@version", this.getVersion());
         addEventData("@timestamp", new LogstashTimestamp(this.getTimestamp()).toString());
         addEventData("message", this.getMessage());

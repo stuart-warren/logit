@@ -1,17 +1,19 @@
 /**
  * 
  */
-package com.stuartwarren.logit.logback;
+package com.stuartwarren.logit.jul;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Formatter;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.LogRecord;
 
 import org.apache.commons.lang3.StringUtils;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.IThrowableProxy;
-import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.LayoutBase;
 
 import com.stuartwarren.logit.layout.ExceptionInformation;
 import com.stuartwarren.logit.layout.IFrameworkLayout;
@@ -24,61 +26,73 @@ import com.stuartwarren.logit.layout.Log;
  * @date 6 Oct 2013
  *
  */
-public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayout {
+public class Layout extends Formatter implements IFrameworkLayout {
     
     private String layoutType = "log";
-    private String detailThreshold = Level.ERROR.toString();
-    private String fields;
-    private String tags;
-    
     private Log log;
     private LayoutFactory layoutFactory;
     private LayoutFactory layout;
     
+    final String prefix = Layout.class.getName();
+    private LogManager manager = LogManager.getLogManager();
+    
+    private String detailThreshold = Level.WARNING.toString();
     private boolean getLocationInfo = false;
-    private StackTraceElement info;
     private LocationInformation locationInfo;
-    private ExceptionInformation exceptionInfo;   
+    private ExceptionInformation exceptionInfo;
+    private String fields;
+    private String tags;
+    
     
     public Layout() {
         layoutFactory = new LayoutFactory();
-    }
-
-    @Override
-    public void start() {
+        configure();
         this.layout = layoutFactory.createLayout(this.layoutType);
         this.log = this.layout.getLog();
     }
     
+    /**
+     * 
+     */
+    private void configure() {
+        setLayoutType(manager.getProperty(prefix + ".layoutType"));
+        setDetailThreshold(manager.getProperty(prefix + ".detailThreshold"));
+        setFields(manager.getProperty(prefix + ".fields"));
+        setTags(manager.getProperty(prefix + ".tags"));
+    }
+
     /* (non-Javadoc)
-     * @see ch.qos.logback.core.Layout#doLayout(java.lang.Object)
+     * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
      */
     @Override
-    public String doLayout(ILoggingEvent event) {
-        this.log = doFormat(event);
+    public String format(LogRecord record) {
+        this.log = doFormat(record);
         String stringLog = this.layout.format(this.log);
         return stringLog;
     }
     
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private Log doFormat(ILoggingEvent event) {
-        this.log.setTimestamp(event.getTimeStamp());
+    private Log doFormat(LogRecord event) {
+        this.log.setTimestamp(event.getMillis());
         Level level = event.getLevel();
-        if (level.isGreaterOrEqual(Level.toLevel(this.detailThreshold))) {
+        if (level.intValue() >= (Level.parse(this.detailThreshold).intValue())) {
             getLocationInfo = true;
         }
         this.log.setLevel(level.toString());
-        this.log.setLevel_int(level.toInt());
-        Map<String, String> properties = event.getMDCPropertyMap();
-        this.log.setMdc((Map)properties);
+        this.log.setLevel_int(level.intValue());
+        Map<String, Object> properties = new HashMap<String,Object>();
+        try {
+            List<Object> propertiesList = new ArrayList<Object>(Arrays.asList(event.getParameters()));
+            properties.put("properties", propertiesList);
+            this.log.setMdc(properties);
+        } catch (NullPointerException e) {}
         this.log.setExceptionInformation(exceptionInformation(event));
         this.log.setLocationInformation(locationInformation(event));
         this.log.setLoggerName(event.getLoggerName());
-        this.log.setThreadName(event.getThreadName());
-        this.log.setMessage(event.getFormattedMessage());
+        this.log.setThreadName(Integer.toString(event.getThreadID()));
+        this.log.setMessage(event.getMessage());
         this.log.setTags(tags);
         this.log.setFields(fields);
-        this.log.appendTag("logback");
+        this.log.appendTag("log4j");
         return this.log;
     }
     
@@ -89,20 +103,20 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
      * @return
      */
     protected ExceptionInformation exceptionInformation(
-            ILoggingEvent loggingEvent) {
-        if (loggingEvent.hasCallerData()) {
+            LogRecord loggingEvent) {
+        if (loggingEvent.getThrown() != null) {
             exceptionInfo = new ExceptionInformation();
-            final IThrowableProxy throwableInformation = loggingEvent
-                    .getThrowableProxy();
-            if (throwableInformation.getClassName() != null) {
-                exceptionInfo.setExceptionClass(throwableInformation.getClassName());
+            final Throwable throwableInformation = loggingEvent
+                    .getThrown();
+            if (throwableInformation.getClass() != null) {
+                exceptionInfo.setExceptionClass(throwableInformation.getClass().getCanonicalName());
             }
             if (throwableInformation.getMessage() != null) {
                 exceptionInfo.setExceptionMessage(throwableInformation.getMessage());
             }
-            if (throwableInformation.getStackTraceElementProxyArray() != null) {
+            if (throwableInformation.getStackTrace() != null) {
                 String stackTrace = StringUtils.join(
-                        throwableInformation.getStackTraceElementProxyArray(), "\n");
+                        throwableInformation.getStackTrace(), "\n");
                 exceptionInfo.setStackTrace(stackTrace);
             }
         }
@@ -116,15 +130,11 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
      * @return
      */
     protected LocationInformation locationInformation(
-            ILoggingEvent loggingEvent) {
+            LogRecord loggingEvent) {
         if (getLocationInfo) {
             locationInfo = new LocationInformation();
-            // TODO: May need to change this? 
-            info = ((LoggingEvent) loggingEvent).getCallerData()[0];
-            locationInfo.setClassName(info.getClassName());
-            locationInfo.setMethodName(info.getMethodName());
-            locationInfo.setFileName(info.getFileName());
-            locationInfo.setLineNumber(Integer.toString(info.getLineNumber()));
+            locationInfo.setClassName(loggingEvent.getSourceClassName());
+            locationInfo.setMethodName(loggingEvent.getSourceMethodName());
         }
         return locationInfo;
     }
