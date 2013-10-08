@@ -89,7 +89,8 @@ public final class GelfV1Log extends Log {
         try {
             addEventData("full_message", this.getExceptionInformation().toString(), true);
         } catch (NullPointerException e) {}
-        addEventData("host", null, true);
+        addEventData("host", this.getHostname(), true);
+        addEventData("user", this.getUsername());
         addEventData("ndc", this.getNdc());
         addEventData("tags", this.getTags());
         addEventData("thread", this.getThreadName());

@@ -97,6 +97,8 @@ public final class LogstashV1Log extends Log {
         addEventData("location", this.getLocationInformation());
         addEventData("logger", this.getLoggerName());
         addEventData("level", this.getLevel());
+        addEventData("user", this.getUsername());
+        addEventData("hostname", this.getHostname());
         try {
             log = mapper.writeValueAsString(jacksonOutput);
         } catch (JsonGenerationException e) {

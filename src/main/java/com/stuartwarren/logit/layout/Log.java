@@ -16,6 +16,7 @@ import java.util.Map;
  */
 public class Log {
     
+    private CachedDetails           details = CachedDetails.getInstance();
     private long                    timestamp;
     private String                  ndc;
     private Map<String, Object>     mdc;
@@ -28,6 +29,8 @@ public class Log {
     private String                  message;
     private ArrayList<String>       tags;
     private Map<String,Object>      fields;
+    private String                  user = details.getUsername();
+    private String                  hostname = details.getHostname();
 
     /**
      * @return the timestamp
@@ -189,27 +192,6 @@ public class Log {
             this.threadName = threadName;
         }
     }
-
-    // public static String getLocalHostname() {
-    // System.setProperty("java.net.preferIPv4Stack" , "true");
-    // String hostname;
-    // try {
-    // hostname = java.net.InetAddress.getLocalHost().getHostName();
-    // } catch (UnknownHostException e) {
-    // hostname = "unknown";
-    // }
-    // return hostname;
-    // }
-    //
-    // public static String getUsername() {
-    // String username;
-    // try {
-    // username = System.getProperty("user.name").toLowerCase();
-    // } catch (NullPointerException e) {
-    // username = "unknown";
-    // }
-    // return username;
-    // }
     
     /**
      * @return the tags
@@ -247,6 +229,14 @@ public class Log {
      */
     public Map<String,Object> getFields() {
         return fields;
+    }
+    
+    public String getUsername() {
+        return user;
+    }
+    
+    public String getHostname() {
+        return hostname;
     }
 
     /**
@@ -298,6 +288,10 @@ public class Log {
         strBuf.append(getTags());
         strBuf.append(' ');
         strBuf.append(getFields());
+        strBuf.append(' ');
+        strBuf.append(getUsername());
+        strBuf.append(' ');
+        strBuf.append(getHostname());
         return strBuf.toString();
     }
 
