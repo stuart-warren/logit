@@ -76,12 +76,8 @@ public final class LogstashV0Log extends Log {
 
     public String toString() {
         String log;
-        addEventData("@version", this.getVersion());
-        addEventData("@timestamp", new LogstashTimestamp(this.getTimestamp()).toString());
-        addEventData("@message", this.getMessage());
+        
         addEventData("@tags", this.getTags());
-        addField("mdc", this.getMdc());
-        addField("ndc", this.getNdc());
         addField("thread", this.getThreadName());
         addField("exception", this.getExceptionInformation());
         addField("location", this.getLocationInformation());
@@ -90,6 +86,11 @@ public final class LogstashV0Log extends Log {
         addField("user", this.getUsername());
         addField("hostname", this.getHostname());
         addEventData("@fields", this.getFields());
+        addField("mdc", this.getMdc());
+        addField("ndc", this.getNdc());
+        addEventData("@version", this.getVersion());
+        addEventData("@timestamp", new LogstashTimestamp(this.getTimestamp()).toString());
+        addEventData("@message", this.getMessage());
         try {
             log = mapper.writeValueAsString(jacksonOutput);
         } catch (JsonGenerationException e) {
