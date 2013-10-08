@@ -6,6 +6,7 @@ package com.stuartwarren.logit.logback;
 import ch.qos.logback.core.OutputStreamAppender;
 
 import com.stuartwarren.logit.zmq.IZmqTransport;
+import com.stuartwarren.logit.zmq.ZmqOutputStream;
 import com.stuartwarren.logit.zmq.ZmqTransport;
 
 /**
