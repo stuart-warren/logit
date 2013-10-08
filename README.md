@@ -100,6 +100,40 @@ MDC.clear();
 System.exit(0);
 ```
 
+Java.util.logging
+-----------------
+
+Initial work on JUL
+
+logging.properties
+```
+handlers=com.stuartwarren.logit.jul.ZmqAppender
+
+.level= INFO
+
+com.stuartwarren.logit.jul.ZmqAppender.level=INFO
+com.stuartwarren.logit.jul.ZmqAppender.socketType=PUSHPULL
+com.stuartwarren.logit.jul.ZmqAppender.endpoints=tcp://localhost:2120
+com.stuartwarren.logit.jul.ZmqAppender.bindConnect=CONNECT
+com.stuartwarren.logit.jul.ZmqAppender.linger=1000
+com.stuartwarren.logit.jul.ZmqAppender.sendHWM=1000
+com.stuartwarren.logit.jul.ZmqAppender.layout=com.stuartwarren.logit.jul.Layout
+
+com.stuartwarren.logit.jul.Layout.layoutType=logstashv0
+com.stuartwarren.logit.jul.Layout.detailThreshold=INFO
+com.stuartwarren.logit.jul.Layout.tags=tag1,tag2,tag3
+com.stuartwarren.logit.jul.Layout.fields=field1:value1,field2:value2,field3:value3
+```
+
+In your code, use java.util.logging as normal
+```
+// Is it normal to specify the location of config in a system.property?
+System.setProperty("java.util.logging.config.file", "src/test/resources/logging.properties");
+Logger logger = Logger.getLogger(Logit.class.getName());
+logger.log(Level.WARNING, "There's been an error", new NullPointerException("Fake error thrown"));
+System.exit(0);
+```
+
 Other layoutTypes
 -----------------
 

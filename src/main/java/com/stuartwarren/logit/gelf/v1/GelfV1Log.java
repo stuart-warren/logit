@@ -75,10 +75,12 @@ public final class GelfV1Log extends Log {
                 addEventData(entry.getKey(), entry.getValue());
             }
         }
-        Map<String, Object> mdc = this.getMdc();
-        for (Map.Entry<String, Object> entry : mdc.entrySet()) {
-            addEventData(entry.getKey(), entry.getValue());
-        }
+        try {
+            Map<String, Object> mdc = this.getMdc();
+            for (Map.Entry<String, Object> entry : mdc.entrySet()) {
+                addEventData(entry.getKey(), entry.getValue());
+            }
+        } catch (NullPointerException e) {}
         addEventData("version", this.getVersion(), true);
         addEventData("timestamp", String.valueOf(this.getTimestamp()), true);
         addEventData("short_message", this.getMessage(), true);

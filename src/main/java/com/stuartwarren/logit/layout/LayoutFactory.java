@@ -28,7 +28,7 @@ public class LayoutFactory implements ILayout {
         } else if (layoutType.equalsIgnoreCase("gelfv1")) {
             this.layout = new GelfV1Layout();
         } else {
-            this.layout = new LayoutFactory();
+            this.layout = new LogstashV1Layout();
         }
         return this.layout;
     }
