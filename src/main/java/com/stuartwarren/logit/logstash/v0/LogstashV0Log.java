@@ -87,6 +87,8 @@ public final class LogstashV0Log extends Log {
         addField("location", this.getLocationInformation());
         addField("logger", this.getLoggerName());
         addField("level", this.getLevel());
+        addField("user", this.getUsername());
+        addField("hostname", this.getHostname());
         addEventData("@fields", this.getFields());
         try {
             log = mapper.writeValueAsString(jacksonOutput);
