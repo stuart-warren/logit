@@ -34,22 +34,10 @@ public class ZmqAppender<E> extends OutputStreamAppender<E> implements IZmqTrans
         super.start();
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.log4j.Appender#close()
-     */
     @Override
     public void stop() {
         this.appender.stop();
     }
-    
-//    /* (non-Javadoc)
-//     * @see ch.qos.logback.core.AppenderBase#append(java.lang.Object)
-//     */
-//    @Override
-//    protected void append(ILoggingEvent event) {
-//        String log = this.layout.doLayout(event);
-//        this.appender.appendString(log);
-//    }
 
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.ITransport#getEndpoints()

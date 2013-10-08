@@ -44,9 +44,6 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
         layoutFactory = new LayoutFactory();
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.log4j.spi.OptionHandler#activateOptions()
-     */
     @Override
     public void start() {
         this.layout = layoutFactory.createLayout(this.layoutType);
