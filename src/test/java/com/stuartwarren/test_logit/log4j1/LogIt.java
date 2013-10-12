@@ -4,11 +4,11 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
-public class LogIt {
+public class Logit {
 
     public static void main(String[] args) {
-        System.setProperty("log4j.debug", "");
-        Logger logger = Logger.getLogger(LogIt.class.getName());
+        System.setProperty("logit.debug", "");
+        Logger logger = Logger.getLogger(Logit.class.getName());
 //        System.out.println("First instruction of Program....");
 //        int n = 0;
 //        while (n < 10) {

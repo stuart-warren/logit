@@ -5,6 +5,8 @@ package com.stuartwarren.logit.logback;
 
 import org.slf4j.LoggerFactory;
 
+import com.stuartwarren.logit.utils.LogitLog;
+
 import ch.qos.logback.classic.LoggerContext;
 
 
@@ -19,9 +21,11 @@ public class ShutdownHook {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
+                LogitLog.debug("Inside ShutDown Hook");
                 LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
                 loggerContext.stop();
             }
         });
+        LogitLog.debug("ShutDown Hook Attached.");
     }
 }

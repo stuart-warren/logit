@@ -5,6 +5,8 @@ package com.stuartwarren.logit.jul;
 
 import java.util.logging.LogManager;
 
+import com.stuartwarren.logit.utils.LogitLog;
+
 
 /**
  * @author Stuart Warren 
@@ -17,8 +19,10 @@ public class ShutdownHook {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
+                LogitLog.debug("Inside ShutDown Hook");
                 LogManager.getLogManager().reset();
             }
         });
+        LogitLog.debug("ShutDown Hook Attached.");
     }
 }
