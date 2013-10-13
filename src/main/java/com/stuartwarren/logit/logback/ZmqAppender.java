@@ -5,6 +5,7 @@ package com.stuartwarren.logit.logback;
 
 import ch.qos.logback.core.OutputStreamAppender;
 
+import com.stuartwarren.logit.utils.LogitLog;
 import com.stuartwarren.logit.zmq.IZmqTransport;
 import com.stuartwarren.logit.zmq.ZmqOutputStream;
 import com.stuartwarren.logit.zmq.ZmqTransport;
@@ -22,6 +23,7 @@ public class ZmqAppender<E> extends OutputStreamAppender<E> implements IZmqTrans
     private ZmqOutputStream outputStream;
     
     public ZmqAppender() {
+        LogitLog.debug("Logback ZMQ appender in use.");
         ShutdownHook sh = new ShutdownHook();
         sh.attachShutDownHook();
         this.appender = new ZmqTransport();
@@ -38,6 +40,7 @@ public class ZmqAppender<E> extends OutputStreamAppender<E> implements IZmqTrans
     @Override
     public void stop() {
         this.appender.stop();
+        LogitLog.debug("ZMQ context should now be closed!");
     }
 
     /* (non-Javadoc)

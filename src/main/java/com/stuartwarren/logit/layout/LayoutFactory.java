@@ -6,6 +6,7 @@ package com.stuartwarren.logit.layout;
 import com.stuartwarren.logit.gelf.v1.GelfV1Layout;
 import com.stuartwarren.logit.logstash.v0.LogstashV0Layout;
 import com.stuartwarren.logit.logstash.v1.LogstashV1Layout;
+import com.stuartwarren.logit.utils.LogitLog;
 
 /**
  * @author Stuart Warren 
@@ -22,12 +23,16 @@ public class LayoutFactory implements ILayout {
     public LayoutFactory createLayout(String layoutType) {
         this.layout = null;
         if (layoutType.equalsIgnoreCase("logstashv1")) {
+            LogitLog.debug("Logstashv1 layout in use.");
             this.layout = new LogstashV1Layout();
         } else if (layoutType.equalsIgnoreCase("logstashv0")) {
+            LogitLog.debug("Logstashv0 layout in use.");
             this.layout = new LogstashV0Layout();
         } else if (layoutType.equalsIgnoreCase("gelfv1")) {
+            LogitLog.debug("Gelf1 layout in use.");
             this.layout = new GelfV1Layout();
         } else {
+            LogitLog.debug("Default Layout [Logstashv1] in use.");
             this.layout = new LogstashV1Layout();
         }
         return this.layout;

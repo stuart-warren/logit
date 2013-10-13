@@ -5,6 +5,8 @@ package com.stuartwarren.logit.layout;
 
 import java.net.UnknownHostException;
 
+import com.stuartwarren.logit.utils.LogitLog;
+
 /**
  * @author Stuart Warren 
  * @date 8 Oct 2013
@@ -17,17 +19,22 @@ public class CachedDetails {
     private String username;
     
     private CachedDetails() {
+        LogitLog.debug("Trying to resolve hostname. May take some time...");
         System.setProperty("java.net.preferIPv4Stack" , "true");
         try {
             this.setHostname(java.net.InetAddress.getLocalHost().getHostName());
         } catch (UnknownHostException e) {
+            LogitLog.warn("Unable to resolve [hostname]. Setting default.", e);
             this.setHostname("unknown");
         }
+        LogitLog.debug("Setting property [hostname] to [" + hostname + "].");
         try {
             this.setUsername(System.getProperty("user.name").toLowerCase());
         } catch (NullPointerException e) {
+            LogitLog.warn("Unable to resolve [username]. Setting default.", e);
             this.setUsername("unknown");
         }
+        LogitLog.debug("Setting property [username] to [" + username + "].");
     }
     
     public static CachedDetails getInstance() {

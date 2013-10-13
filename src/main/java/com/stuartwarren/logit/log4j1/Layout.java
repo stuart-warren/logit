@@ -16,6 +16,7 @@ import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
 import com.stuartwarren.logit.layout.LocationInformation;
 import com.stuartwarren.logit.layout.Log;
+import com.stuartwarren.logit.utils.LogitLog;
 
 /**
  * @author Stuart Warren 
@@ -39,6 +40,7 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
     
     
     public Layout() {
+        LogitLog.debug("Log4j1 layout in use.");
         layoutFactory = new LayoutFactory();
     }
 
@@ -151,6 +153,7 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
      * @param layoutType the layoutType to set
      */
     public void setLayoutType(String layoutType) {
+        LogitLog.debug("Setting property [layoutType] to [" + layoutType + "].");
         this.layoutType = layoutType;
     }
 
@@ -165,6 +168,7 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
      * @param detailThreshold the detailThreshold to set
      */
     public void setDetailThreshold(String detailThreshold) {
+        LogitLog.debug("Setting property [detailThreshold] to [" + detailThreshold + "].");
         this.detailThreshold = detailThreshold;
     }
 

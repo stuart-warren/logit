@@ -6,7 +6,7 @@ logit
 Library to extend Log4J1.2 (and other logging frameworks) by providing a json layout (for logstash) and a zeromq appender (jeromq)
 This is my first real attack at a java project, so you have been warned!
 
-v0.2.0
+v0.3.0
 
 Log4j1
 ------
@@ -153,6 +153,20 @@ gelfv1 - Graylog2 (Still needs work):
 ```
 
 Just change the layoutType parameter.
+
+Debug mode
+----------
+
+Do you need to debug what the code is doing?
+
+Set a system property
+```
+in code:
+System.setProperty("logit.debug", "");
+
+OR during startup:
+-Dlogit.debug
+```
 
 Maven
 =====
