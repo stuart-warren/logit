@@ -4,9 +4,9 @@
 package com.stuartwarren.logit.log4j1;
 
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 
+import com.stuartwarren.logit.utils.LogitLog;
 import com.stuartwarren.logit.zmq.IZmqTransport;
 import com.stuartwarren.logit.zmq.ZmqTransport;
 
@@ -21,6 +21,7 @@ public class ZmqAppender extends AppenderSkeleton implements IZmqTransport {
     private ZmqTransport appender;
     
     public ZmqAppender() {
+        LogitLog.debug("Log4j1 ZMQ appender in use.");
         ShutdownHook sh = new ShutdownHook();
         sh.attachShutDownHook();
         this.appender = new ZmqTransport();
@@ -32,12 +33,12 @@ public class ZmqAppender extends AppenderSkeleton implements IZmqTransport {
     @Override
     public void close() {
         if (this.closed) { // closed is defined in AppenderSkeleton
-            LogLog.debug("ZMQ context is already closed!");
+            LogitLog.debug("ZMQ context is already closed!");
             return;
         }
         this.appender.stop();
         this.closed = true;
-        LogLog.debug("ZMQ context should now be closed!");
+        LogitLog.debug("ZMQ context should now be closed!");
     }
     
     public void activateOptions() {

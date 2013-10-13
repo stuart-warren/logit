@@ -6,6 +6,7 @@ package com.stuartwarren.logit.zmq;
 import org.jeromq.ZMQ;
 
 import com.stuartwarren.logit.appender.IAppender;
+import com.stuartwarren.logit.utils.LogitLog;
 
 /**
  * @author Stuart Warren 
@@ -47,13 +48,18 @@ public class ZmqTransport implements IAppender, IZmqTransport {
      */
     public void configure() {
         ZMQ.Socket sender;
+        LogitLog.debug("Setting property [socketType] to [" + socketType + "].");
         sender = context.socket(SocketType.getServerSocket(socketType));
         //sender = context.createSocket(SocketType.getClientSocket(socketType));
+        LogitLog.debug("Setting property [linger] to [" + linger + "].");
         sender.setLinger(linger);
+        LogitLog.debug("Setting property [sendHWM] to [" + sendHWM + "].");
         sender.setSndHWM(sendHWM);
         final ZMQ.Socket socket = sender;
+        LogitLog.debug("Setting property [endpoints] to [" + endpoints + "].");
         final String[] endpointsList = endpoints.split(",");
         for (String endpoint : endpointsList) {
+            LogitLog.debug("Setting property [bindConnect] to [" + bindConnect + "].");
             if (CONNECTMODE.equalsIgnoreCase(bindConnect)) {
                 socket.connect(endpoint);
             } else if (BINDMODE.equalsIgnoreCase(bindConnect)) {
@@ -69,10 +75,12 @@ public class ZmqTransport implements IAppender, IZmqTransport {
      * @see com.stuartwarren.logit.ITransport#stop()
      */
     public void stop() {
+        LogitLog.debug("Closing socket.");
         socket.close();
         context.term();
         //zcontext.destroy();
         socket = null;
+        LogitLog.debug("Socket should be closed.");
     }
 
     /* (non-Javadoc)
@@ -80,6 +88,7 @@ public class ZmqTransport implements IAppender, IZmqTransport {
      */
     public void appendString(String log) {
         log = log.substring(0, log.length() - 1);
+        LogitLog.debug("Sending log: [" + log + "].");
         socket.send(log, ZMQ.NOBLOCK);
     }
 

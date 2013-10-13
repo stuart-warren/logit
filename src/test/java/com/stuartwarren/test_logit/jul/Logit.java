@@ -17,6 +17,7 @@ public class Logit {
      * @param args
      */
     public static void main(String[] args) {
+        System.setProperty("logit.debug", "");
         System.setProperty("java.util.logging.config.file", "src/test/resources/logging.properties");
         
         Logger logger = Logger.getLogger(Logit.class.getName());

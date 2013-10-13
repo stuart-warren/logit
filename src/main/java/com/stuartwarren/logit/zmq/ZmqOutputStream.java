@@ -9,6 +9,8 @@ import java.nio.ByteBuffer;
 
 import org.jeromq.ZMQ;
 
+import com.stuartwarren.logit.utils.LogitLog;
+
 /**
  * @author Stuart Warren 
  * @date 6 Oct 2013
@@ -19,6 +21,7 @@ public class ZmqOutputStream extends OutputStream {
     private final ZMQ.Socket socket;
     
     public ZmqOutputStream(ZMQ.Socket socket) {
+        LogitLog.debug("Using output stream.");
         this.socket = socket;
     }
     
@@ -31,6 +34,9 @@ public class ZmqOutputStream extends OutputStream {
 
     @Override
     public void write(byte[] bytes) throws IOException {
+        if (LogitLog.isDebugEnabled()) {
+            LogitLog.debug("Sending log: [" + new String(bytes) + "].");
+        }
         socket.send(bytes, 0);
     }
 

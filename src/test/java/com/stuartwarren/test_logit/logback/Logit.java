@@ -19,6 +19,7 @@ public class Logit {
      * @param args
      */
     public static void main(String[] args) {
+        System.setProperty("logit.debug", "");
         System.out.println("First instruction of Program....");
         Logger logger = LoggerFactory.getLogger(Logit.class);
         MDC.put("tags", "other");

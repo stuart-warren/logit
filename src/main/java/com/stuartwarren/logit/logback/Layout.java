@@ -18,6 +18,7 @@ import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
 import com.stuartwarren.logit.layout.LocationInformation;
 import com.stuartwarren.logit.layout.Log;
+import com.stuartwarren.logit.utils.LogitLog;
 
 /**
  * @author Stuart Warren 
@@ -41,6 +42,7 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
     private ExceptionInformation exceptionInfo;   
     
     public Layout() {
+        LogitLog.debug("Logback layout in use.");
         layoutFactory = new LayoutFactory();
     }
 

@@ -10,6 +10,7 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
+import com.stuartwarren.logit.utils.LogitLog;
 import com.stuartwarren.logit.zmq.IZmqTransport;
 import com.stuartwarren.logit.zmq.ZmqTransport;
 
@@ -28,6 +29,7 @@ public class ZmqAppender extends Handler implements IZmqTransport {
     private ZmqTransport appender;
     
     public ZmqAppender() {
+        LogitLog.debug("Jul ZMQ appender in use.");
         ShutdownHook sh = new ShutdownHook();
         sh.attachShutDownHook();
         this.appender = new ZmqTransport();
@@ -46,7 +48,9 @@ public class ZmqAppender extends Handler implements IZmqTransport {
             {
                 lev = Level.parse(strLevel);
             }
-            catch (Exception ex){}
+            catch (Exception ex){
+                LogitLog.error("Error parsing level.", ex);
+            }
         }
         setLevel(lev);
         setEndpoints(manager.getProperty(prefix + ".endpoints"));
@@ -59,6 +63,7 @@ public class ZmqAppender extends Handler implements IZmqTransport {
 
     public void close() {
         this.appender.stop();
+        LogitLog.debug("ZMQ context should now be closed!");
     }
     
     /* (non-Javadoc)
@@ -192,6 +197,7 @@ public class ZmqAppender extends Handler implements IZmqTransport {
         catch (Exception ex)
         {
             result = defaultObj;
+            LogitLog.error("Error parsing class name of Layout", ex);
         }
         return result;
     }
