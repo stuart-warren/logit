@@ -184,3 +184,5 @@ And dependency:
   <version>REQUIRED_VERSION</version>
 </dependency>
 ```
+.
+
