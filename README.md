@@ -6,7 +6,7 @@ logit
 Library to extend Log4J1.2 (and other logging frameworks) by providing a json layout (for logstash) and a zeromq appender (jeromq)
 This is my first real attack at a java project, so you have been warned!
 
-v0.3.0
+v0.3.2
 
 Log4j1
 ------
@@ -184,3 +184,5 @@ And dependency:
   <version>REQUIRED_VERSION</version>
 </dependency>
 ```
+.
+
