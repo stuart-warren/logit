@@ -95,7 +95,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#getEndpoints()
      */
-    @Override
     public String getEndpoints() {
         return this.endpoints;
     }
@@ -103,7 +102,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#setEndpoints(java.lang.String)
      */
-    @Override
     public void setEndpoints(String endpoints) {
         this.endpoints = endpoints;
     }
@@ -111,7 +109,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#getSocketType()
      */
-    @Override
     public String getSocketType() {
         return this.socketType;
     }
@@ -119,7 +116,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#setSocketType(java.lang.String)
      */
-    @Override
     public void setSocketType(String socketType) {
         if (SocketType.isValidType(socketType)) {
             this.socketType = socketType;
@@ -129,7 +125,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#getLinger()
      */
-    @Override
     public int getLinger() {
         return this.linger;
     }
@@ -137,7 +132,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#setLinger(int)
      */
-    @Override
     public void setLinger(int linger) {
         this.linger = linger;
     }
@@ -145,7 +139,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#getBindConnect()
      */
-    @Override
     public String getBindConnect() {
         return this.bindConnect;
     }
@@ -153,7 +146,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#setBindConnect(java.lang.String)
      */
-    @Override
     public void setBindConnect(String bindConnect) {
         if ((bindConnect.equals(BINDMODE)) || (bindConnect.equals(CONNECTMODE))) {
             this.bindConnect = bindConnect;
@@ -163,7 +155,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#getSendHWM()
      */
-    @Override
     public int getSendHWM() {
         return this.sendHWM;
     }
@@ -171,7 +162,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#setSendHWM(int)
      */
-    @Override
     public void setSendHWM(int sendHWM) {
         this.sendHWM = sendHWM;
     }
