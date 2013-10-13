@@ -92,7 +92,7 @@ public class Layout extends Formatter implements IFrameworkLayout {
         this.log.setMessage(event.getMessage());
         this.log.setTags(tags);
         this.log.setFields(fields);
-        this.log.appendTag("log4j");
+        this.log.appendTag("jul");
         return this.log;
     }
     
