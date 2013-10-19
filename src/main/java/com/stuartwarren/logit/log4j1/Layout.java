@@ -47,7 +47,6 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
     /* (non-Javadoc)
      * @see org.apache.log4j.spi.OptionHandler#activateOptions()
      */
-    @Override
     public void activateOptions() {
         this.layout = layoutFactory.createLayout(this.layoutType);
         this.log = this.layout.getLog();

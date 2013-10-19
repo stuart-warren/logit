@@ -27,11 +27,13 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     private String              bindConnect = CONNECTMODE;
     private int                 sendHWM     = 1;
     private int                 linger      = 1;
+    private boolean             configured  = false;
     
     /**
      * 
      */
     public ZmqTransport() {
+        LogitLog.debug("ZMQTransport in use.");
     }
     
     public ZmqTransport(final ZMQ.Socket socket) {
@@ -69,17 +71,21 @@ public class ZmqTransport implements IAppender, IZmqTransport {
             }
         }
         this.socket = socket;
+        LogitLog.debug("ZMQTransport configured.");
+        this.configured = true;
     }
 
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.ITransport#stop()
      */
     public void stop() {
-        LogitLog.debug("Closing socket.");
-        socket.close();
-        context.term();
-        //zcontext.destroy();
-        socket = null;
+        if (null != socket) {
+            LogitLog.debug("Closing socket.");
+            socket.close();
+            context.term();
+            //zcontext.destroy();
+            socket = null;
+        }
         LogitLog.debug("Socket should be closed.");
     }
 
@@ -95,7 +101,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#getEndpoints()
      */
-    @Override
     public String getEndpoints() {
         return this.endpoints;
     }
@@ -103,7 +108,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#setEndpoints(java.lang.String)
      */
-    @Override
     public void setEndpoints(String endpoints) {
         this.endpoints = endpoints;
     }
@@ -111,7 +115,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#getSocketType()
      */
-    @Override
     public String getSocketType() {
         return this.socketType;
     }
@@ -119,7 +122,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#setSocketType(java.lang.String)
      */
-    @Override
     public void setSocketType(String socketType) {
         if (SocketType.isValidType(socketType)) {
             this.socketType = socketType;
@@ -129,7 +131,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#getLinger()
      */
-    @Override
     public int getLinger() {
         return this.linger;
     }
@@ -137,7 +138,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#setLinger(int)
      */
-    @Override
     public void setLinger(int linger) {
         this.linger = linger;
     }
@@ -145,7 +145,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#getBindConnect()
      */
-    @Override
     public String getBindConnect() {
         return this.bindConnect;
     }
@@ -153,7 +152,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#setBindConnect(java.lang.String)
      */
-    @Override
     public void setBindConnect(String bindConnect) {
         if ((bindConnect.equals(BINDMODE)) || (bindConnect.equals(CONNECTMODE))) {
             this.bindConnect = bindConnect;
@@ -163,7 +161,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#getSendHWM()
      */
-    @Override
     public int getSendHWM() {
         return this.sendHWM;
     }
@@ -171,9 +168,12 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#setSendHWM(int)
      */
-    @Override
     public void setSendHWM(int sendHWM) {
         this.sendHWM = sendHWM;
+    }
+    
+    public boolean isConfigured() {
+        return this.configured;
     }
 
 

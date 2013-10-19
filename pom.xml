@@ -4,7 +4,7 @@
   <artifactId>logit</artifactId>
   <packaging>jar</packaging>
   <name>LogIt</name>
-  <version>0.4.0-SNAPSHOT</version>
+  <version>0.4.1-SNAPSHOT</version>
   <description>Java Logger to send logs in json format over zeromq</description>
   <url>stuartwarren.com</url>
 
@@ -34,29 +34,61 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.7</java.version>
+    <project.secondaryArtifactId>logit-tomcatvalve</project.secondaryArtifactId>
   </properties>
 
   <build>
     <pluginManagement>
       <plugins>
         <plugin>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <version>2.2.2</version>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>2.1</version>
           <executions>
             <execution>
-              <id>uberjar</id>
+              <id>shade-secondary</id>
               <phase>package</phase>
               <goals>
-                <goal>single</goal>
+                <goal>shade</goal>
               </goals>
+              <configuration>
+                <shadedArtifactId>logit-tomcatvalve</shadedArtifactId>
+                <shadedClassifierName>tomcatvalve</shadedClassifierName>
+                <finalName>${project.secondaryArtifactId}-${project.version}</finalName>
+                <shadedArtifactAttached>true</shadedArtifactAttached>
+                <filters>
+                  <filter>
+                    <artifact>com.stuartwarren:logit</artifact>
+                    <includes>
+                      <include>com/stuartwarren/logit/tomcatvalve/**</include>
+                    </includes>
+                  </filter>
+                </filters>
+              </configuration>
+            </execution>
+            <execution>
+              <id>shade-main</id>
+              <phase>package</phase>
+              <goals>
+                <goal>shade</goal>
+              </goals>
+              <configuration>
+                <shadedArtifactId>logit-jar-with-dependencies</shadedArtifactId>
+                <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
+                <finalName>${project.artifactId}-${project.version}-jar-with-dependencies</finalName>
+                <shadedArtifactAttached>true</shadedArtifactAttached>
+                <filters>
+                  <filter>
+                    <artifact>com.stuartwarren:logit</artifact>
+                    <excludes>
+                      <exclude>com/stuartwarren/logit/tomcatvalve/**</exclude>
+                    </excludes>
+                  </filter>
+                </filters>
+              </configuration>
             </execution>
           </executions>
-          <configuration>
-            <descriptorRefs>
-              <descriptorRef>jar-with-dependencies</descriptorRef>
-            </descriptorRefs>
-          </configuration>
-        </plugin>
+        </plugin>  
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
@@ -68,6 +100,12 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+    	<plugin>
+    		<groupId>org.apache.maven.plugins</groupId>
+    		<artifactId>maven-shade-plugin</artifactId>
+    	</plugin>
+    </plugins>
   </build>
 
   <dependencies>
@@ -75,11 +113,13 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.17</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>1.0.13</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
@@ -101,6 +141,18 @@
       <artifactId>junit</artifactId>
       <version>4.11</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-catalina</artifactId>
+      <version>7.0.42</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>coyote</artifactId>
+      <version>6.0.33</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

@@ -11,6 +11,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
 import com.stuartwarren.logit.utils.LogitLog;
+import com.stuartwarren.logit.utils.LayoutLoader;
 import com.stuartwarren.logit.zmq.IZmqTransport;
 import com.stuartwarren.logit.zmq.ZmqTransport;
 
@@ -86,7 +87,6 @@ public class ZmqAppender extends Handler implements IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.ITransport#getEndpoints()
      */
-    @Override
     public String getEndpoints() {
         return this.appender.getEndpoints();
     }
@@ -94,7 +94,6 @@ public class ZmqAppender extends Handler implements IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.ITransport#setEndpoints(java.lang.String)
      */
-    @Override
     public void setEndpoints(String endpoints) {
         this.appender.setEndpoints(endpoints);
     }
@@ -102,7 +101,6 @@ public class ZmqAppender extends Handler implements IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.ITransport#getSocketType()
      */
-    @Override
     public String getSocketType() {
         return this.appender.getSocketType();
     }
@@ -110,7 +108,6 @@ public class ZmqAppender extends Handler implements IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.ITransport#setSocketType(java.lang.String)
      */
-    @Override
     public void setSocketType(String socketType) {
         this.appender.setSocketType(socketType);
     }
@@ -118,7 +115,6 @@ public class ZmqAppender extends Handler implements IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.ITransport#getLinger()
      */
-    @Override
     public int getLinger() {
         return this.appender.getLinger();
     }
@@ -126,7 +122,6 @@ public class ZmqAppender extends Handler implements IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.ITransport#setLinger(int)
      */
-    @Override
     public void setLinger(int linger) {
         this.appender.setLinger(linger);
     }
@@ -134,7 +129,6 @@ public class ZmqAppender extends Handler implements IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.ITransport#getBindConnect()
      */
-    @Override
     public String getBindConnect() {
         return this.appender.getBindConnect();
     }
@@ -142,7 +136,6 @@ public class ZmqAppender extends Handler implements IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.ITransport#setBindConnect(java.lang.String)
      */
-    @Override
     public void setBindConnect(String bindConnect) {
         this.appender.setBindConnect(bindConnect);
     }
@@ -150,7 +143,6 @@ public class ZmqAppender extends Handler implements IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.ITransport#getSendHWM()
      */
-    @Override
     public int getSendHWM() {
         return this.appender.getSendHWM();
     }
@@ -158,7 +150,6 @@ public class ZmqAppender extends Handler implements IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.ITransport#setSendHWM(int)
      */
-    @Override
     public void setSendHWM(int sendHWM) {
         this.appender.setSendHWM(sendHWM);
     }
@@ -170,36 +161,9 @@ public class ZmqAppender extends Handler implements IZmqTransport {
      */
     private void setTheFormatter(String formatter) {
         if ( null != formatter) {
-            Formatter f = (Formatter) instantiateByClassName(formatter, DEFAULT_FORMATTER);
+            Formatter f = (Formatter) LayoutLoader.instantiateByClassName(formatter, DEFAULT_FORMATTER);
             this.setFormatter(f);
         }
-    }
-    
-    /**
-     * 
-     * @param strClassName 
-     *              Class specified by name (String)
-     * @param defaultObj 
-     *              Object to use incase specified class can't be found
-     * @return
-     *      Instance of Class requested
-     */
-    static Object instantiateByClassName(String strClassName, Object defaultObj)
-    {
-        Object result;
-        
-        try
-        {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            Class<?> clazz = loader.loadClass(strClassName);
-            result = clazz.newInstance();
-        }
-        catch (Exception ex)
-        {
-            result = defaultObj;
-            LogitLog.error("Error parsing class name of Layout", ex);
-        }
-        return result;
     }
 
 }

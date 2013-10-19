@@ -55,7 +55,6 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
     /* (non-Javadoc)
      * @see ch.qos.logback.core.Layout#doLayout(java.lang.Object)
      */
-    @Override
     public String doLayout(ILoggingEvent event) {
         this.log = doFormat(event);
         String stringLog = this.layout.format(this.log);

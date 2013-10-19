@@ -41,7 +41,6 @@ public class LayoutFactory implements ILayout {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.ILayout#getLog()
      */
-    @Override
     public Log getLog() {
         return this.getLog();
     }
@@ -49,7 +48,6 @@ public class LayoutFactory implements ILayout {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.ILayout#configure()
      */
-    @Override
     public void configure() {
         this.layout.configure();
     }
@@ -57,7 +55,6 @@ public class LayoutFactory implements ILayout {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.ILayout#format(com.stuartwarren.logit.layout.Log)
      */
-    @Override
     public String format(Log log) {
         String stringLog = this.layout.format(log);
         return stringLog;
