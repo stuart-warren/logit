@@ -11,6 +11,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
 import com.stuartwarren.logit.utils.LogitLog;
+import com.stuartwarren.logit.utils.LayoutLoader;
 import com.stuartwarren.logit.zmq.IZmqTransport;
 import com.stuartwarren.logit.zmq.ZmqTransport;
 
@@ -160,36 +161,9 @@ public class ZmqAppender extends Handler implements IZmqTransport {
      */
     private void setTheFormatter(String formatter) {
         if ( null != formatter) {
-            Formatter f = (Formatter) instantiateByClassName(formatter, DEFAULT_FORMATTER);
+            Formatter f = (Formatter) LayoutLoader.instantiateByClassName(formatter, DEFAULT_FORMATTER);
             this.setFormatter(f);
         }
-    }
-    
-    /**
-     * 
-     * @param strClassName 
-     *              Class specified by name (String)
-     * @param defaultObj 
-     *              Object to use incase specified class can't be found
-     * @return
-     *      Instance of Class requested
-     */
-    static Object instantiateByClassName(String strClassName, Object defaultObj)
-    {
-        Object result;
-        
-        try
-        {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            Class<?> clazz = loader.loadClass(strClassName);
-            result = clazz.newInstance();
-        }
-        catch (Exception ex)
-        {
-            result = defaultObj;
-            LogitLog.error("Error parsing class name of Layout", ex);
-        }
-        return result;
     }
 
 }

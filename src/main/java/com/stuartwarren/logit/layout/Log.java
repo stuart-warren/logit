@@ -247,7 +247,7 @@ public class Log {
         //eg field1:value,field2:value
         if (null != fields) {
             this.fields = new LinkedHashMap<String, Object>();
-                for(String keyValue : fields.split("\\s*,\\s*")) {
+            for(String keyValue : fields.split("\\s*,\\s*")) {
                 String[] pairs = keyValue.split("\\s*:\\s*", 2);
                 this.fields.put(pairs[0], pairs.length == 1 ? "" : pairs[1]);
             }
@@ -258,7 +258,9 @@ public class Log {
     public void addField(String key, Object val) {
         if (val instanceof HashMap) {
             if (!((HashMap<String, Object>) val).isEmpty()) {
-                fields.put(key, val);
+                if (null != val) {
+                    fields.put(key, val);
+                }
             }
         } else if (null != val) {
             fields.put(key, val);

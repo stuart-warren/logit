@@ -27,11 +27,13 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     private String              bindConnect = CONNECTMODE;
     private int                 sendHWM     = 1;
     private int                 linger      = 1;
+    private boolean             configured  = false;
     
     /**
      * 
      */
     public ZmqTransport() {
+        LogitLog.debug("ZMQTransport in use.");
     }
     
     public ZmqTransport(final ZMQ.Socket socket) {
@@ -69,6 +71,8 @@ public class ZmqTransport implements IAppender, IZmqTransport {
             }
         }
         this.socket = socket;
+        LogitLog.debug("Configured!!!");
+        this.configured = true;
     }
 
     /* (non-Javadoc)
@@ -164,6 +168,10 @@ public class ZmqTransport implements IAppender, IZmqTransport {
      */
     public void setSendHWM(int sendHWM) {
         this.sendHWM = sendHWM;
+    }
+    
+    public boolean isConfigured() {
+        return this.configured;
     }
 
 
