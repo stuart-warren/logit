@@ -10,7 +10,9 @@
     <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
       <layout class="com.stuartwarren.logit.logback.Layout">
         <layoutType>logstashv1</layoutType>
-        <detailThreshold>INFO</detailThreshold>
+        <detailThreshold>WARN</detailThreshold>
+        <tags>tag1,tag2,tag3</tags>
+        <fields>field1:value1,field2:value2,field3:value3</fields>
       </layout>
     </encoder>
   </appender>

@@ -22,6 +22,7 @@ public class Logit {
         
         Logger logger = Logger.getLogger(Logit.class.getName());
         logger.log(Level.WARNING, "There's been an error", new NullPointerException("Fake error thrown"));
+        logger.info("non exception");
         System.exit(0);
 
     }

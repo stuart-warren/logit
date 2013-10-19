@@ -78,13 +78,15 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.ITransport#stop()
      */
-    public void stop() {
+    public synchronized void stop() {
         if (null != socket) {
             LogitLog.debug("Closing socket.");
             socket.close();
             context.term();
             //zcontext.destroy();
             socket = null;
+        } else {
+            return;
         }
         LogitLog.debug("Socket should be closed.");
     }
