@@ -71,7 +71,7 @@ public class ZmqTransport implements IAppender, IZmqTransport {
             }
         }
         this.socket = socket;
-        LogitLog.debug("Configured!!!");
+        LogitLog.debug("ZMQTransport configured.");
         this.configured = true;
     }
 
@@ -79,11 +79,13 @@ public class ZmqTransport implements IAppender, IZmqTransport {
      * @see com.stuartwarren.logit.ITransport#stop()
      */
     public void stop() {
-        LogitLog.debug("Closing socket.");
-        socket.close();
-        context.term();
-        //zcontext.destroy();
-        socket = null;
+        if (null != socket) {
+            LogitLog.debug("Closing socket.");
+            socket.close();
+            context.term();
+            //zcontext.destroy();
+            socket = null;
+        }
         LogitLog.debug("Socket should be closed.");
     }
 

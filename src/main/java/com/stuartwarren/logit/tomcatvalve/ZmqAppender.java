@@ -182,7 +182,6 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.IFrameworkLayout#getLayoutType()
      */
-    @Override
     public String getLayoutType() {
         return this.layout.getLayoutType();
     }
@@ -190,7 +189,6 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.IFrameworkLayout#setLayoutType(java.lang.String)
      */
-    @Override
     public void setLayoutType(String layoutType) {
         LogitLog.debug("setLayoutType.");
         this.layout.setLayoutType(layoutType);
@@ -199,7 +197,6 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.IFrameworkLayout#getDetailThreshold()
      */
-    @Override
     public String getDetailThreshold() {
         return this.layout.getDetailThreshold();
     }
@@ -207,7 +204,6 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.IFrameworkLayout#setDetailThreshold(java.lang.String)
      */
-    @Override
     public void setDetailThreshold(String detailThreshold) {
         LogitLog.debug("setDetailThreshold.");
         this.layout.setDetailThreshold(detailThreshold);        
@@ -216,7 +212,6 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.IFrameworkLayout#getFields()
      */
-    @Override
     public String getFields() {
         return this.layout.getFields();
     }
@@ -224,7 +219,6 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.IFrameworkLayout#setFields(java.lang.String)
      */
-    @Override
     public void setFields(String fields) {
         LogitLog.debug("setFields.");
         this.layout.setFields(fields);
@@ -233,7 +227,6 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.IFrameworkLayout#getTags()
      */
-    @Override
     public String getTags() {
         return this.layout.getTags();
     }
@@ -241,7 +234,6 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.IFrameworkLayout#setTags(java.lang.String)
      */
-    @Override
     public void setTags(String tags) {
         LogitLog.debug("setTags.");
         this.layout.setTags(tags);   
@@ -250,7 +242,6 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.zmq.IZmqTransport#setLinger(int)
      */
-    @Override
     public void setLinger(int linger) {
         LogitLog.debug("Calling unexpected method signature: linger");
     }
@@ -258,7 +249,6 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.zmq.IZmqTransport#setSendHWM(int)
      */
-    @Override
     public void setSendHWM(int sendHWM) {
         LogitLog.debug("Calling unexpected method signature: sendHWM");
     }
