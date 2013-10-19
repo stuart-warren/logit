@@ -49,7 +49,6 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
      */
     public void activateOptions() {
         this.layout = layoutFactory.createLayout(this.layoutType);
-        this.log = this.layout.getLog();
     }
 
     /* (non-Javadoc)
@@ -63,26 +62,28 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
     }
     
     private Log doFormat(LoggingEvent event) {
-        this.log.setTimestamp(event.getTimeStamp());
+        Log log = this.layout.getLog();
+        log.setTimestamp(event.getTimeStamp());
         Level level = event.getLevel();
         if (level.isGreaterOrEqual(Level.toLevel(this.detailThreshold))) {
             getLocationInfo = true;
         }
-        this.log.setLevel(level.toString());
-        this.log.setLevel_int(level.toInt());
+        log.setLevel(level.toString());
+        log.setLevel_int(level.toInt());
         @SuppressWarnings("unchecked")
         Map<String, Object> properties = event.getProperties();
-        this.log.setMdc(properties);
-        this.log.setNdc(event.getNDC());
-        this.log.setExceptionInformation(exceptionInformation(event));
-        this.log.setLocationInformation(locationInformation(event));
-        this.log.setLoggerName(event.getLoggerName());
-        this.log.setThreadName(event.getThreadName());
-        this.log.setMessage(event.getRenderedMessage());
-        this.log.setTags(tags);
-        this.log.setFields(fields);
-        this.log.appendTag("log4j");
-        return this.log;
+        log.setMdc(properties);
+        log.setNdc(event.getNDC());
+        log.setExceptionInformation(exceptionInformation(event));
+        log.setLocationInformation(locationInformation(event));
+        getLocationInfo = false;
+        log.setLoggerName(event.getLoggerName());
+        log.setThreadName(event.getThreadName());
+        log.setMessage(event.getRenderedMessage());
+        log.setTags(tags);
+        log.setFields(fields);
+        log.appendTag("log4j");
+        return log;
     }
     
     /**
@@ -93,6 +94,7 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
      */
     protected ExceptionInformation exceptionInformation(
             LoggingEvent loggingEvent) {
+        exceptionInfo = null;
         if (loggingEvent.getThrowableInformation() != null) {
             exceptionInfo = new ExceptionInformation();
             final ThrowableInformation throwableInformation = loggingEvent
@@ -122,6 +124,7 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
      */
     protected LocationInformation locationInformation(
             LoggingEvent loggingEvent) {
+        locationInfo = null;
         if (getLocationInfo) {
             locationInfo = new LocationInformation();
             info = loggingEvent.getLocationInformation();

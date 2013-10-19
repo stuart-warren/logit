@@ -4,7 +4,7 @@
   <artifactId>logit</artifactId>
   <packaging>jar</packaging>
   <name>LogIt</name>
-  <version>0.4.1-SNAPSHOT</version>
+  <version>0.4.2-SNAPSHOT</version>
   <description>Java Logger to send logs in json format over zeromq</description>
   <url>stuartwarren.com</url>
 
@@ -88,7 +88,7 @@
               </configuration>
             </execution>
           </executions>
-        </plugin>  
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>

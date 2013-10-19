@@ -49,7 +49,6 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
     @Override
     public void start() {
         this.layout = layoutFactory.createLayout(this.layoutType);
-        this.log = this.layout.getLog();
     }
     
     /* (non-Javadoc)
@@ -63,24 +62,26 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Log doFormat(ILoggingEvent event) {
-        this.log.setTimestamp(event.getTimeStamp());
+        Log log = this.layout.getLog();
+        log.setTimestamp(event.getTimeStamp());
         Level level = event.getLevel();
         if (level.isGreaterOrEqual(Level.toLevel(this.detailThreshold))) {
             getLocationInfo = true;
         }
-        this.log.setLevel(level.toString());
-        this.log.setLevel_int(level.toInt());
+        log.setLevel(level.toString());
+        log.setLevel_int(level.toInt());
         Map<String, String> properties = event.getMDCPropertyMap();
-        this.log.setMdc((Map)properties);
-        this.log.setExceptionInformation(exceptionInformation(event));
-        this.log.setLocationInformation(locationInformation(event));
-        this.log.setLoggerName(event.getLoggerName());
-        this.log.setThreadName(event.getThreadName());
-        this.log.setMessage(event.getFormattedMessage());
-        this.log.setTags(tags);
-        this.log.setFields(fields);
-        this.log.appendTag("logback");
-        return this.log;
+        log.setMdc((Map)properties);
+        log.setExceptionInformation(exceptionInformation(event));
+        log.setLocationInformation(locationInformation(event));
+        getLocationInfo = false;
+        log.setLoggerName(event.getLoggerName());
+        log.setThreadName(event.getThreadName());
+        log.setMessage(event.getFormattedMessage());
+        log.setTags(tags);
+        log.setFields(fields);
+        log.appendTag("logback");
+        return log;
     }
     
     /**
@@ -90,11 +91,12 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
      * @return
      */
     protected ExceptionInformation exceptionInformation(
-            ILoggingEvent loggingEvent) {
-        if (loggingEvent.hasCallerData()) {
+        ILoggingEvent loggingEvent) {
+        exceptionInfo = null;
+        final IThrowableProxy throwableInformation = loggingEvent
+                .getThrowableProxy();
+        if (throwableInformation != null) {
             exceptionInfo = new ExceptionInformation();
-            final IThrowableProxy throwableInformation = loggingEvent
-                    .getThrowableProxy();
             if (throwableInformation.getClassName() != null) {
                 exceptionInfo.setExceptionClass(throwableInformation.getClassName());
             }
@@ -118,6 +120,7 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
      */
     protected LocationInformation locationInformation(
             ILoggingEvent loggingEvent) {
+        locationInfo = null;
         if (getLocationInfo) {
             locationInfo = new LocationInformation();
             // TODO: May need to change this? 

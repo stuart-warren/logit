@@ -27,8 +27,8 @@ public class Log {
     private String                  loggerName;
     private String                  threadName;
     private String                  message;
-    private ArrayList<String>       tags;
-    private Map<String,Object>      fields;
+    private ArrayList<String>       tags = null;
+    private Map<String,Object>      fields = null;
     private String                  user = details.getUsername();
     private String                  hostname = details.getHostname();
 

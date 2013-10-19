@@ -52,7 +52,6 @@ public class Layout implements IFrameworkLayout {
     public void activateOptions() {
         LogitLog.debug("Initialise Logfactory.");
         this.layout = layoutFactory.createLayout(this.layoutType);
-        this.log = this.layout.getLog();
     }
 
     /* (non-Javadoc)
@@ -65,12 +64,13 @@ public class Layout implements IFrameworkLayout {
     }
     
     private Log doFormat(Request request, Response response, long time) {
+        Log log = this.layout.getLog();
         Map<String,Object> httpFields = new HashMap<String,Object>();
         String level = "INFO";
         StringBuffer message = new StringBuffer();
         int status = response.getStatus();
         
-        this.log.setTimestamp(request.getCoyoteRequest().getStartTime());
+        log.setTimestamp(request.getCoyoteRequest().getStartTime());
         httpFields.put("request_parameters", request.getParameterMap());
         httpFields.put("remote_host", request.getRemoteHost());
         httpFields.put("remote_user", request.getRemoteUser());
@@ -125,13 +125,13 @@ public class Layout implements IFrameworkLayout {
             httpFields.put("cookies", cookies);
         }
         
-        this.log.setLevel(level);
-        this.log.setTags(tags);
-        this.log.setFields(fields);
-        this.log.setMessage(message.toString());
-        this.log.addField("http", httpFields);
-        this.log.appendTag("valve");
-        return this.log;
+        log.setLevel(level);
+        log.setTags(tags);
+        log.setFields(fields);
+        log.setMessage(message.toString());
+        log.addField("http", httpFields);
+        log.appendTag("valve");
+        return log;
     }
 
     /**

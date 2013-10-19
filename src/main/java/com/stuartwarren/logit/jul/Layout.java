@@ -20,6 +20,7 @@ import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
 import com.stuartwarren.logit.layout.LocationInformation;
 import com.stuartwarren.logit.layout.Log;
+import com.stuartwarren.logit.utils.LogitLog;
 
 /**
  * @author Stuart Warren 
@@ -45,10 +46,10 @@ public class Layout extends Formatter implements IFrameworkLayout {
     
     
     public Layout() {
+        LogitLog.debug("Jul layout in use.");
         layoutFactory = new LayoutFactory();
         configure();
         this.layout = layoutFactory.createLayout(this.layoutType);
-        this.log = this.layout.getLog();
     }
     
     /**
@@ -72,28 +73,32 @@ public class Layout extends Formatter implements IFrameworkLayout {
     }
     
     private Log doFormat(LogRecord event) {
-        this.log.setTimestamp(event.getMillis());
+        Log log = this.layout.getLog();
+        log.setTimestamp(event.getMillis());
         Level level = event.getLevel();
+        LogitLog.debug("Level(int): " + level.intValue());
+        LogitLog.debug("DetailThreshold Level(int): " + Level.parse(this.detailThreshold).intValue());
         if (level.intValue() >= (Level.parse(this.detailThreshold).intValue())) {
             getLocationInfo = true;
         }
-        this.log.setLevel(level.toString());
-        this.log.setLevel_int(level.intValue());
+        log.setLevel(level.toString());
+        log.setLevel_int(level.intValue());
         Map<String, Object> properties = new HashMap<String,Object>();
         try {
             List<Object> propertiesList = new ArrayList<Object>(Arrays.asList(event.getParameters()));
             properties.put("properties", propertiesList);
-            this.log.setMdc(properties);
+            log.setMdc(properties);
         } catch (NullPointerException e) {}
-        this.log.setExceptionInformation(exceptionInformation(event));
-        this.log.setLocationInformation(locationInformation(event));
-        this.log.setLoggerName(event.getLoggerName());
-        this.log.setThreadName(Integer.toString(event.getThreadID()));
-        this.log.setMessage(event.getMessage());
-        this.log.setTags(tags);
-        this.log.setFields(fields);
-        this.log.appendTag("jul");
-        return this.log;
+        log.setExceptionInformation(exceptionInformation(event));
+        log.setLocationInformation(locationInformation(event));
+        getLocationInfo = false;
+        log.setLoggerName(event.getLoggerName());
+        log.setThreadName(Integer.toString(event.getThreadID()));
+        log.setMessage(event.getMessage());
+        log.setTags(tags);
+        log.setFields(fields);
+        log.appendTag("jul");
+        return log;
     }
     
     /**
@@ -104,6 +109,7 @@ public class Layout extends Formatter implements IFrameworkLayout {
      */
     protected ExceptionInformation exceptionInformation(
             LogRecord loggingEvent) {
+        exceptionInfo = null;
         if (loggingEvent.getThrown() != null) {
             exceptionInfo = new ExceptionInformation();
             final Throwable throwableInformation = loggingEvent
@@ -131,6 +137,7 @@ public class Layout extends Formatter implements IFrameworkLayout {
      */
     protected LocationInformation locationInformation(
             LogRecord loggingEvent) {
+        locationInfo = null;
         if (getLocationInfo) {
             locationInfo = new LocationInformation();
             locationInfo.setClassName(loggingEvent.getSourceClassName());
