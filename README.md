@@ -6,7 +6,7 @@ logit
 Library to extend Log4J1.2 (and other logging frameworks) by providing a json layout (for logstash) and a zeromq appender (jeromq)
 This is my first real attack at a java project, so you have been warned!
 
-v0.4
+v0.4.1
 
 Log4j1
 ------
@@ -145,24 +145,33 @@ Add a new Valve into your $CATALINA_BASE/conf/server.xml
 ``` xml
 ...
 <Valve className="com.stuartwarren.logit.tomcatvalve.ZmqAppender"
-               layout="com.stuartwarren.logit.tomcatvalve.Layout"
-               socketType="PUSHPULL"
-               endpoints="tcp://localhost:2120"
-               bindConnect="CONNECT"
-               linger="1000"
-               sendHWM="1000"
-               layoutType="logstashv1"
-               iHeaders="Referer,User-Agent"
-               oHeaders=""
-               cookies=""
-               tags="tag1,tag2,tag3"
-               fields="field1:value1,field2:value2,field3:value3" />
+       layout="com.stuartwarren.logit.tomcatvalve.Layout"
+       socketType="PUSHPULL"
+       endpoints="tcp://localhost:2120"
+       bindConnect="CONNECT"
+       linger="1000"
+       sendHWM="1000"
+       layoutType="logstashv1"
+       iHeaders="Referer,User-Agent"
+       oHeaders=""
+       cookies=""
+       tags="tag1,tag2,tag3"
+       fields="field1:value1,field2:value2,field3:value3" />
 ...
 ```
 
 Produces logs like:
 ```
 {"message":"GET /?testthing=oeuai HTTP/1.1 304","tags":["tag1","tag2","tag3","valve"],"@timestamp":"2013-10-19T15:47:20.210Z","field3":"value3","field2":"value2","level":"INFO","http":{"request_protocol":"HTTP/1.1","response_headers":{},"request_querystring":"testthing=oeuai","remote_user":null,"request_headers":{"Referer":null,"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.69 Safari/537.36"},"response_size":0,"response_status":304,"request_parameters":{"testthing":["oeuai"]},"request_uri":"/","remote_host":"192.168.1.208","request_method":"GET","response_duration":28,"cookies":{}},"hostname":"precise64","field1":"value1","@version":"1","user":"tomcat7"}
+```
+
+Vagrantfile supplied to hopefully make testing easier
+```
+vagrant up
+vagrant ssh
+python /vagrant/src/test/resources/test.py &
+sudo service tomcat7 restart
+wget 'http://localhost:8080/testurl/?param1=value1'
 ```
 
 Other layoutTypes
