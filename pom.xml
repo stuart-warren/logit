@@ -52,9 +52,10 @@
                 <goal>shade</goal>
               </goals>
               <configuration>
+                <shadedArtifactId>logit-tomcatvalve</shadedArtifactId>
+                <shadedClassifierName>tomcatvalve</shadedClassifierName>
                 <finalName>${project.secondaryArtifactId}-${project.version}</finalName>
                 <shadedArtifactAttached>true</shadedArtifactAttached>
-                <shadedClassifierName>tomcatvalve</shadedClassifierName>
                 <filters>
                   <filter>
                     <artifact>com.stuartwarren:logit</artifact>
@@ -72,9 +73,10 @@
                 <goal>shade</goal>
               </goals>
               <configuration>
+                <shadedArtifactId>logit-jar-with-dependencies</shadedArtifactId>
+                <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
                 <finalName>${project.artifactId}-${project.version}-jar-with-dependencies</finalName>
                 <shadedArtifactAttached>true</shadedArtifactAttached>
-                <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
                 <filters>
                   <filter>
                     <artifact>com.stuartwarren:logit</artifact>
