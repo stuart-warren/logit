@@ -139,7 +139,8 @@ Tomcat AccessLog Valve
 
 Initial work on Tomcat AccessLog Valve
 
-Put jar-with-dependancies into $CATALINA_HOME/lib/
+Put jar-with-dependancies into $JAVA_HOME/lib/ext/
+Put logit-tomcatvalve into $CATALINA_HOME/lib/
 
 Add a new Valve into your $CATALINA_BASE/conf/server.xml
 ``` xml
