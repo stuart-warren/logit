@@ -34,7 +34,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.7</java.version>
-    <project.secondaryArtifactId>logit-tomcatvalve</project.secondaryArtifactId>
+    <project.secondaryArtifactId>tomcatvalve</project.secondaryArtifactId>
   </properties>
 
   <build>
@@ -54,7 +54,7 @@
               <configuration>
                 <shadedArtifactId>logit-tomcatvalve</shadedArtifactId>
                 <shadedClassifierName>tomcatvalve</shadedClassifierName>
-                <finalName>${project.secondaryArtifactId}-${project.version}</finalName>
+                <finalName>${project.artifactId}-${project.version}-${project.secondaryArtifactId}</finalName>
                 <shadedArtifactAttached>true</shadedArtifactAttached>
                 <filters>
                   <filter>

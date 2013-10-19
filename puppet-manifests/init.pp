@@ -54,7 +54,7 @@ file { "${JAVA_HOME}/lib/ext/logit.jar":
 
 file { "${CATALINA_HOME}/lib/logit-tomcatvalve.jar":
         ensure      => link,
-        target      => "/vagrant/target/logit-tomcatvalve-${LOGIT_VERSION}.jar",
+        target      => "/vagrant/target/logit-${LOGIT_VERSION}-tomcatvalve.jar",
         require     => Package[$TOMCAT_PKG],
 }
 
