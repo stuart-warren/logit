@@ -23,7 +23,7 @@ public class Logit {
         System.out.println("First instruction of Program....");
         Logger logger = LoggerFactory.getLogger(Logit.class);
         MDC.put("tags", "other");
-        logger.debug("Hello World!");
+        logger.error("There's been an error", new NullPointerException("Fake error thrown"));
         MDC.clear();
         System.exit(0);
     }
