@@ -13,10 +13,12 @@ import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
-import com.stuartwarren.logit.layout.ExceptionInformation;
+import com.stuartwarren.logit.fields.ExceptionField;
+import com.stuartwarren.logit.fields.LocationField;
+import com.stuartwarren.logit.fields.ExceptionField.EF;
+import com.stuartwarren.logit.fields.LocationField.LF;
 import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
-import com.stuartwarren.logit.layout.LocationInformation;
 import com.stuartwarren.logit.layout.Log;
 import com.stuartwarren.logit.utils.LogitLog;
 
@@ -37,9 +39,7 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
     private LayoutFactory layout;
     
     private boolean getLocationInfo = false;
-    private StackTraceElement info;
-    private LocationInformation locationInfo;
-    private ExceptionInformation exceptionInfo;   
+    private StackTraceElement info;  
     
     public Layout() {
         LogitLog.debug("Logback layout in use.");
@@ -72,9 +72,18 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
         log.setLevel_int(level.toInt());
         Map<String, String> properties = event.getMDCPropertyMap();
         log.setMdc((Map)properties);
-        log.setExceptionInformation(exceptionInformation(event));
-        log.setLocationInformation(locationInformation(event));
+        
+        // get exception details
+        exceptionInformation(event);
+        log.addField(ExceptionField.getContext());
+        ExceptionField.clear();
+        
+        // get location details
+        locationInformation(event);
+        log.addField(LocationField.getContext());
         getLocationInfo = false;
+        LocationField.clear();
+        
         log.setLoggerName(event.getLoggerName());
         log.setThreadName(event.getThreadName());
         log.setMessage(event.getFormattedMessage());
@@ -90,26 +99,23 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
      * @param loggingEvent
      * @return
      */
-    protected ExceptionInformation exceptionInformation(
+    protected void exceptionInformation(
         ILoggingEvent loggingEvent) {
-        exceptionInfo = null;
         final IThrowableProxy throwableInformation = loggingEvent
                 .getThrowableProxy();
         if (throwableInformation != null) {
-            exceptionInfo = new ExceptionInformation();
             if (throwableInformation.getClassName() != null) {
-                exceptionInfo.setExceptionClass(throwableInformation.getClassName());
+                ExceptionField.put(EF.CLASS, throwableInformation.getClassName());
             }
             if (throwableInformation.getMessage() != null) {
-                exceptionInfo.setExceptionMessage(throwableInformation.getMessage());
+                ExceptionField.put(EF.MESSAGE, throwableInformation.getMessage());
             }
             if (throwableInformation.getStackTraceElementProxyArray() != null) {
                 String stackTrace = StringUtils.join(
                         throwableInformation.getStackTraceElementProxyArray(), "\n");
-                exceptionInfo.setStackTrace(stackTrace);
+                ExceptionField.put(EF.STACKTRACE, stackTrace);
             }
         }
-        return exceptionInfo;
     }
 
     /**
@@ -118,19 +124,16 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
      * @param loggingEvent
      * @return
      */
-    protected LocationInformation locationInformation(
+    protected void locationInformation(
             ILoggingEvent loggingEvent) {
-        locationInfo = null;
         if (getLocationInfo) {
-            locationInfo = new LocationInformation();
             // TODO: May need to change this? 
             info = ((LoggingEvent) loggingEvent).getCallerData()[0];
-            locationInfo.setClassName(info.getClassName());
-            locationInfo.setMethodName(info.getMethodName());
-            locationInfo.setFileName(info.getFileName());
-            locationInfo.setLineNumber(Integer.toString(info.getLineNumber()));
+            LocationField.put(LF.CLASS, info.getClassName());
+            LocationField.put(LF.METHOD, info.getMethodName());
+            LocationField.put(LF.FILE, info.getFileName());
+            LocationField.put(LF.LINE, Integer.toString(info.getLineNumber()));
         }
-        return locationInfo;
     }
 
     /**

@@ -15,10 +15,12 @@ import java.util.logging.LogRecord;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.stuartwarren.logit.layout.ExceptionInformation;
+import com.stuartwarren.logit.fields.ExceptionField;
+import com.stuartwarren.logit.fields.LocationField;
+import com.stuartwarren.logit.fields.ExceptionField.EF;
+import com.stuartwarren.logit.fields.LocationField.LF;
 import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
-import com.stuartwarren.logit.layout.LocationInformation;
 import com.stuartwarren.logit.layout.Log;
 import com.stuartwarren.logit.utils.LogitLog;
 
@@ -29,21 +31,20 @@ import com.stuartwarren.logit.utils.LogitLog;
  */
 public class Layout extends Formatter implements IFrameworkLayout {
     
+    final String prefix = Layout.class.getName();
+    private LogManager manager = LogManager.getLogManager();
+    
     private String layoutType = "log";
+    private String detailThreshold = Level.WARNING.toString();
+    private String fields;
+    private String tags;
+    
     private Log log;
     private LayoutFactory layoutFactory;
     private LayoutFactory layout;
     
-    final String prefix = Layout.class.getName();
-    private LogManager manager = LogManager.getLogManager();
-    
-    private String detailThreshold = Level.WARNING.toString();
     private boolean getLocationInfo = false;
-    private LocationInformation locationInfo;
-    private ExceptionInformation exceptionInfo;
-    private String fields;
-    private String tags;
-    
+
     
     public Layout() {
         LogitLog.debug("Jul layout in use.");
@@ -89,9 +90,19 @@ public class Layout extends Formatter implements IFrameworkLayout {
             properties.put("properties", propertiesList);
             log.setMdc(properties);
         } catch (NullPointerException e) {}
-        log.setExceptionInformation(exceptionInformation(event));
-        log.setLocationInformation(locationInformation(event));
+        
+        // get exception details
+        exceptionInformation(event);
+        log.addField(ExceptionField.getContext());
+        ExceptionField.clear();
+        
+        // get location details
+        locationInformation(event);
+        LogitLog.debug(LocationField.getContext().toString());
+        log.addField(LocationField.getContext());
         getLocationInfo = false;
+        LocationField.clear();
+        
         log.setLoggerName(event.getLoggerName());
         log.setThreadName(Integer.toString(event.getThreadID()));
         log.setMessage(event.getMessage());
@@ -107,26 +118,23 @@ public class Layout extends Formatter implements IFrameworkLayout {
      * @param loggingEvent
      * @return
      */
-    protected ExceptionInformation exceptionInformation(
+    protected void exceptionInformation(
             LogRecord loggingEvent) {
-        exceptionInfo = null;
         if (loggingEvent.getThrown() != null) {
-            exceptionInfo = new ExceptionInformation();
             final Throwable throwableInformation = loggingEvent
                     .getThrown();
             if (throwableInformation.getClass() != null) {
-                exceptionInfo.setExceptionClass(throwableInformation.getClass().getCanonicalName());
+                ExceptionField.put(EF.CLASS, throwableInformation.getClass().getCanonicalName());
             }
             if (throwableInformation.getMessage() != null) {
-                exceptionInfo.setExceptionMessage(throwableInformation.getMessage());
+                ExceptionField.put(EF.MESSAGE, throwableInformation.getMessage());
             }
             if (throwableInformation.getStackTrace() != null) {
                 String stackTrace = StringUtils.join(
                         throwableInformation.getStackTrace(), "\n");
-                exceptionInfo.setStackTrace(stackTrace);
+                ExceptionField.put(EF.STACKTRACE, stackTrace);
             }
         }
-        return exceptionInfo;
     }
 
     /**
@@ -135,15 +143,12 @@ public class Layout extends Formatter implements IFrameworkLayout {
      * @param loggingEvent
      * @return
      */
-    protected LocationInformation locationInformation(
+    protected void locationInformation(
             LogRecord loggingEvent) {
-        locationInfo = null;
         if (getLocationInfo) {
-            locationInfo = new LocationInformation();
-            locationInfo.setClassName(loggingEvent.getSourceClassName());
-            locationInfo.setMethodName(loggingEvent.getSourceMethodName());
+            LocationField.put(LF.CLASS, loggingEvent.getSourceClassName());
+            LocationField.put(LF.METHOD, loggingEvent.getSourceMethodName());
         }
-        return locationInfo;
     }
 
     /**

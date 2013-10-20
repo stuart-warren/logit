@@ -51,6 +51,12 @@
               <goals>
                 <goal>shade</goal>
               </goals>
+              <!-- 
+              In order to log Tomcat startup using juli, Logit and it's dependencies need to be
+              on the class path pretty early. However, if the Tomcat valve class is
+              present it tries to load it's (provided by tomcat) dependecies which fail, as they
+              are loaded later. This is why we split into 2 jars.
+               -->
               <configuration>
                 <shadedArtifactId>logit-tomcatvalve</shadedArtifactId>
                 <shadedClassifierName>tomcatvalve</shadedClassifierName>

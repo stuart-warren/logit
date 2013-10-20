@@ -14,6 +14,9 @@ import org.apache.catalina.connector.Response;
 
 
 
+
+
+import com.stuartwarren.logit.fields.IFieldName;
 import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
 import com.stuartwarren.logit.layout.Log;
@@ -129,7 +132,7 @@ public class Layout implements IFrameworkLayout {
         log.setTags(tags);
         log.setFields(fields);
         log.setMessage(message.toString());
-        log.addField("http", httpFields);
+        log.addField(TCF.HTTP, httpFields);
         log.appendTag("valve");
         return log;
     }
@@ -211,6 +214,21 @@ public class Layout implements IFrameworkLayout {
      */
     public void setCookies(String cookies) {
         this.cookies = Arrays.asList(cookies.split("\\s*,\\s*"));
+    }
+    
+    public static enum TCF implements IFieldName {
+        
+        HTTP("http");
+        
+        private String text;
+        
+        TCF(String text) {
+            this.text = text;
+        }
+        
+        public String toString() {
+            return this.text;
+        }
     }
 
 }
