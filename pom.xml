@@ -4,7 +4,7 @@
   <artifactId>logit</artifactId>
   <packaging>jar</packaging>
   <name>LogIt</name>
-  <version>0.5-SNAPSHOT</version>
+  <version>0.4.3</version>
   <description>Java Logger to send logs in json format over zeromq</description>
   <url>stuartwarren.com</url>
 
@@ -56,6 +56,11 @@
                 <shadedClassifierName>tomcatvalve</shadedClassifierName>
                 <finalName>${project.artifactId}-${project.version}-${project.secondaryArtifactId}</finalName>
                 <shadedArtifactAttached>true</shadedArtifactAttached>
+                <artifactSet>
+                  <includes>
+                    <include>com.stuartwarren:*</include>
+                  </includes>
+                </artifactSet>
                 <filters>
                   <filter>
                     <artifact>com.stuartwarren:logit</artifact>

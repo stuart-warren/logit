@@ -4,7 +4,7 @@ $TOMCAT_PKG    = 'tomcat7'
 $CATALINA_BASE = "/var/lib/${TOMCAT_PKG}"
 $CATALINA_HOME = "/usr/share/${TOMCAT_PKG}"
 $JAVA_HOME     = '/usr/lib/jvm/default-java/jre'
-$LOGIT_VERSION = '0.5-SNAPSHOT'
+$LOGIT_VERSION = '0.4.3'
 
 exec {
     'apt-get_update':
@@ -32,11 +32,11 @@ file { "${CATALINA_BASE}/bin":
 
 file { "${CATALINA_BASE}/bin/setenv.sh":
         ensure      => present,
-        content     => '# Add logit.jar to classpath
-if [ -r "$CATALINA_HOME/lib/logit.jar" ] ; then
-  CATALINA_OPTS="$CATALINA_OPTS -Dlogit.debug"
+        content     => "# Add logit.jar to classpath
+if [ -r \"${JAVA_HOME}/lib/ext/logit.jar\" ] ; then
+  CATALINA_OPTS=\"${CATALINA_OPTS} -Dlogit.debug -Djava.security.egd=file:/dev/./urandom\"
 fi
-',
+",
         mode        => '0755',
         require     => File["${CATALINA_BASE}/bin"],
 }
