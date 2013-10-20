@@ -56,6 +56,11 @@
                 <shadedClassifierName>tomcatvalve</shadedClassifierName>
                 <finalName>${project.artifactId}-${project.version}-${project.secondaryArtifactId}</finalName>
                 <shadedArtifactAttached>true</shadedArtifactAttached>
+                <artifactSet>
+                  <includes>
+                    <include>com.stuartwarren:*</include>
+                  </includes>
+                </artifactSet>
                 <filters>
                   <filter>
                     <artifact>com.stuartwarren:logit</artifact>
