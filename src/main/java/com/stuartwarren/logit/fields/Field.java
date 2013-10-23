@@ -5,7 +5,8 @@ package com.stuartwarren.logit.fields;
 
 import java.util.HashMap;
 
-import org.apache.log4j.helpers.ThreadLocalMap;
+import com.stuartwarren.logit.utils.LogitLog;
+import com.stuartwarren.logit.utils.ThreadLocalMap;
 
 /**
  * @author Stuart Warren 
@@ -19,8 +20,12 @@ public class Field {
     IFieldName section;
     
     public Field() {
-        this.section = null;
-        tlm = new ThreadLocalMap();
+        try {
+            this.section = null;
+            tlm = new ThreadLocalMap();
+        } catch (Exception e) {
+            LogitLog.error("Error thrown initialising ExceptionField", e);
+        }
     }
     
     public static void put(String key, Object o) {

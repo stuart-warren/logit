@@ -5,6 +5,8 @@ package com.stuartwarren.logit.fields;
 
 import java.util.HashMap;
 
+import com.stuartwarren.logit.utils.LogitLog;
+
 /**
  * @author Stuart Warren 
  * @date 20 Oct 2013
@@ -15,7 +17,11 @@ public final class ExceptionField extends Field {
     private static final ExceptionField field = new ExceptionField();
     
     public ExceptionField() {
-        this.section = RF.EXCEPTION;
+        try {
+            this.section = RF.EXCEPTION;
+        } catch (Exception e) {
+            LogitLog.error("Error thrown initialising ExceptionField", e);
+        }
     }
     
     public final static void put(IFieldName key, String s) {

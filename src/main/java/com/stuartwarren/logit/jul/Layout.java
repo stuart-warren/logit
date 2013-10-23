@@ -77,8 +77,8 @@ public class Layout extends Formatter implements IFrameworkLayout {
         Log log = this.layout.getLog();
         log.setTimestamp(event.getMillis());
         Level level = event.getLevel();
-        LogitLog.debug("Level(int): " + level.intValue());
-        LogitLog.debug("DetailThreshold Level(int): " + Level.parse(this.detailThreshold).intValue());
+        //LogitLog.debug("Level(int): " + level.intValue());
+        //LogitLog.debug("DetailThreshold Level(int): " + Level.parse(this.detailThreshold).intValue());
         if (level.intValue() >= (Level.parse(this.detailThreshold).intValue())) {
             getLocationInfo = true;
         }
@@ -98,7 +98,7 @@ public class Layout extends Formatter implements IFrameworkLayout {
         
         // get location details
         locationInformation(event);
-        LogitLog.debug(LocationField.getContext().toString());
+        //LogitLog.debug(LocationField.getContext().toString());
         log.addField(LocationField.getContext());
         getLocationInfo = false;
         LocationField.clear();
