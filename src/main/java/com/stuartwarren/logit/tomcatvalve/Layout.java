@@ -8,9 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.catalina.Session;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 //import org.apache.catalina.valves.AccessLogValve;
+
 
 
 
@@ -91,7 +93,12 @@ public class Layout implements IFrameworkLayout {
         message.append(' ');
         httpFields.put("response_status", status);
         message.append(status);
+        Session session = request.getSessionInternal(false);
+        if (session != null) {
+            httpFields.put("session_id", session.getIdInternal());
+        }
         httpFields.put("response_size", response.getBytesWritten(false));
+        httpFields.put("server_name", request.getServerName());
         httpFields.put("response_duration", time);
         if (status >= 400) {
             level = "ERROR";

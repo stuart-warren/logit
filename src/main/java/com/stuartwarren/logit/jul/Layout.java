@@ -3,6 +3,8 @@
  */
 package com.stuartwarren.logit.jul;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,11 +15,10 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.stuartwarren.logit.fields.ExceptionField;
 import com.stuartwarren.logit.fields.LocationField;
 import com.stuartwarren.logit.fields.ExceptionField.EF;
+import com.stuartwarren.logit.fields.Field.RF;
 import com.stuartwarren.logit.fields.LocationField.LF;
 import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
@@ -93,13 +94,13 @@ public class Layout extends Formatter implements IFrameworkLayout {
         
         // get exception details
         exceptionInformation(event);
-        log.addField(ExceptionField.getContext());
+        log.addField(RF.EXCEPTION, ExceptionField.getContext());
         ExceptionField.clear();
         
         // get location details
         locationInformation(event);
         //LogitLog.debug(LocationField.getContext().toString());
-        log.addField(LocationField.getContext());
+        log.addField(RF.LOCATION, LocationField.getContext());
         getLocationInfo = false;
         LocationField.clear();
         
@@ -130,8 +131,10 @@ public class Layout extends Formatter implements IFrameworkLayout {
                 ExceptionField.put(EF.MESSAGE, throwableInformation.getMessage());
             }
             if (throwableInformation.getStackTrace() != null) {
-                String stackTrace = StringUtils.join(
-                        throwableInformation.getStackTrace(), "\n");
+                String stackTrace;
+                StringWriter sw = new StringWriter();
+                throwableInformation.printStackTrace(new PrintWriter(sw));
+                stackTrace = sw.toString();
                 ExceptionField.put(EF.STACKTRACE, stackTrace);
             }
         }

@@ -235,16 +235,6 @@ public class Log {
             fields.put(key.toString(), val);
         }
     }
-    
-    public void addField(HashMap<String, Object> map) {
-        if (map != null) {
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-                if (entry.getValue() != null) {
-                    fields.put(entry.getKey(), entry.getValue());
-                }
-            }
-        }
-    }
 
     public String toString() {
         StringBuffer strBuf = new StringBuffer();

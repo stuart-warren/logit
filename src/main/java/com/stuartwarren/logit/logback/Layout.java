@@ -14,6 +14,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
 import com.stuartwarren.logit.fields.ExceptionField;
+import com.stuartwarren.logit.fields.Field.RF;
 import com.stuartwarren.logit.fields.LocationField;
 import com.stuartwarren.logit.fields.ExceptionField.EF;
 import com.stuartwarren.logit.fields.LocationField.LF;
@@ -75,12 +76,12 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
         
         // get exception details
         exceptionInformation(event);
-        log.addField(ExceptionField.getContext());
+        log.addField(RF.EXCEPTION, ExceptionField.getContext());
         ExceptionField.clear();
         
         // get location details
         locationInformation(event);
-        log.addField(LocationField.getContext());
+        log.addField(RF.LOCATION, LocationField.getContext());
         getLocationInfo = false;
         LocationField.clear();
         

@@ -13,6 +13,7 @@ import org.apache.log4j.spi.ThrowableInformation;
 
 import com.stuartwarren.logit.fields.ExceptionField;
 import com.stuartwarren.logit.fields.ExceptionField.EF;
+import com.stuartwarren.logit.fields.Field.RF;
 import com.stuartwarren.logit.fields.LocationField;
 import com.stuartwarren.logit.fields.LocationField.LF;
 import com.stuartwarren.logit.layout.IFrameworkLayout;
@@ -77,12 +78,12 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
         
         // get exception details
         exceptionInformation(event);
-        log.addField(ExceptionField.getContext());
+        log.addField(RF.EXCEPTION, ExceptionField.getContext());
         ExceptionField.clear();
         
         // get location details
         locationInformation(event);
-        log.addField(LocationField.getContext());
+        log.addField(RF.LOCATION, LocationField.getContext());
         getLocationInfo = false;
         LocationField.clear();
         
