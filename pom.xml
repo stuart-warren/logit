@@ -4,7 +4,7 @@
   <artifactId>logit</artifactId>
   <packaging>jar</packaging>
   <name>LogIt</name>
-  <version>0.5.0-SNAPSHOT</version>
+  <version>0.5.0</version>
   <description>Java Logger to send logs in json format over zeromq</description>
   <url>stuartwarren.com</url>
 
@@ -51,7 +51,7 @@
               <goals>
                 <goal>shade</goal>
               </goals>
-              <!-- 
+              <!--
               In order to log Tomcat startup using juli, Logit and it's dependencies need to be
               on the class path pretty early. However, if the Tomcat valve class is
               present it tries to load it's (provided by tomcat) dependecies which fail, as they
