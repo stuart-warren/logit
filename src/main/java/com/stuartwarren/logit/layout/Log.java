@@ -237,9 +237,11 @@ public class Log {
     }
     
     public void addField(HashMap<String, Object> map) {
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            if (entry.getValue() != null) {
-                fields.put(entry.getKey(), entry.getValue());
+        if (map != null) {
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                if (entry.getValue() != null) {
+                    fields.put(entry.getKey(), entry.getValue());
+                }
             }
         }
     }
