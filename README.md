@@ -163,7 +163,7 @@ Add a new Valve into your $CATALINA_BASE/conf/server.xml
 
 Produces logs like:
 ```
-{"message":"GET /?testthing=oeuai HTTP/1.1 304","tags":["tag1","tag2","tag3","valve"],"@timestamp":"2013-10-19T15:47:20.210Z","field3":"value3","field2":"value2","level":"INFO","http":{"request_protocol":"HTTP/1.1","response_headers":{},"request_querystring":"testthing=oeuai","remote_user":null,"request_headers":{"Referer":null,"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.69 Safari/537.36"},"response_size":0,"response_status":304,"request_parameters":{"testthing":["oeuai"]},"request_uri":"/","remote_host":"192.168.1.208","request_method":"GET","response_duration":28,"cookies":{}},"hostname":"precise64","field1":"value1","@version":"1","user":"tomcat7"}
+{"message":"GET /etoheubtoe?teethiae=rc,.dudx,.u HTTP/1.1 404","tags":["tag1","tag2","tag3","valve"],"@timestamp":"2013-10-24T20:23:46.222Z","field3":"value3","field2":"value2","level":"ERROR","http":{"request_protocol":"HTTP/1.1","response_headers":{},"request_querystring":"teethiae=rc,.dudx,.u","remote_user":null,"request_headers":{"Referer":null,"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36"},"response_size":985,"response_status":404,"request_parameters":{"teethiae":["rc,.dudx,.u"]},"request_uri":"/etoheubtoe","remote_host":"192.168.1.208","server_name":"192.168.1.67","request_method":"GET","response_duration":27,"cookies":{}},"hostname":"precise64","field1":"value1","@version":"1","user":"tomcat7"}
 ```
 
 Vagrantfile supplied to hopefully make testing easier

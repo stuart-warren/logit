@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.stuartwarren.logit.fields.IFieldName;
+
 /**
  * @author Stuart Warren 
  * @date 6 Oct 2013
@@ -20,15 +22,13 @@ public class Log {
     private long                    timestamp;
     private String                  ndc;
     private Map<String, Object>     mdc;
-    private ExceptionInformation    exceptionInformation;
-    private LocationInformation     locationInformation;
     private String                  level;
     private int                     level_int;
     private String                  loggerName;
     private String                  threadName;
     private String                  message;
     private ArrayList<String>       tags = null;
-    private Map<String,Object>      fields = null;
+    private Map<String,Object>      fields = new HashMap<String,Object>();
     private String                  user = details.getUsername();
     private String                  hostname = details.getHostname();
 
@@ -80,22 +80,6 @@ public class Log {
     }
 
     /**
-     * @return the exceptionInformation
-     */
-    public ExceptionInformation getExceptionInformation() {
-        return exceptionInformation;
-    }
-
-    /**
-     * @param exceptionInformation
-     *            the exceptionInformation to set
-     */
-    public void setExceptionInformation(
-            ExceptionInformation exceptionInformation) {
-        this.exceptionInformation = exceptionInformation;
-    }
-
-    /**
      * @return the message
      */
     public String getMessage() {
@@ -110,22 +94,6 @@ public class Log {
         if (null != message) {
             this.message = message;
         }
-    }
-
-    /**
-     * @return the locationInformation
-     */
-    public LocationInformation getLocationInformation() {
-        return locationInformation;
-    }
-
-    /**
-     * @param locationInformation
-     *            the locationInformation to set
-     */
-    public void setLocationInformation(
-            LocationInformation locationInformation) {
-        this.locationInformation = locationInformation;
     }
 
     /**
@@ -245,25 +213,26 @@ public class Log {
     public void setFields(String fields) {
         // Split string on : and ,
         //eg field1:value,field2:value
-        if (null != fields) {
+        if (null == fields) {
             this.fields = new LinkedHashMap<String, Object>();
-            for(String keyValue : fields.split("\\s*,\\s*")) {
-                String[] pairs = keyValue.split("\\s*:\\s*", 2);
-                this.fields.put(pairs[0], pairs.length == 1 ? "" : pairs[1]);
-            }
         }
+        for(String keyValue : fields.split("\\s*,\\s*")) {
+            String[] pairs = keyValue.split("\\s*:\\s*", 2);
+            this.fields.put(pairs[0], pairs.length == 1 ? "" : pairs[1]);
+        }
+
     }
     
     @SuppressWarnings("unchecked")
-    public void addField(String key, Object val) {
+    public void addField(IFieldName key, Object val) {
         if (val instanceof HashMap) {
             if (!((HashMap<String, Object>) val).isEmpty()) {
                 if (null != val) {
-                    fields.put(key, val);
+                    fields.put(key.toString(), val);
                 }
             }
         } else if (null != val) {
-            fields.put(key, val);
+            fields.put(key.toString(), val);
         }
     }
 
@@ -275,11 +244,7 @@ public class Log {
         strBuf.append(' ');
         strBuf.append(getMdc());
         strBuf.append(' ');
-        strBuf.append(getExceptionInformation());
-        strBuf.append(' ');
         strBuf.append(getMessage());
-        strBuf.append(' ');
-        strBuf.append(getLocationInformation());
         strBuf.append(' ');
         strBuf.append(getLevel());
         strBuf.append(' ');

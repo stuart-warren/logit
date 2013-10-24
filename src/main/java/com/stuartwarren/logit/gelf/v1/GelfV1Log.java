@@ -71,31 +71,18 @@ public final class GelfV1Log extends Log {
     public String toString() {
         addEventData("facility", this.getLoggerName(), true);
         addEventData("level", this.getLevel_int(), true);
-        try {
-            addEventData("full_message", this.getExceptionInformation().toString(), true);
-        } catch (NullPointerException e) {}
         addEventData("host", this.getHostname(), true);
         addEventData("user", this.getUsername());
         addEventData("ndc", this.getNdc());
         addEventData("tags", this.getTags());
         addEventData("thread", this.getThreadName());
-        try {
-            addEventData("location", this.getLocationInformation().toString());
-            addEventData("file", this.getLocationInformation().getFileName(), true);
-            addEventData("line", this.getLocationInformation().getLineNumber(), true);
-        } catch (NullPointerException e) {}
         Map<String, Object> fields = this.getFields();
         if (null != fields) {
             for (Map.Entry<String, Object> entry : fields.entrySet()) {
                 addEventData(entry.getKey(), entry.getValue());
             }
         }
-        try {
-            Map<String, Object> mdc = this.getMdc();
-            for (Map.Entry<String, Object> entry : mdc.entrySet()) {
-                addEventData(entry.getKey(), entry.getValue());
-            }
-        } catch (NullPointerException e) {}
+        addEventData("mdc", this.getMdc());
         addEventData("version", this.getVersion(), true);
         addEventData("timestamp", String.valueOf(this.getTimestamp()), true);
         addEventData("short_message", this.getMessage(), true);

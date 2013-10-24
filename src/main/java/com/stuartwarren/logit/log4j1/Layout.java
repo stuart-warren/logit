@@ -11,10 +11,13 @@ import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
-import com.stuartwarren.logit.layout.ExceptionInformation;
+import com.stuartwarren.logit.fields.ExceptionField;
+import com.stuartwarren.logit.fields.ExceptionField.EF;
+import com.stuartwarren.logit.fields.Field.RF;
+import com.stuartwarren.logit.fields.LocationField;
+import com.stuartwarren.logit.fields.LocationField.LF;
 import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
-import com.stuartwarren.logit.layout.LocationInformation;
 import com.stuartwarren.logit.layout.Log;
 import com.stuartwarren.logit.utils.LogitLog;
 
@@ -26,18 +29,16 @@ import com.stuartwarren.logit.utils.LogitLog;
 public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout {
     
     private String layoutType = "log";
+    private String detailThreshold = Level.ERROR.toString();
+    private String fields;
+    private String tags;
+    
     private Log log;
     private LayoutFactory layoutFactory;
     private LayoutFactory layout;
     
-    private String detailThreshold = Level.ERROR.toString();
     private boolean getLocationInfo = false;
     private LocationInfo info;
-    private LocationInformation locationInfo;
-    private ExceptionInformation exceptionInfo;
-    private String fields;
-    private String tags;
-    
     
     public Layout() {
         LogitLog.debug("Log4j1 layout in use.");
@@ -61,6 +62,7 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
         return stringLog;
     }
     
+    @SuppressWarnings("unchecked")
     private Log doFormat(LoggingEvent event) {
         Log log = this.layout.getLog();
         log.setTimestamp(event.getTimeStamp());
@@ -70,13 +72,21 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
         }
         log.setLevel(level.toString());
         log.setLevel_int(level.toInt());
-        @SuppressWarnings("unchecked")
         Map<String, Object> properties = event.getProperties();
         log.setMdc(properties);
         log.setNdc(event.getNDC());
-        log.setExceptionInformation(exceptionInformation(event));
-        log.setLocationInformation(locationInformation(event));
+        
+        // get exception details
+        exceptionInformation(event);
+        log.addField(RF.EXCEPTION, ExceptionField.getContext());
+        ExceptionField.clear();
+        
+        // get location details
+        locationInformation(event);
+        log.addField(RF.LOCATION, LocationField.getContext());
         getLocationInfo = false;
+        LocationField.clear();
+        
         log.setLoggerName(event.getLoggerName());
         log.setThreadName(event.getThreadName());
         log.setMessage(event.getRenderedMessage());
@@ -92,28 +102,25 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
      * @param loggingEvent
      * @return
      */
-    protected ExceptionInformation exceptionInformation(
+    protected void exceptionInformation(
             LoggingEvent loggingEvent) {
-        exceptionInfo = null;
         if (loggingEvent.getThrowableInformation() != null) {
-            exceptionInfo = new ExceptionInformation();
             final ThrowableInformation throwableInformation = loggingEvent
                     .getThrowableInformation();
             if (throwableInformation.getThrowable().getClass()
                     .getCanonicalName() != null) {
-                exceptionInfo.setExceptionClass(throwableInformation.getThrowable().getClass()
+                ExceptionField.put(EF.CLASS, throwableInformation.getThrowable().getClass()
                         .getCanonicalName());
             }
             if (throwableInformation.getThrowable().getMessage() != null) {
-                exceptionInfo.setExceptionMessage(throwableInformation.getThrowable().getMessage());
+                ExceptionField.put(EF.MESSAGE, throwableInformation.getThrowable().getMessage());
             }
             if (throwableInformation.getThrowableStrRep() != null) {
                 String stackTrace = StringUtils.join(
                         throwableInformation.getThrowableStrRep(), "\n");
-                exceptionInfo.setStackTrace(stackTrace);
+                ExceptionField.put(EF.STACKTRACE, stackTrace);
             }
         }
-        return exceptionInfo;
     }
 
     /**
@@ -122,18 +129,15 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
      * @param loggingEvent
      * @return
      */
-    protected LocationInformation locationInformation(
+    protected void locationInformation(
             LoggingEvent loggingEvent) {
-        locationInfo = null;
         if (getLocationInfo) {
-            locationInfo = new LocationInformation();
             info = loggingEvent.getLocationInformation();
-            locationInfo.setClassName(info.getClassName());
-            locationInfo.setMethodName(info.getMethodName());
-            locationInfo.setFileName(info.getFileName());
-            locationInfo.setLineNumber(info.getLineNumber());
+            LocationField.put(LF.CLASS, info.getClassName());
+            LocationField.put(LF.METHOD, info.getMethodName());
+            LocationField.put(LF.FILE, info.getFileName());
+            LocationField.put(LF.LINE, info.getLineNumber());
         }
-        return locationInfo;
     }
 
     /* (non-Javadoc)
@@ -185,6 +189,7 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
      * @param fields the fields to set
      */
     public void setFields(String fields) {
+        LogitLog.debug("setFields: " + fields);
         this.fields = fields;
     }
 
