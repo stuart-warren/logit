@@ -6,7 +6,7 @@ logit
 Library to extend Log4J1.2 (and other logging frameworks) by providing a json layout (for logstash) and a zeromq appender (jeromq)
 This is my first real attack at a java project, so you have been warned!
 
-v0.5.0
+v0.5.1
 
 Log4j1
 ------
@@ -47,17 +47,17 @@ log4j.appender.A2.layout.Fields=field1:value1,field2:value2,field3:value3
 In your code, use log4j as normal (add objects to the MDC)
 ```
 Logger logger = Logger.getLogger(YourClass.class.getName());
-Map<String,Object> metricMap = new HashMap<String,Object>();
-metricMap.put("com.website.www.500Errors", 1);
-MDC.put("metrics", metricMap);
-MDC.put("tags", "other");
+Map<String,Object> myMap = new HashMap<String,Object>();
+myMap.put("field_name_here", "detail goes here");
+MDC.put("stuff", myMap);
+MDC.put("test", "other");
 logger.debug("Hello World!");
 MDC.clear();
 System.exit(0);
 ```
 and logs should come out in logstash json_event v1 format
 ```
-{"message":"Hello World!","tags":"other","@timestamp":"2013-10-06T21:22:09.868Z","level":"DEBUG","metrics":{"com.website.www.500Errors":1},"thread":"main","logger":"com.stuartwarren.test_logit.log4j1.LogIt","@version":"1"}
+{"message":"Hello World!","test":"other","@timestamp":"2013-10-06T21:22:09.868Z","level":"DEBUG","mdc":{"field_name_here":"detail goes here"},"thread":"main","logger":"com.stuartwarren.test_logit.log4j1.LogIt","@version":"1"}
 ```
 Note: @timestamp is changed to UTC from whatever timezone you are in.
 
@@ -94,7 +94,7 @@ In your code use logback as normal
 ```
 Logger logger = LoggerFactory.getLogger(Logit.class);
 # Cannot put objects in slf4j MDC...
-MDC.put("tags", "other");
+MDC.put("test", "other");
 logger.debug("Hello World!");
 MDC.clear();
 System.exit(0);
@@ -163,7 +163,7 @@ Add a new Valve into your $CATALINA_BASE/conf/server.xml
 
 Produces logs like:
 ```
-{"message":"GET /etoheubtoe?teethiae=rc,.dudx,.u HTTP/1.1 404","tags":["tag1","tag2","tag3","valve"],"@timestamp":"2013-10-24T20:23:46.222Z","field3":"value3","field2":"value2","level":"ERROR","http":{"request_protocol":"HTTP/1.1","response_headers":{},"request_querystring":"teethiae=rc,.dudx,.u","remote_user":null,"request_headers":{"Referer":null,"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36"},"response_size":985,"response_status":404,"request_parameters":{"teethiae":["rc,.dudx,.u"]},"request_uri":"/etoheubtoe","remote_host":"192.168.1.208","server_name":"192.168.1.67","request_method":"GET","response_duration":27,"cookies":{}},"hostname":"precise64","field1":"value1","@version":"1","user":"tomcat7"}
+{"message":"GET /interestingpage?param1=value1 HTTP/1.1 404","tags":["tag1","tag2","tag3","valve"],"@timestamp":"2013-10-24T20:23:46.222Z","field3":"value3","field2":"value2","level":"ERROR","http":{"request_protocol":"HTTP/1.1","response_headers":{},"request_querystring":"param1=value1","remote_user":null,"request_headers":{"Referer":null,"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36"},"response_size":985,"response_status":404,"request_parameters":{"param1":["value1"]},"request_uri":"/interestingpage","remote_host":"192.168.1.208","server_name":"192.168.1.67","request_method":"GET","response_duration":27,"cookies":{}},"hostname":"precise64","field1":"value1","@version":"1","user":"tomcat7"}
 ```
 
 Vagrantfile supplied to hopefully make testing easier
