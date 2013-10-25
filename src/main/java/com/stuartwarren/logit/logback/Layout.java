@@ -76,12 +76,12 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
         
         // get exception details
         exceptionInformation(event);
-        log.addField(RF.EXCEPTION, ExceptionField.getContext());
+        log.addField(RF.EXCEPTION, ExceptionField.get(RF.EXCEPTION));
         ExceptionField.clear();
         
         // get location details
         locationInformation(event);
-        log.addField(RF.LOCATION, LocationField.getContext());
+        log.addField(RF.LOCATION, LocationField.get(RF.LOCATION));
         getLocationInfo = false;
         LocationField.clear();
         

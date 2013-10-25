@@ -5,6 +5,7 @@ package com.stuartwarren.logit.jul;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -94,13 +95,13 @@ public class Layout extends Formatter implements IFrameworkLayout {
         
         // get exception details
         exceptionInformation(event);
-        log.addField(RF.EXCEPTION, ExceptionField.getContext());
+        log.addField(RF.EXCEPTION, ExceptionField.get(RF.EXCEPTION));
         ExceptionField.clear();
         
         // get location details
         locationInformation(event);
         //LogitLog.debug(LocationField.getContext().toString());
-        log.addField(RF.LOCATION, LocationField.getContext());
+        log.addField(RF.LOCATION, LocationField.get(RF.LOCATION));
         getLocationInfo = false;
         LocationField.clear();
         
@@ -130,12 +131,11 @@ public class Layout extends Formatter implements IFrameworkLayout {
             if (throwableInformation.getMessage() != null) {
                 ExceptionField.put(EF.MESSAGE, throwableInformation.getMessage());
             }
-            if (throwableInformation.getStackTrace() != null) {
-                String stackTrace;
-                StringWriter sw = new StringWriter();
-                throwableInformation.printStackTrace(new PrintWriter(sw));
-                stackTrace = sw.toString();
-                ExceptionField.put(EF.STACKTRACE, stackTrace);
+            if (throwableInformation.getStackTrace() != null) {              
+                Writer writer = new StringWriter();
+                PrintWriter printWriter = new PrintWriter(writer);
+                throwableInformation.printStackTrace(printWriter);
+                ExceptionField.put(EF.STACKTRACE, writer.toString());
             }
         }
     }

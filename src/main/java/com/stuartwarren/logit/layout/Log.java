@@ -28,7 +28,7 @@ public class Log {
     private String                  threadName;
     private String                  message;
     private ArrayList<String>       tags = null;
-    private Map<String,Object>      fields = new HashMap<String,Object>();
+    private Map<String,Object>      fields = null;
     private String                  user = details.getUsername();
     private String                  hostname = details.getHostname();
 
@@ -225,10 +225,13 @@ public class Log {
     
     @SuppressWarnings("unchecked")
     public void addField(IFieldName key, Object val) {
+    	if (null == fields) {
+            this.fields = new LinkedHashMap<String, Object>();
+        }
         if (val instanceof HashMap) {
             if (!((HashMap<String, Object>) val).isEmpty()) {
                 if (null != val) {
-                    fields.put(key.toString(), val);
+                    fields.put(key.toString(),(HashMap<String, Object>) val);
                 }
             }
         } else if (null != val) {
