@@ -5,6 +5,8 @@ package com.stuartwarren.logit.zmq;
 
 import org.jeromq.ZMQ;
 
+import zmq.ZError.IOException;
+
 import com.stuartwarren.logit.appender.IAppender;
 import com.stuartwarren.logit.utils.LogitLog;
 
@@ -97,7 +99,20 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     public void appendString(String log) {
         log = log.substring(0, log.length() - 1);
         LogitLog.debug("Sending log: [" + log + "].");
-        socket.send(log, ZMQ.NOBLOCK);
+        try {
+            socket.send(log, ZMQ.NOBLOCK);
+            // Has occasionally been known to throw a java.nio.channels.ClosedByInterruptException
+        } catch (IOException e) {
+            // Try again after sleeping for a second
+            try {
+                Thread.sleep(1000);
+                socket.send(log, ZMQ.NOBLOCK);
+            } catch (InterruptedException i) {
+                // do nothing
+            } catch (IOException e2) {
+                LogitLog.error("Could not send following log on the second attempt: [" + log + "].", e2);
+            }
+        }
     }
 
     /* (non-Javadoc)
