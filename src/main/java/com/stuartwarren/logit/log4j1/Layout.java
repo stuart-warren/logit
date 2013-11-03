@@ -55,6 +55,7 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
     /* (non-Javadoc)
      * @see org.apache.log4j.Layout#format(org.apache.log4j.spi.LoggingEvent)
      */
+    // TODO: Multithreadme
     @Override
     public String format(LoggingEvent event) {
         this.log = doFormat(event);

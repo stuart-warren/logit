@@ -62,6 +62,7 @@ public final class LogstashV1Log extends Log {
         this.version = version;
     }
 
+    // TODO: Make me accept enum keys only
     @SuppressWarnings("unchecked")
     private void addEventData(String key, Object val) {
         if (val instanceof HashMap) {
