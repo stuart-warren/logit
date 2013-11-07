@@ -129,7 +129,7 @@ public class Field {
         }
     }
     
-    public static enum RF implements IFieldName {
+    public static enum ROOT implements IFieldName {
         /**
          * MESSAGE - message
          * Main log message.
@@ -189,7 +189,7 @@ public class Field {
         
         private String text;
         
-        RF(String text) {
+        ROOT(String text) {
             this.text = text;
         }
         

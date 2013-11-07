@@ -4,14 +4,21 @@
 package com.stuartwarren.logit.logstash.v1;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.stuartwarren.logit.fields.Field.ROOT;
+import com.stuartwarren.logit.fields.IFieldName;
 import com.stuartwarren.logit.layout.Log;
+import com.stuartwarren.logit.logstash.LogstashField.LOGSTASH;
 import com.stuartwarren.logit.logstash.LogstashTimestamp;
 
 /**
@@ -64,35 +71,36 @@ public final class LogstashV1Log extends Log {
 
     // TODO: Make me accept enum keys only
     @SuppressWarnings("unchecked")
-    private void addEventData(String key, Object val) {
+    private void addEventData(IFieldName key, Object val) {
         if (val instanceof HashMap) {
             if (!((HashMap<String, Object>) val).isEmpty()) {
-                jacksonOutput.put(key, val);
+                jacksonOutput.put(key.toString(), val);
             }
         } else if (null != val) {
-            jacksonOutput.put(key, val);
+            jacksonOutput.put(key.toString(), val);
         }
     }
 
+    // TODO: Maybe try JsonNodeFactory
     public String toString() {
         String log;
-        addEventData("ndc", this.getNdc());
-        addEventData("tags", this.getTags());
-        addEventData("thread", this.getThreadName());
-        addEventData("logger", this.getLoggerName());
-        addEventData("level", this.getLevel());
-        addEventData("user", this.getUsername());
-        addEventData("hostname", this.getHostname());
+        addEventData(ROOT.NDC, this.getNdc());
+        addEventData(ROOT.TAGS, this.getTags());
+        addEventData(ROOT.THREAD, this.getThreadName());
+        addEventData(ROOT.LOGGER, this.getLoggerName());
+        addEventData(ROOT.LEVEL, this.getLevel());
+        addEventData(ROOT.USER, this.getUsername());
+        addEventData(ROOT.HOSTNAME, this.getHostname());
         Map<String, Object> fields = this.getFields();
         if (null != fields) {
             for (Map.Entry<String, Object> entry : fields.entrySet()) {
                 addEventData(entry.getKey(), entry.getValue());
             }
         }
-        addEventData("mdc", this.getMdc());
-        addEventData("@version", this.getVersion());
-        addEventData("@timestamp", new LogstashTimestamp(this.getTimestamp()).toString());
-        addEventData("message", this.getMessage());
+        addEventData(ROOT.MDC, this.getMdc());
+        addEventData(LOGSTASH.VERSION, this.getVersion());
+        addEventData(LOGSTASH.TIMESTAMP, new LogstashTimestamp(this.getTimestamp()).toString());
+        addEventData(ROOT.MESSAGE, this.getMessage());
         try {
             log = mapper.writeValueAsString(jacksonOutput);
         } catch (JsonGenerationException e) {

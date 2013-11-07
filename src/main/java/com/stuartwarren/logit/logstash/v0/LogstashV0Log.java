@@ -10,7 +10,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.stuartwarren.logit.fields.Field.RF;
+import com.stuartwarren.logit.fields.Field.ROOT;
 import com.stuartwarren.logit.layout.Log;
 import com.stuartwarren.logit.logstash.LogstashTimestamp;
 
@@ -79,14 +79,14 @@ public final class LogstashV0Log extends Log {
         String log;
         
         addEventData("@tags", this.getTags());
-        addField(RF.TAGS, this.getThreadName());
-        addField(RF.LOGGER, this.getLoggerName());
-        addField(RF.LEVEL, this.getLevel());
-        addField(RF.USER, this.getUsername());
-        addField(RF.HOSTNAME, this.getHostname());
+        addField(ROOT.TAGS, this.getThreadName());
+        addField(ROOT.LOGGER, this.getLoggerName());
+        addField(ROOT.LEVEL, this.getLevel());
+        addField(ROOT.USER, this.getUsername());
+        addField(ROOT.HOSTNAME, this.getHostname());
         addEventData("@fields", this.getFields());
-        addField(RF.MDC, this.getMdc());
-        addField(RF.NDC, this.getNdc());
+        addField(ROOT.MDC, this.getMdc());
+        addField(ROOT.NDC, this.getNdc());
         addEventData("@version", this.getVersion());
         addEventData("@timestamp", new LogstashTimestamp(this.getTimestamp()).toString());
         addEventData("@message", this.getMessage());

@@ -15,7 +15,7 @@ public final class LocationField extends Field {
 private static final LocationField field = new LocationField();
     
     public LocationField() {
-        this.section = RF.LOCATION;
+        this.section = ROOT.LOCATION;
     }
     
     public final static void put(IFieldName key, String s) {

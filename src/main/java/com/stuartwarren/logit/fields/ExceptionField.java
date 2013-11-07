@@ -18,7 +18,7 @@ public final class ExceptionField extends Field {
     
     public ExceptionField() {
         try {
-            this.section = RF.EXCEPTION;
+            this.section = ROOT.EXCEPTION;
         } catch (Exception e) {
             LogitLog.error("Error thrown initialising ExceptionField", e);
         }
