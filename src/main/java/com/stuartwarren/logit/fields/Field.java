@@ -17,7 +17,7 @@ public class Field {
     
     private static final Field field = new Field();
     private Object tlm;
-    IFieldName section;
+    public IFieldName section;
     
     public Field() {
         try {
