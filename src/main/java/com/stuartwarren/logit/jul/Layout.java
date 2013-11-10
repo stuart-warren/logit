@@ -8,9 +8,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -33,24 +33,23 @@ import com.stuartwarren.logit.utils.LogitLog;
  */
 public class Layout extends Formatter implements IFrameworkLayout {
     
-    final String prefix = Layout.class.getName();
-    private LogManager manager = LogManager.getLogManager();
+    private transient final String prefix = Layout.class.getName();
+    private transient final LogManager manager = LogManager.getLogManager();
     
     private String layoutType = "log";
     private String detailThreshold = Level.WARNING.toString();
     private String fields;
     private String tags;
     
-    private Log log;
-    private LayoutFactory layoutFactory;
-    private LayoutFactory layout;
+    private transient final LayoutFactory layoutFactory = new LayoutFactory();
+    private transient final LayoutFactory layout;
     
-    private boolean getLocationInfo = false;
+    private transient boolean getLocationInfo = false;
 
     
     public Layout() {
+        super();
         LogitLog.debug("Jul layout in use.");
-        layoutFactory = new LayoutFactory();
         configure();
         this.layout = layoutFactory.createLayout(this.layoutType);
     }
@@ -69,26 +68,25 @@ public class Layout extends Formatter implements IFrameworkLayout {
      * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
      */
     @Override
-    public String format(LogRecord record) {
-        this.log = doFormat(record);
-        String stringLog = this.layout.format(this.log);
-        return stringLog;
+    public String format(final LogRecord record) {
+        final Log log = doFormat(record);
+        return this.layout.format(log);
     }
     
-    private Log doFormat(LogRecord event) {
-        Log log = this.layout.getLog();
+    private Log doFormat(final LogRecord event) {
+        final Log log = this.layout.getLog();
         log.setTimestamp(event.getMillis());
-        Level level = event.getLevel();
+        final Level level = event.getLevel();
         //LogitLog.debug("Level(int): " + level.intValue());
         //LogitLog.debug("DetailThreshold Level(int): " + Level.parse(this.detailThreshold).intValue());
         if (level.intValue() >= (Level.parse(this.detailThreshold).intValue())) {
             getLocationInfo = true;
         }
         log.setLevel(level.toString());
-        log.setLevel_int(level.intValue());
-        Map<String, Object> properties = new HashMap<String,Object>();
+        log.setLevelInt(level.intValue());
+        final Map<String, Object> properties = new ConcurrentHashMap<String,Object>();
         try {
-            List<Object> propertiesList = new ArrayList<Object>(Arrays.asList(event.getParameters()));
+            final List<Object> propertiesList = new ArrayList<Object>(Arrays.asList(event.getParameters()));
             properties.put("properties", propertiesList);
             log.setMdc(properties);
         } catch (NullPointerException e) {}
@@ -121,7 +119,7 @@ public class Layout extends Formatter implements IFrameworkLayout {
      * @return
      */
     protected void exceptionInformation(
-            LogRecord loggingEvent) {
+            final LogRecord loggingEvent) {
         if (loggingEvent.getThrown() != null) {
             final Throwable throwableInformation = loggingEvent
                     .getThrown();
@@ -132,8 +130,8 @@ public class Layout extends Formatter implements IFrameworkLayout {
                 ExceptionField.put(EF.MESSAGE, throwableInformation.getMessage());
             }
             if (throwableInformation.getStackTrace() != null) {              
-                Writer writer = new StringWriter();
-                PrintWriter printWriter = new PrintWriter(writer);
+                final Writer writer = new StringWriter();
+                final PrintWriter printWriter = new PrintWriter(writer);
                 throwableInformation.printStackTrace(printWriter);
                 ExceptionField.put(EF.STACKTRACE, writer.toString());
             }
@@ -147,7 +145,7 @@ public class Layout extends Formatter implements IFrameworkLayout {
      * @return
      */
     protected void locationInformation(
-            LogRecord loggingEvent) {
+            final LogRecord loggingEvent) {
         if (getLocationInfo) {
             LocationField.put(LF.CLASS, loggingEvent.getSourceClassName());
             LocationField.put(LF.METHOD, loggingEvent.getSourceMethodName());
@@ -164,7 +162,7 @@ public class Layout extends Formatter implements IFrameworkLayout {
     /**
      * @param layoutType the layoutType to set
      */
-    public void setLayoutType(String layoutType) {
+    public void setLayoutType(final String layoutType) {
         this.layoutType = layoutType;
     }
 
@@ -178,7 +176,7 @@ public class Layout extends Formatter implements IFrameworkLayout {
     /**
      * @param detailThreshold the detailThreshold to set
      */
-    public void setDetailThreshold(String detailThreshold) {
+    public void setDetailThreshold(final String detailThreshold) {
         this.detailThreshold = detailThreshold;
     }
 
@@ -192,7 +190,7 @@ public class Layout extends Formatter implements IFrameworkLayout {
     /**
      * @param fields the fields to set
      */
-    public void setFields(String fields) {
+    public void setFields(final String fields) {
         this.fields = fields;
     }
 
@@ -206,7 +204,7 @@ public class Layout extends Formatter implements IFrameworkLayout {
     /**
      * @param tags the tags to set
      */
-    public void setTags(String tags) {
+    public void setTags(final String tags) {
         this.tags = tags;
     }
 

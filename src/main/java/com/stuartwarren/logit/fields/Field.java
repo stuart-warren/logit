@@ -4,8 +4,8 @@
 package com.stuartwarren.logit.fields;
 
 import java.util.HashMap;
+import java.util.Map;
 
-import com.stuartwarren.logit.utils.LogitLog;
 import com.stuartwarren.logit.utils.ThreadLocalMap;
 
 /**
@@ -15,49 +15,45 @@ import com.stuartwarren.logit.utils.ThreadLocalMap;
  */
 public class Field {
     
-    private static final Field field = new Field();
-    private Object tlm;
-    public IFieldName section;
+
+    private static final Field FIELD = new Field();
+    private transient Object tlm;
+    private IFieldName section;
     
     public Field() {
-        try {
-            this.section = null;
-            tlm = new ThreadLocalMap();
-        } catch (Exception e) {
-            LogitLog.error("Error thrown initialising ExceptionField", e);
+        tlm = new ThreadLocalMap();
+    }
+    
+    public static void put(final String key, final Object o) {
+        if (FIELD != null) {
+            FIELD.put0(key, o);
         }
     }
     
-    public static void put(String key, Object o) {
-        if (field != null) {
-            field.put0(key, o);
-        }
-    }
-    
-    public static Object get(String key) {
-        if (field != null) {
-            return field.get0(key);
+    public static Object get(final String key) {
+        if (FIELD != null) {
+            return FIELD.get0(key);
         }
         return null;
     }
     
-    public static void remove(String key) {
-        if (field != null) {
-            field.remove0(key);
+    public static void remove(final String key) {
+        if (FIELD != null) {
+            FIELD.remove0(key);
         }
     }
     
-    public static HashMap<String, Object> getContext() {
-        if (field != null) {
-            return field.getContext0();
-        } else {
+    public static Map<String, Object> getContext() {
+        if (FIELD == null) {
             return null;
+        } else {
+            return FIELD.getContext0();
         }
     }
     
     public static void clear() {
-        if (field != null) {
-            field.clear0();
+        if (FIELD != null) {
+            FIELD.clear0();
         }
     }
     
@@ -65,12 +61,19 @@ public class Field {
         return this.section.toString();
     }
     
+    /**
+     * @param section the section to set
+     */
+    public void setSection(final IFieldName section) {
+        this.section = section;
+    }
+    
     @SuppressWarnings("unchecked")
-    protected void put0(String key, Object o) {
+    protected void put0(final String key, final Object o) {
         if (tlm == null) {
             return;
         } else {
-            HashMap<String, Object> ht = (HashMap<String, Object>) ((ThreadLocalMap) tlm).get();
+            Map<String, Object> ht = (HashMap<String, Object>) ((ThreadLocalMap) tlm).get();
             if (ht == null) {
                 ht = new HashMap<String, Object>();
                 ((ThreadLocalMap) tlm).set(ht);
@@ -98,9 +101,9 @@ public class Field {
         }
     }
 
-    protected void remove0(String key) {
+    protected void remove0(final String key) {
         if (tlm != null) {
-            HashMap<?, ?> ht = (HashMap<?, ?>) ((ThreadLocalMap) tlm).get();
+            final HashMap<?, ?> ht = (HashMap<?, ?>) ((ThreadLocalMap) tlm).get();
             if (ht != null) {
                 ht.remove(key);
                 // clean up if this was the last key
@@ -112,7 +115,7 @@ public class Field {
     }
 
     @SuppressWarnings("unchecked")
-    protected HashMap<String, Object> getContext0() {
+    protected Map<String, Object> getContext0() {
         if (tlm == null) {
             return null;
         } else {
@@ -122,7 +125,7 @@ public class Field {
 
     protected void clear0() {
         if (tlm != null) {
-            HashMap<?, ?> ht = (HashMap<?, ?>) ((ThreadLocalMap) tlm).get();
+            final Map<?, ?> ht = (HashMap<?, ?>) ((ThreadLocalMap) tlm).get();
             if (ht != null) {
                 ht.clear();
             }
@@ -184,12 +187,17 @@ public class Field {
          * NDC - ndc
          * Nested Diagnostic Context
          */
-        NDC("ndc")
+        NDC("ndc"),
+        /**
+         * CONFIG - config
+         * Fields added in configuration file
+         */
+        CONFIG("config")
         ;
         
         private String text;
         
-        ROOT(String text) {
+        ROOT(final String text) {
             this.text = text;
         }
         

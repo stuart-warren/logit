@@ -18,22 +18,23 @@ import com.stuartwarren.logit.utils.LogitLog;
  */
 public class ZmqOutputStream extends OutputStream {
 
-    private final ZMQ.Socket socket;
+    private transient final ZMQ.Socket socket;
     
-    public ZmqOutputStream(ZMQ.Socket socket) {
+    public ZmqOutputStream(final ZMQ.Socket socket) {
+        super();
         LogitLog.debug("Using output stream.");
         this.socket = socket;
     }
     
     @Override
-    public void write(int i) throws IOException {
-        ByteBuffer b = ByteBuffer.allocate(4);
+    public void write(final int i) throws IOException {
+        final ByteBuffer b = ByteBuffer.allocate(4);
         b.putInt(i);
         socket.send(b.array(), 0);
     }
 
     @Override
-    public void write(byte[] bytes) throws IOException {
+    public void write(final byte[] bytes) throws IOException {
         if (LogitLog.isDebugEnabled()) {
             LogitLog.debug("Sending log: [" + new String(bytes) + "].");
         }

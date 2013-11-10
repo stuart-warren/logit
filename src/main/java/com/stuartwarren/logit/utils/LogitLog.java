@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package com.stuartwarren.logit.utils;
 
 /**
@@ -9,8 +7,6 @@ package com.stuartwarren.logit.utils;
  * 
  * Blatant rip off of Log4js LogLog
  *
- */
-/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -25,9 +21,7 @@ package com.stuartwarren.logit.utils;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
 
-/**
    This class used to output log statements from within the log4j package.
 
    <p>Logit components cannot make logit logging calls. However, it is
@@ -43,7 +37,7 @@ package com.stuartwarren.logit.utils;
    @since 0.8.2
    @author Ceki G&uuml;lc&uuml;
 */
-public class LogitLog {
+public final class LogitLog {
 
   /**
      Defining this value makes logit print logit-internal debug
@@ -51,25 +45,30 @@ public class LogitLog {
      
     <p> The value of this string is <b>logit.debug</b>.
     
-    <p>Note that the search for all option names is case sensitive.  */
+    <p>Note that the search for all option names is case sensitive.  
+   */
   public static final String DEBUG_KEY="logit.debug";
-  protected static boolean debugEnabled = false;  
+  private static boolean debugEnabled;  
 
   /**
      In quietMode not even errors generate any output.
    */
-  private static boolean quietMode = false;
+  private static boolean quietMode;
 
   private static final String PREFIX = "logit: ";
   private static final String ERR_PREFIX = "logit:ERROR ";
   private static final String WARN_PREFIX = "logit:WARN ";
 
   static {
-    String key = OptionConverter.getSystemProperty(DEBUG_KEY, null);
+    final String key = OptionConverter.getSystemProperty(DEBUG_KEY, null);
 
     if(key != null) { 
       debugEnabled = OptionConverter.toBoolean(key, true);
     }
+  }
+  
+  private LogitLog() {
+      
   }
 
   /**
@@ -77,7 +76,7 @@ public class LogitLog {
    */
   static
   public
-  void setInternalDebugging(boolean enabled) {
+  void setInternalDebugging(final boolean enabled) {
     debugEnabled = enabled;
   }
   
@@ -93,7 +92,7 @@ public class LogitLog {
   */
   public
   static
-  void debug(String msg) {
+  void debug(final String msg) {
     if(debugEnabled && !quietMode) {
       System.out.println(PREFIX+msg);
     }
@@ -105,7 +104,7 @@ public class LogitLog {
   */
   public
   static
-  void debug(String msg, Throwable t) {
+  void debug(final String msg, final Throwable t) {
     if(debugEnabled && !quietMode) {
       System.out.println(PREFIX+msg);
       if(t != null) {
@@ -122,9 +121,10 @@ public class LogitLog {
   */
   public
   static
-  void error(String msg) {
-    if(quietMode)
+  void error(final String msg) {
+    if(quietMode){
       return;
+    }
     System.err.println(ERR_PREFIX+msg);
   }  
 
@@ -135,10 +135,10 @@ public class LogitLog {
   */
   public
   static
-  void error(String msg, Throwable t) {
-    if(quietMode)
+  void error(final String msg, final Throwable t) {
+    if(quietMode) {
       return;
-
+    }
     System.err.println(ERR_PREFIX+msg);
     if(t != null) {
       t.printStackTrace();
@@ -153,7 +153,7 @@ public class LogitLog {
   */
   public
   static
-  void setQuietMode(boolean quietMode) {
+  void setQuietMode(final boolean quietMode) {
     LogitLog.quietMode = quietMode;
   }
 
@@ -163,10 +163,10 @@ public class LogitLog {
      Output goes to <code>System.err</code>.  */
   public
   static
-  void warn(String msg) {
-    if(quietMode)
+  void warn(final String msg) {
+    if(quietMode) {
       return;
-
+    }
     System.err.println(WARN_PREFIX+msg);
   }  
 
@@ -176,10 +176,10 @@ public class LogitLog {
      <code>System.err</code>.  */
   public
   static
-  void warn(String msg, Throwable t) {
-    if(quietMode)
+  void warn(final String msg, final Throwable t) {
+    if(quietMode) {
       return;
-
+    }
     System.err.println(WARN_PREFIX+msg);
     if(t != null) {
       t.printStackTrace();

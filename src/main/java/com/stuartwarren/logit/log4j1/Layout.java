@@ -33,16 +33,15 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
     private String fields;
     private String tags;
     
-    private Log log;
-    private LayoutFactory layoutFactory;
-    private LayoutFactory layout;
+    private transient final LayoutFactory layoutFactory = new LayoutFactory();
+    private transient LayoutFactory layout;
     
-    private boolean getLocationInfo = false;
-    private LocationInfo info;
+    private transient boolean getLocationInfo = false;
+    private transient LocationInfo info;
     
     public Layout() {
+        super();
         LogitLog.debug("Log4j1 layout in use.");
-        layoutFactory = new LayoutFactory();
     }
 
     /* (non-Javadoc)
@@ -57,23 +56,22 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
      */
     // TODO: Multithreadme
     @Override
-    public String format(LoggingEvent event) {
-        this.log = doFormat(event);
-        String stringLog = this.layout.format(this.log);
-        return stringLog;
+    public String format(final LoggingEvent event) {
+        final Log log = doFormat(event);
+        return this.layout.format(log);
     }
     
     @SuppressWarnings("unchecked")
-    private Log doFormat(LoggingEvent event) {
-        Log log = this.layout.getLog();
+    private Log doFormat(final LoggingEvent event) {
+        final Log log = this.layout.getLog();
         log.setTimestamp(event.getTimeStamp());
-        Level level = event.getLevel();
+        final Level level = event.getLevel();
         if (level.isGreaterOrEqual(Level.toLevel(this.detailThreshold))) {
             getLocationInfo = true;
         }
         log.setLevel(level.toString());
-        log.setLevel_int(level.toInt());
-        Map<String, Object> properties = event.getProperties();
+        log.setLevelInt(level.toInt());
+        final Map<String, Object> properties = event.getProperties();
         log.setMdc(properties);
         log.setNdc(event.getNDC());
         
@@ -104,7 +102,7 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
      * @return
      */
     protected void exceptionInformation(
-            LoggingEvent loggingEvent) {
+            final LoggingEvent loggingEvent) {
         if (loggingEvent.getThrowableInformation() != null) {
             final ThrowableInformation throwableInformation = loggingEvent
                     .getThrowableInformation();
@@ -117,7 +115,7 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
                 ExceptionField.put(EF.MESSAGE, throwableInformation.getThrowable().getMessage());
             }
             if (throwableInformation.getThrowableStrRep() != null) {
-                String stackTrace = StringUtils.join(
+                final String stackTrace = StringUtils.join(
                         throwableInformation.getThrowableStrRep(), "\n");
                 ExceptionField.put(EF.STACKTRACE, stackTrace);
             }
@@ -131,7 +129,7 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
      * @return
      */
     protected void locationInformation(
-            LoggingEvent loggingEvent) {
+            final LoggingEvent loggingEvent) {
         if (getLocationInfo) {
             info = loggingEvent.getLocationInformation();
             LocationField.put(LF.CLASS, info.getClassName());
@@ -159,8 +157,10 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
     /**
      * @param layoutType the layoutType to set
      */
-    public void setLayoutType(String layoutType) {
-        LogitLog.debug("Setting property [layoutType] to [" + layoutType + "].");
+    public void setLayoutType(final String layoutType) {
+        if (LogitLog.isDebugEnabled()) {
+            LogitLog.debug("Setting property [layoutType] to [" + layoutType + "].");
+        }
         this.layoutType = layoutType;
     }
 
@@ -174,8 +174,10 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
     /**
      * @param detailThreshold the detailThreshold to set
      */
-    public void setDetailThreshold(String detailThreshold) {
-        LogitLog.debug("Setting property [detailThreshold] to [" + detailThreshold + "].");
+    public void setDetailThreshold(final String detailThreshold) {
+        if (LogitLog.isDebugEnabled()) {
+            LogitLog.debug("Setting property [detailThreshold] to [" + detailThreshold + "].");
+        }
         this.detailThreshold = detailThreshold;
     }
 
@@ -189,8 +191,10 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
     /**
      * @param fields the fields to set
      */
-    public void setFields(String fields) {
-        LogitLog.debug("setFields: " + fields);
+    public void setFields(final String fields) {
+        if (LogitLog.isDebugEnabled()) {
+            LogitLog.debug("setFields: " + fields);
+        }
         this.fields = fields;
     }
 
@@ -204,7 +208,7 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
     /**
      * @param tags the tags to set
      */
-    public void setTags(String tags) {
+    public void setTags(final String tags) {
         this.tags = tags;
     }
 

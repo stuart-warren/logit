@@ -3,9 +3,7 @@
  */
 package com.stuartwarren.logit.fields;
 
-import java.util.HashMap;
-
-import com.stuartwarren.logit.utils.LogitLog;
+import java.util.Map;
 
 /**
  * @author Stuart Warren 
@@ -14,45 +12,43 @@ import com.stuartwarren.logit.utils.LogitLog;
  */
 public final class ExceptionField extends Field {
     
-    private static final ExceptionField field = new ExceptionField();
+    private static final ExceptionField FIELD = new ExceptionField();
     
     public ExceptionField() {
-        try {
-            this.section = ROOT.EXCEPTION;
-        } catch (Exception e) {
-            LogitLog.error("Error thrown initialising ExceptionField", e);
+        super();
+        this.setSection(ROOT.EXCEPTION);
+
+    }
+    
+    public final static void put(final IFieldName key, final String s) {
+        if (FIELD != null) {
+            FIELD.put0(key.toString(), s);
         }
     }
     
-    public final static void put(IFieldName key, String s) {
-        if (field != null) {
-            field.put0(key.toString(), s);
-        }
-    }
-    
-    public static Object get(IFieldName key) {
-        if (field != null) {
-            return field.get0(key.toString());
+    public static Object get(final IFieldName key) {
+        if (FIELD != null) {
+            return FIELD.get0(key.toString());
         }
         return null;
     }
     
-    public static HashMap<String, Object> getContext() {
-        if (field != null) {
-            return field.getContext0();
-        } else {
+    public static Map<String, Object> getContext() {
+        if (FIELD == null) {
             return null;
+        } else {
+            return FIELD.getContext0();
         }
     }
     
     public static void clear() {
-        if (field != null) {
-            field.clear0();
+        if (FIELD != null) {
+            FIELD.clear0();
         }
     }
     
     public String toString() {
-        StringBuffer strBuf = new StringBuffer();
+        final StringBuffer strBuf = new StringBuffer();
         strBuf.append(get(EF.CLASS));
         strBuf.append(": ");
         strBuf.append(get(EF.MESSAGE));
@@ -81,7 +77,7 @@ public final class ExceptionField extends Field {
         
         private String text;
         
-        EF(String text) {
+        EF(final String text) {
             this.text = text;
         }
         

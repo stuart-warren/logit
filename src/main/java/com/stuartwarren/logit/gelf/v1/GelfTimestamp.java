@@ -19,7 +19,7 @@ public class GelfTimestamp extends Timestamp {
     private static final FastDateFormat UNIX_MICROSECOND_DECIMAL_UTC = FastDateFormat.getInstance(
                                                                                           "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", UTC);
 
-    private String dateFormat(long timestamp) {
+    private String dateFormat(final long timestamp) {
         return UNIX_MICROSECOND_DECIMAL_UTC.format(timestamp);
     }
 
@@ -30,12 +30,12 @@ public class GelfTimestamp extends Timestamp {
     /**
      * @param timestamp
      */
-    public GelfTimestamp(Long timestamp) {
+    public GelfTimestamp(final Long timestamp) {
         super(timestamp);
     }
 
     public String toString() {
-        return this.dateFormat(this.timestamp);
+        return this.dateFormat(this.getTimestamp());
     }
 
 }

@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.stuartwarren.logit.fields.Field.ROOT;
 import com.stuartwarren.logit.fields.IFieldName;
 
 /**
@@ -18,19 +20,19 @@ import com.stuartwarren.logit.fields.IFieldName;
  */
 public class Log {
     
-    private CachedDetails           details = CachedDetails.getInstance();
+    private static CachedDetails    details = CachedDetails.getInstance();
     private long                    timestamp;
     private String                  ndc;
     private Map<String, Object>     mdc;
     private String                  level;
-    private int                     level_int;
+    private int                     levelInt;
     private String                  loggerName;
     private String                  threadName;
     private String                  message;
-    private ArrayList<String>       tags = null;
-    private Map<String,Object>      fields = null;
-    private String                  user = details.getUsername();
-    private String                  hostname = details.getHostname();
+    private List<String>            tags;
+    private Map<IFieldName,Object>      fields;
+    private transient final String  user = details.getUsername();
+    private transient final String  hostname = details.getHostname();
 
     /**
      * @return the timestamp
@@ -43,7 +45,7 @@ public class Log {
      * @param timestamp
      *            the timestamp to set
      */
-    public void setTimestamp(long timestamp) {
+    public void setTimestamp(final long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -58,7 +60,7 @@ public class Log {
      * @param ndc
      *            the ndc to set
      */
-    public void setNdc(String ndc) {
+    public void setNdc(final String ndc) {
         if (null != ndc) {
             this.ndc = ndc;
         }
@@ -75,7 +77,7 @@ public class Log {
      * @param properties
      *            the mdc to set
      */
-    public void setMdc(Map<String, Object> properties) {
+    public void setMdc(final Map<String, Object> properties) {
         this.mdc = properties;
     }
 
@@ -90,7 +92,7 @@ public class Log {
      * @param message
      *            the message to set
      */
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         if (null != message) {
             this.message = message;
         }
@@ -107,7 +109,7 @@ public class Log {
      * @param level
      *            the level to set
      */
-    public void setLevel(String level) {
+    public void setLevel(final String level) {
         if (null != level) {
             this.level = level;
         }
@@ -116,15 +118,15 @@ public class Log {
     /**
      * @return the level_int
      */
-    public int getLevel_int() {
-        return level_int;
+    public int getLevelInt() {
+        return levelInt;
     }
 
     /**
-     * @param level_int the level_int to set
+     * @param levelInt the level_int to set
      */
-    public void setLevel_int(int level_int) {
-        this.level_int = level_int;
+    public void setLevelInt(final int levelInt) {
+        this.levelInt = levelInt;
     }
 
     /**
@@ -138,7 +140,7 @@ public class Log {
      * @param loggerNameString
      *            the loggerNameString to set
      */
-    public void setLoggerName(String loggerName) {
+    public void setLoggerName(final String loggerName) {
         if (null != loggerName) {
             this.loggerName = loggerName;
         }
@@ -155,7 +157,7 @@ public class Log {
      * @param threadName
      *            the threadName to set
      */
-    public void setThreadName(String threadName) {
+    public void setThreadName(final String threadName) {
         if (null != threadName) {
             this.threadName = threadName;
         }
@@ -164,7 +166,7 @@ public class Log {
     /**
      * @return the tags
      */
-    public ArrayList<String> getTags() {
+    public List<String> getTags() {
         return tags;
     }
 
@@ -172,7 +174,7 @@ public class Log {
      * @param tags 
      *      the tags to set
      */
-    public void setTags(String tags) {
+    public void setTags(final String tags) {
         // Split string on commas. Ignore whitespace.
         if (null != tags) {
             this.tags = new ArrayList<String>(Arrays.asList(tags.split("\\s*,\\s*")));
@@ -183,7 +185,7 @@ public class Log {
      * @param tag 
      *      the tag to add to the list
      */
-    public void appendTag(String tag) {
+    public void appendTag(final String tag) {
         if (null != tag) {
             if (null == this.tags) {
                 this.tags = new ArrayList<String>();
@@ -195,7 +197,7 @@ public class Log {
     /**
      * @return the fields
      */
-    public Map<String,Object> getFields() {
+    public Map<IFieldName,Object> getFields() {
         return fields;
     }
     
@@ -210,37 +212,41 @@ public class Log {
     /**
      * @param fields the fields to set
      */
-    public void setFields(String fields) {
+    public void setFields(final String fields) {
         // Split string on : and ,
         //eg field1:value,field2:value
-        if (null == fields) {
-            this.fields = new LinkedHashMap<String, Object>();
+        if (null == this.fields) {
+            this.fields = new LinkedHashMap<IFieldName, Object>();
         }
-        for(String keyValue : fields.split("\\s*,\\s*")) {
-            String[] pairs = keyValue.split("\\s*:\\s*", 2);
-            this.fields.put(pairs[0], pairs.length == 1 ? "" : pairs[1]);
+        final Map<String,String> configFields = new HashMap<String,String>();
+        if (null != fields) {
+            for(final String keyValue : fields.split("\\s*,\\s*")) {
+                final String[] pairs = keyValue.split("\\s*:\\s*", 2);
+                configFields.put(pairs[0], pairs.length == 1 ? "" : pairs[1]);
+            }
+            addField(ROOT.CONFIG, configFields);
         }
 
     }
     
     @SuppressWarnings("unchecked")
-    public void addField(IFieldName key, Object val) {
+    public void addField(final IFieldName key, final Object val) {
     	if (null == fields) {
-            this.fields = new LinkedHashMap<String, Object>();
+            this.fields = new LinkedHashMap<IFieldName, Object>();
         }
         if (val instanceof HashMap) {
             if (!((HashMap<String, Object>) val).isEmpty()) {
                 if (null != val) {
-                    fields.put(key.toString(),(HashMap<String, Object>) val);
+                    fields.put(key,(HashMap<String, Object>) val);
                 }
             }
         } else if (null != val) {
-            fields.put(key.toString(), val);
+            fields.put(key, val);
         }
     }
 
     public String toString() {
-        StringBuffer strBuf = new StringBuffer();
+        final StringBuffer strBuf = new StringBuffer();
         strBuf.append(getTimestamp());
         strBuf.append(' ');
         strBuf.append(getNdc());

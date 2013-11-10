@@ -12,7 +12,7 @@ import com.stuartwarren.logit.utils.LogitLog;
  * @date 8 Oct 2013
  *
  */
-public class CachedDetails {
+public final class CachedDetails {
     
     private static volatile CachedDetails uniqueInstance;
     private String hostname;
@@ -27,14 +27,18 @@ public class CachedDetails {
             LogitLog.warn("Unable to resolve [hostname]. Setting default.", e);
             this.setHostname("unknown");
         }
-        LogitLog.debug("Setting property [hostname] to [" + hostname + "].");
+        if (LogitLog.isDebugEnabled()) {
+            LogitLog.debug("Setting property [hostname] to [" + hostname + "].");
+        }
         try {
             this.setUsername(System.getProperty("user.name").toLowerCase());
         } catch (NullPointerException e) {
             LogitLog.warn("Unable to resolve [username]. Setting default.", e);
             this.setUsername("unknown");
         }
-        LogitLog.debug("Setting property [username] to [" + username + "].");
+        if (LogitLog.isDebugEnabled()) {
+            LogitLog.debug("Setting property [username] to [" + username + "].");
+        }
     }
     
     public static CachedDetails getInstance() {
@@ -58,7 +62,7 @@ public class CachedDetails {
     /**
      * @param hostname the hostname to set
      */
-    private void setHostname(String hostname) {
+    private void setHostname(final String hostname) {
         this.hostname = hostname;
     }
 
@@ -72,7 +76,7 @@ public class CachedDetails {
     /**
      * @param username the username to set
      */
-    private void setUsername(String username) {
+    private void setUsername(final String username) {
         this.username = username;
     }
     

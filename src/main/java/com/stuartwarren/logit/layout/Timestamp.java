@@ -13,26 +13,40 @@ import org.apache.commons.lang3.time.FastDateFormat;
  */
 public class Timestamp {
 
-    public long                         timestamp;
+    private long                         timestamp;
 
-    private static final TimeZone       thisTZ   = TimeZone.getDefault();
+    private static final TimeZone       THISTZ   = TimeZone.getDefault();
     private static final FastDateFormat ISO_DATETIME_TIME_ZONE_FORMAT_WITH_MILLIS = 
-            FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSZ", thisTZ);
+            FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSZ", THISTZ);
 
     private String dateFormat(long timestamp) {
-        return ISO_DATETIME_TIME_ZONE_FORMAT_WITH_MILLIS.format(timestamp);
+        return ISO_DATETIME_TIME_ZONE_FORMAT_WITH_MILLIS.format(this.timestamp);
     }
 
     public Timestamp() {
         this.timestamp = System.currentTimeMillis();
     }
 
-    public Timestamp(long timestamp) {
+    public Timestamp(final long timestamp) {
         this.timestamp = timestamp;
     }
 
     public String toString() {
         return this.dateFormat(this.timestamp);
+    }
+
+    /**
+     * @return the timestamp
+     */
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    /**
+     * @param timestamp the timestamp to set
+     */
+    public void setTimestamp(final long timestamp) {
+        this.timestamp = timestamp;
     }
 
 }

@@ -35,16 +35,15 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
     private String fields;
     private String tags;
     
-    private Log log;
-    private LayoutFactory layoutFactory;
-    private LayoutFactory layout;
+    private transient final LayoutFactory layoutFactory = new LayoutFactory();
+    private transient LayoutFactory layout;
     
-    private boolean getLocationInfo = false;
-    private StackTraceElement info;  
+    private transient boolean getLocationInfo = false;
+    private transient StackTraceElement info;  
     
     public Layout() {
+        super();
         LogitLog.debug("Logback layout in use.");
-        layoutFactory = new LayoutFactory();
     }
 
     @Override
@@ -55,23 +54,22 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
     /* (non-Javadoc)
      * @see ch.qos.logback.core.Layout#doLayout(java.lang.Object)
      */
-    public String doLayout(ILoggingEvent event) {
-        this.log = doFormat(event);
-        String stringLog = this.layout.format(this.log);
-        return stringLog;
+    public String doLayout(final ILoggingEvent event) {
+        final Log log = doFormat(event);
+        return this.layout.format(log);
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private Log doFormat(ILoggingEvent event) {
-        Log log = this.layout.getLog();
+    private Log doFormat(final ILoggingEvent event) {
+        final Log log = this.layout.getLog();
         log.setTimestamp(event.getTimeStamp());
-        Level level = event.getLevel();
+        final Level level = event.getLevel();
         if (level.isGreaterOrEqual(Level.toLevel(this.detailThreshold))) {
             getLocationInfo = true;
         }
         log.setLevel(level.toString());
-        log.setLevel_int(level.toInt());
-        Map<String, String> properties = event.getMDCPropertyMap();
+        log.setLevelInt(level.toInt());
+        final Map<String, String> properties = event.getMDCPropertyMap();
         log.setMdc((Map)properties);
         
         // get exception details
@@ -101,7 +99,7 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
      * @return
      */
     protected void exceptionInformation(
-        ILoggingEvent loggingEvent) {
+        final ILoggingEvent loggingEvent) {
         final IThrowableProxy throwableInformation = loggingEvent
                 .getThrowableProxy();
         if (throwableInformation != null) {
@@ -112,7 +110,7 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
                 ExceptionField.put(EF.MESSAGE, throwableInformation.getMessage());
             }
             if (throwableInformation.getStackTraceElementProxyArray() != null) {
-                String stackTrace = StringUtils.join(
+                final String stackTrace = StringUtils.join(
                         throwableInformation.getStackTraceElementProxyArray(), "\n");
                 ExceptionField.put(EF.STACKTRACE, stackTrace);
             }
@@ -126,7 +124,7 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
      * @return
      */
     protected void locationInformation(
-            ILoggingEvent loggingEvent) {
+            final ILoggingEvent loggingEvent) {
         if (getLocationInfo) {
             // TODO: May need to change this? 
             info = ((LoggingEvent) loggingEvent).getCallerData()[0];
@@ -147,7 +145,7 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
     /**
      * @param layoutType the layoutType to set
      */
-    public void setLayoutType(String layoutType) {
+    public void setLayoutType(final String layoutType) {
         this.layoutType = layoutType;
     }
 
@@ -161,7 +159,7 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
     /**
      * @param detailThreshold the detailThreshold to set
      */
-    public void setDetailThreshold(String detailThreshold) {
+    public void setDetailThreshold(final String detailThreshold) {
         this.detailThreshold = detailThreshold;
     }
 
@@ -175,7 +173,7 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
     /**
      * @param fields the fields to set
      */
-    public void setFields(String fields) {
+    public void setFields(final String fields) {
         this.fields = fields;
     }
 
@@ -189,7 +187,7 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
     /**
      * @param tags the tags to set
      */
-    public void setTags(String tags) {
+    public void setTags(final String tags) {
         this.tags = tags;
     }
 
