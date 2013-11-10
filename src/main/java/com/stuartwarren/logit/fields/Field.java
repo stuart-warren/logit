@@ -15,6 +15,7 @@ import com.stuartwarren.logit.utils.ThreadLocalMap;
  */
 public class Field {
     
+
     private static final Field FIELD = new Field();
     private transient Object tlm;
     private IFieldName section;
@@ -131,7 +132,7 @@ public class Field {
         }
     }
     
-    public static enum RF implements IFieldName {
+    public static enum ROOT implements IFieldName {
         /**
          * MESSAGE - message
          * Main log message.
@@ -186,12 +187,17 @@ public class Field {
          * NDC - ndc
          * Nested Diagnostic Context
          */
-        NDC("ndc")
+        NDC("ndc"),
+        /**
+         * CONFIG - config
+         * Fields added in configuration file
+         */
+        CONFIG("config")
         ;
         
         private String text;
         
-        RF(final String text) {
+        ROOT(final String text) {
             this.text = text;
         }
         

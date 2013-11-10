@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 import zmq
 
 context = zmq.Context()
@@ -12,4 +13,4 @@ n = 0
 while True:
     s = receiver.recv()
     n = n + 1
-    print(n, s)
+    sys.stdout.write('.')

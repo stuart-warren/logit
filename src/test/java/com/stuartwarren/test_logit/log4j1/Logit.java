@@ -11,6 +11,7 @@ public class Logit {
         Logger logger = Logger.getLogger(Logit.class.getName());
         MDC.put("stuff", "other");
         logger.error("There's been an error", new NullPointerException("Fake error thrown"));
+        MDC.clear();
         logger.info("non exception");
         System.exit(0);
         LogManager.shutdown();

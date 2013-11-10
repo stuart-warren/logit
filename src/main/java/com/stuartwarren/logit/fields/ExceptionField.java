@@ -16,7 +16,8 @@ public final class ExceptionField extends Field {
     
     public ExceptionField() {
         super();
-        this.setSection(RF.EXCEPTION);
+        this.setSection(ROOT.EXCEPTION);
+
     }
     
     public final static void put(final IFieldName key, final String s) {

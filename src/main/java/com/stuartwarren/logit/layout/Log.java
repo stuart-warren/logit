@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.stuartwarren.logit.fields.Field.ROOT;
 import com.stuartwarren.logit.fields.IFieldName;
 
 /**
@@ -29,7 +30,7 @@ public class Log {
     private String                  threadName;
     private String                  message;
     private List<String>            tags;
-    private Map<String,Object>      fields;
+    private Map<IFieldName,Object>      fields;
     private transient final String  user = details.getUsername();
     private transient final String  hostname = details.getHostname();
 
@@ -196,7 +197,7 @@ public class Log {
     /**
      * @return the fields
      */
-    public Map<String,Object> getFields() {
+    public Map<IFieldName,Object> getFields() {
         return fields;
     }
     
@@ -215,13 +216,15 @@ public class Log {
         // Split string on : and ,
         //eg field1:value,field2:value
         if (null == this.fields) {
-            this.fields = new LinkedHashMap<String, Object>();
+            this.fields = new LinkedHashMap<IFieldName, Object>();
         }
+        final Map<String,String> configFields = new HashMap<String,String>();
         if (null != fields) {
             for(final String keyValue : fields.split("\\s*,\\s*")) {
                 final String[] pairs = keyValue.split("\\s*:\\s*", 2);
-                this.fields.put(pairs[0], pairs.length == 1 ? "" : pairs[1]);
+                configFields.put(pairs[0], pairs.length == 1 ? "" : pairs[1]);
             }
+            addField(ROOT.CONFIG, configFields);
         }
 
     }
@@ -229,16 +232,16 @@ public class Log {
     @SuppressWarnings("unchecked")
     public void addField(final IFieldName key, final Object val) {
     	if (null == fields) {
-            this.fields = new LinkedHashMap<String, Object>();
+            this.fields = new LinkedHashMap<IFieldName, Object>();
         }
         if (val instanceof HashMap) {
             if (!((HashMap<String, Object>) val).isEmpty()) {
                 if (null != val) {
-                    fields.put(key.toString(),(HashMap<String, Object>) val);
+                    fields.put(key,(HashMap<String, Object>) val);
                 }
             }
         } else if (null != val) {
-            fields.put(key.toString(), val);
+            fields.put(key, val);
         }
     }
 

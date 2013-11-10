@@ -10,8 +10,10 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.stuartwarren.logit.fields.Field.RF;
+import com.stuartwarren.logit.fields.IFieldName;
+import com.stuartwarren.logit.fields.Field.ROOT;
 import com.stuartwarren.logit.layout.Log;
+import com.stuartwarren.logit.logstash.LogstashField.LOGSTASH;
 import com.stuartwarren.logit.logstash.LogstashTimestamp;
 
 /**
@@ -22,15 +24,7 @@ public final class LogstashV0Log extends Log {
 
     private long                    timestamp;
     private String                  version;
-    private HashMap<String, Object> jacksonOutput;
-
-    private ObjectMapper            mapper;
-
-    public LogstashV0Log() {
-        super();
-        this.mapper = new ObjectMapper();
-        this.jacksonOutput = new HashMap<String, Object>();
-    }
+    private HashMap<IFieldName, Object> jacksonOutput = new HashMap<IFieldName, Object>();
 
     /**
      * @return the timestamp
@@ -65,7 +59,7 @@ public final class LogstashV0Log extends Log {
     }
 
     @SuppressWarnings("unchecked")
-    private void addEventData(String key, Object val) {
+    private void addEventData(IFieldName key, Object val) {
         if (val instanceof HashMap) {
             if (!((HashMap<String, Object>) val).isEmpty()) {
                 jacksonOutput.put(key, val);
@@ -78,19 +72,20 @@ public final class LogstashV0Log extends Log {
     public String toString() {
         String log;
         
-        addEventData("@tags", this.getTags());
-        addField(RF.TAGS, this.getThreadName());
-        addField(RF.LOGGER, this.getLoggerName());
-        addField(RF.LEVEL, this.getLevel());
-        addField(RF.USER, this.getUsername());
-        addField(RF.HOSTNAME, this.getHostname());
-        addEventData("@fields", this.getFields());
-        addField(RF.MDC, this.getMdc());
-        addField(RF.NDC, this.getNdc());
-        addEventData("@version", this.getVersion());
-        addEventData("@timestamp", new LogstashTimestamp(this.getTimestamp()).toString());
-        addEventData("@message", this.getMessage());
+        addEventData(LOGSTASH.TAGS, this.getTags());
+        addField(ROOT.THREAD, this.getThreadName());
+        addField(ROOT.LOGGER, this.getLoggerName());
+        addField(ROOT.LEVEL, this.getLevel());
+        addField(ROOT.USER, this.getUsername());
+        addField(ROOT.HOSTNAME, this.getHostname());
+        addEventData(LOGSTASH.FIELDS, this.getFields());
+        addField(ROOT.MDC, this.getMdc());
+        addField(ROOT.NDC, this.getNdc());
+        //addEventData(LOGSTASH.VERSION, this.getVersion());
+        addEventData(LOGSTASH.TIMESTAMP, new LogstashTimestamp(this.getTimestamp()).toString());
+        addEventData(LOGSTASH.MESSAGE, this.getMessage());
         try {
+            ObjectMapper mapper = new ObjectMapper();
             log = mapper.writeValueAsString(jacksonOutput);
         } catch (JsonGenerationException e) {
             log = e.toString();

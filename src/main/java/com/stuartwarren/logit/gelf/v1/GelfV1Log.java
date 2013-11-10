@@ -12,22 +12,21 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.stuartwarren.logit.fields.Field.ROOT;
+import com.stuartwarren.logit.fields.IFieldName;
+import com.stuartwarren.logit.gelf.v1.GelfV1Field.GELF;
 import com.stuartwarren.logit.layout.Log;
 
 /**
  * @author Stuart Warren
  * @date 22 Sep 2013
+ * TODO: This needs work!
  */
 public final class GelfV1Log extends Log {
 
     private String                  version;
-    private final transient Map<String, Object> jacksonOutput;
+    private final transient Map<String, Object> jacksonOutput = new HashMap<String, Object>();
     private final static String ID_STRING = "id";
-
-    public GelfV1Log() {
-        super();
-        this.jacksonOutput = new HashMap<String, Object>();
-    }
 
     /**
      * @return the version
@@ -44,39 +43,39 @@ public final class GelfV1Log extends Log {
         this.version = version;
     }
     
-    private void addEventData(final String key, final Object val) {
+    private void addEventData(final IFieldName key, final Object val) {
         addEventData(key, val, false);
     }
 
     @SuppressWarnings("unchecked")
-    private void addEventData(final String key, final Object val, final boolean builtIn) {
+    private void addEventData(final IFieldName key, final Object val, final boolean builtIn) {
         if (val instanceof HashMap && !((HashMap<String, Object>) val).isEmpty() && !ID_STRING.equals(key)) {
             jacksonOutput.put("_" + key, val);
         } else if (null != val && !ID_STRING.equals(key) && builtIn){
-                    jacksonOutput.put(key, val);
+                    jacksonOutput.put(key.toString(), val);
                 } else {
-                    jacksonOutput.put('_' + key, val);
+                    jacksonOutput.put('_' + key.toString(), val);
         }
     }
 
     public String toString() {
-        addEventData("facility", this.getLoggerName(), true);
-        addEventData("level", this.getLevelInt(), true);
-        addEventData("host", this.getHostname(), true);
-        addEventData("user", this.getUsername());
-        addEventData("ndc", this.getNdc());
-        addEventData("tags", this.getTags());
-        addEventData("thread", this.getThreadName());
-        final Map<String, Object> fields = this.getFields();
+        addEventData(GELF.FACILITY, this.getLoggerName(), true);
+        addEventData(ROOT.LEVEL, this.getLevelInt(), true);
+        addEventData(GELF.HOST, this.getHostname(), true);
+        addEventData(ROOT.USER, this.getUsername());
+        addEventData(ROOT.NDC, this.getNdc());
+        addEventData(ROOT.TAGS, this.getTags());
+        addEventData(ROOT.THREAD, this.getThreadName());
+        final Map<IFieldName, Object> fields = this.getFields();
         if (null != fields) {
-            for (final Map.Entry<String, Object> entry : fields.entrySet()) {
+            for (final Map.Entry<IFieldName, Object> entry : fields.entrySet()) {
                 addEventData(entry.getKey(), entry.getValue());
             }
         }
-        addEventData("mdc", this.getMdc());
-        addEventData("version", this.getVersion(), true);
-        addEventData("timestamp", String.valueOf(this.getTimestamp()), true);
-        addEventData("short_message", this.getMessage(), true);
+        addEventData(ROOT.MDC, this.getMdc());
+        addEventData(GELF.VERSION, this.getVersion(), true);
+        addEventData(GELF.TIMESTAMP, String.valueOf(this.getTimestamp()), true);
+        addEventData(GELF.SHORTMESSAGE, this.getMessage(), true);
         String log;
         try {
             final ObjectMapper mapper = new ObjectMapper();

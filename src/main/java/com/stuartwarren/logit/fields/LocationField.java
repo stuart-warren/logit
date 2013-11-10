@@ -16,7 +16,7 @@ private static final LocationField FIELD = new LocationField();
     
     public LocationField() {
         super();
-        this.setSection(RF.LOCATION);
+        this.setSection(ROOT.LOCATION);
     }
     
     public final static void put(final IFieldName key, final String s) {
