@@ -14,23 +14,23 @@ import com.stuartwarren.logit.layout.Log;
  */
 public final class GelfV1Layout extends LayoutFactory implements ILayout {
     
-    private String gelfVersion = "1.0";
+    private final static String GELF_VERSION = "1.0";
 
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.ILayout#configure()
      */
     @Override
     public void configure() {
+        // empty
     }
 
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.ILayout#format(com.stuartwarren.logit.layout.Log)
      */
-    public String format(Log log) {
-        GelfV1Log l = (GelfV1Log) log;
-        l.setVersion(this.gelfVersion);
-        String stringLog = l.toString();
-        return stringLog;
+    public String format(final Log log) {
+        final GelfV1Log l = (GelfV1Log) log;
+        l.setVersion(GELF_VERSION); 
+        return l.toString();
     }
 
     /* (non-Javadoc)

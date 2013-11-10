@@ -17,8 +17,8 @@ import com.stuartwarren.logit.utils.LogitLog;
  */
 public class ZmqTransport implements IAppender, IZmqTransport {
     
-    final   ZMQ.Context         context     = ZMQ.context(1);
-    private ZMQ.Socket          socket;
+    private final transient   ZMQ.Context         context     = ZMQ.context(1);
+    private transient         ZMQ.Socket          socket;
 
     private static final String CONNECTMODE = "connect";
     private static final String BINDMODE    = "bind";
@@ -29,7 +29,7 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     private String              bindConnect = CONNECTMODE;
     private int                 sendHWM     = 1;
     private int                 linger      = 1;
-    private boolean             configured  = false;
+    private boolean             configured;
     
     /**
      * 
@@ -52,18 +52,28 @@ public class ZmqTransport implements IAppender, IZmqTransport {
      */
     public void configure() {
         ZMQ.Socket sender;
-        LogitLog.debug("Setting property [socketType] to [" + socketType + "].");
+        if (LogitLog.isDebugEnabled()) {
+            LogitLog.debug("Setting property [socketType] to [" + socketType + "].");
+        }
         sender = context.socket(SocketType.getServerSocket(socketType));
         //sender = context.createSocket(SocketType.getClientSocket(socketType));
-        LogitLog.debug("Setting property [linger] to [" + linger + "].");
+        if (LogitLog.isDebugEnabled()) {
+            LogitLog.debug("Setting property [linger] to [" + linger + "].");
+        }
         sender.setLinger(linger);
-        LogitLog.debug("Setting property [sendHWM] to [" + sendHWM + "].");
+        if (LogitLog.isDebugEnabled()) {
+            LogitLog.debug("Setting property [sendHWM] to [" + sendHWM + "].");
+        }
         sender.setSndHWM(sendHWM);
         final ZMQ.Socket socket = sender;
-        LogitLog.debug("Setting property [endpoints] to [" + endpoints + "].");
+        if (LogitLog.isDebugEnabled()) {
+            LogitLog.debug("Setting property [endpoints] to [" + endpoints + "].");
+        }
         final String[] endpointsList = endpoints.split(",");
         for (String endpoint : endpointsList) {
-            LogitLog.debug("Setting property [bindConnect] to [" + bindConnect + "].");
+            if (LogitLog.isDebugEnabled()) {
+                LogitLog.debug("Setting property [bindConnect] to [" + bindConnect + "].");
+            }
             if (CONNECTMODE.equalsIgnoreCase(bindConnect)) {
                 socket.connect(endpoint);
             } else if (BINDMODE.equalsIgnoreCase(bindConnect)) {
@@ -74,21 +84,21 @@ public class ZmqTransport implements IAppender, IZmqTransport {
         }
         this.socket = socket;
         LogitLog.debug("ZMQTransport configured.");
-        this.configured = true;
+        this.setConfigured(true);
     }
 
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.ITransport#stop()
      */
     public synchronized void stop() {
-        if (null != socket) {
+        if (null == socket) {
+            return;
+        } else {
             LogitLog.debug("Closing socket.");
             socket.close();
             context.term();
             //zcontext.destroy();
-            socket = null;
-        } else {
-            return;
+            socket = null; // NOPMD by stuart on 10/11/13 20:11
         }
         LogitLog.debug("Socket should be closed.");
     }
@@ -96,9 +106,11 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.ITransport#append(java.lang.String)
      */
-    public void appendString(String log) {
-        log = log.substring(0, log.length() - 1);
-        LogitLog.debug("Sending log: [" + log + "].");
+    public void appendString(final String line) {
+        final String log = line.substring(0, line.length() - 1);
+        if (LogitLog.isDebugEnabled()) {
+            LogitLog.debug("Sending log: [" + log + "].");
+        }
         try {
             socket.send(log, ZMQ.NOBLOCK);
             // Has occasionally been known to throw a java.nio.channels.ClosedByInterruptException
@@ -125,7 +137,7 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#setEndpoints(java.lang.String)
      */
-    public void setEndpoints(String endpoints) {
+    public void setEndpoints(final String endpoints) {
         this.endpoints = endpoints;
     }
 
@@ -139,7 +151,7 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#setSocketType(java.lang.String)
      */
-    public void setSocketType(String socketType) {
+    public void setSocketType(final String socketType) {
         if (SocketType.isValidType(socketType)) {
             this.socketType = socketType;
         }
@@ -155,7 +167,7 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#setLinger(int)
      */
-    public void setLinger(int linger) {
+    public void setLinger(final int linger) {
         this.linger = linger;
     }
 
@@ -169,8 +181,8 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#setBindConnect(java.lang.String)
      */
-    public void setBindConnect(String bindConnect) {
-        if ((bindConnect.equals(BINDMODE)) || (bindConnect.equals(CONNECTMODE))) {
+    public void setBindConnect(final String bindConnect) {
+        if (bindConnect.equals(BINDMODE) || bindConnect.equals(CONNECTMODE)) {
             this.bindConnect = bindConnect;
         }
     }
@@ -185,12 +197,19 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.IAppender#setSendHWM(int)
      */
-    public void setSendHWM(int sendHWM) {
+    public void setSendHWM(final int sendHWM) {
         this.sendHWM = sendHWM;
     }
     
     public boolean isConfigured() {
         return this.configured;
+    }
+
+    /**
+     * @param configured the configured to set
+     */
+    public void setConfigured(final boolean configured) {
+        this.configured = configured;
     }
 
 

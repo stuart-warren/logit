@@ -21,13 +21,11 @@ import com.stuartwarren.logit.layout.Log;
 public final class GelfV1Log extends Log {
 
     private String                  version;
-    private HashMap<String, Object> jacksonOutput;
-
-    private ObjectMapper            mapper;
+    private final transient Map<String, Object> jacksonOutput;
+    private final static String ID_STRING = "id";
 
     public GelfV1Log() {
         super();
-        this.mapper = new ObjectMapper();
         this.jacksonOutput = new HashMap<String, Object>();
     }
 
@@ -42,43 +40,36 @@ public final class GelfV1Log extends Log {
      * @param version
      *            the version to set
      */
-    public void setVersion(String version) {
+    public void setVersion(final String version) {
         this.version = version;
     }
     
-    private void addEventData(String key, Object val) {
+    private void addEventData(final String key, final Object val) {
         addEventData(key, val, false);
     }
 
     @SuppressWarnings("unchecked")
-    private void addEventData(String key, Object val, boolean builtIn) {
-        if (val instanceof HashMap) {
-            if (!((HashMap<String, Object>) val).isEmpty()) {
-                if (!"id".equals(key))
-                    jacksonOutput.put("_" + key, val);
-            }
-        } else if (null != val) {
-            if (!"id".equals(key)) {
-                if (builtIn) {
+    private void addEventData(final String key, final Object val, final boolean builtIn) {
+        if (val instanceof HashMap && !((HashMap<String, Object>) val).isEmpty() && !ID_STRING.equals(key)) {
+            jacksonOutput.put("_" + key, val);
+        } else if (null != val && !ID_STRING.equals(key) && builtIn){
                     jacksonOutput.put(key, val);
                 } else {
                     jacksonOutput.put('_' + key, val);
-                }
-            }
         }
     }
 
     public String toString() {
         addEventData("facility", this.getLoggerName(), true);
-        addEventData("level", this.getLevel_int(), true);
+        addEventData("level", this.getLevelInt(), true);
         addEventData("host", this.getHostname(), true);
         addEventData("user", this.getUsername());
         addEventData("ndc", this.getNdc());
         addEventData("tags", this.getTags());
         addEventData("thread", this.getThreadName());
-        Map<String, Object> fields = this.getFields();
+        final Map<String, Object> fields = this.getFields();
         if (null != fields) {
-            for (Map.Entry<String, Object> entry : fields.entrySet()) {
+            for (final Map.Entry<String, Object> entry : fields.entrySet()) {
                 addEventData(entry.getKey(), entry.getValue());
             }
         }
@@ -88,6 +79,7 @@ public final class GelfV1Log extends Log {
         addEventData("short_message", this.getMessage(), true);
         String log;
         try {
+            final ObjectMapper mapper = new ObjectMapper();
             log = mapper.writeValueAsString(jacksonOutput);
         } catch (JsonGenerationException e) {
             log = e.toString();

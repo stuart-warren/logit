@@ -4,14 +4,15 @@
 package com.stuartwarren.logit.tomcatvalve;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.catalina.Session;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 //import org.apache.catalina.valves.AccessLogValve;
+
 
 
 
@@ -31,18 +32,20 @@ import com.stuartwarren.logit.utils.LogitLog;
  */
 public class Layout implements IFrameworkLayout {
     
-    private String layoutType = "log";
-    private Log log;
-    private LayoutFactory layoutFactory;
-    private LayoutFactory layout;
+    private String layoutType;
+    private transient LayoutFactory layoutFactory;
+    private transient LayoutFactory layout;
     
     private String detailThreshold = "ERROR"; //not actually used...
+    private final static int HTTP_400 = 400;
+    private final static int HTTP_500 = 500;
+    private final static String EMPTY_STRING = "";
 
     private String fields;
     private String tags;
-    private List<String> iheaders;
-    private List<String> oheaders;
-    private List<String> cookies;
+    private transient List<String> iheaders;
+    private transient List<String> oheaders;
+    private transient List<String> cookies;
     
     
     public Layout() {
@@ -54,7 +57,7 @@ public class Layout implements IFrameworkLayout {
     /* (non-Javadoc)
      * @see org.apache.log4j.spi.OptionHandler#activateOptions()
      */
-    public void activateOptions() {
+    public final void activateOptions() {
         LogitLog.debug("Initialise Logfactory.");
         this.layout = layoutFactory.createLayout(this.layoutType);
     }
@@ -62,18 +65,17 @@ public class Layout implements IFrameworkLayout {
     /* (non-Javadoc)
      * @see org.apache.log4j.Layout#format(org.apache.log4j.spi.LoggingEvent)
      */
-    public String format(Request request, Response response, long time) {
-        this.log = doFormat(request, response, time);
-        String stringLog = this.layout.format(this.log);
-        return stringLog;
+    public String format(final Request request, final Response response, final long time) {
+        final Log log = doFormat(request, response, time);
+        return this.layout.format(log);
     }
     
-    private Log doFormat(Request request, Response response, long time) {
-        Log log = this.layout.getLog();
-        Map<String,Object> httpFields = new HashMap<String,Object>();
+    private Log doFormat(final Request request, final Response response, final long time) {
+        final Log log = this.layout.getLog();
+        final Map<String,Object> httpFields = new ConcurrentHashMap<String,Object>();
         String level = "INFO";
-        StringBuffer message = new StringBuffer();
-        int status = response.getStatus();
+        final StringBuffer message = new StringBuffer();
+        final int status = response.getStatus();
         
         log.setTimestamp(request.getCoyoteRequest().getStartTime());
         httpFields.put("request_parameters", request.getParameterMap());
@@ -93,42 +95,42 @@ public class Layout implements IFrameworkLayout {
         message.append(' ');
         httpFields.put("response_status", status);
         message.append(status);
-        Session session = request.getSessionInternal(false);
+        final Session session = request.getSessionInternal(false);
         if (session != null) {
             httpFields.put("session_id", session.getIdInternal());
         }
         httpFields.put("response_size", response.getBytesWritten(false));
         httpFields.put("server_name", request.getServerName());
         httpFields.put("response_duration", time);
-        if (status >= 400) {
+        if (status >= HTTP_400) {
             level = "ERROR";
         }
-        if (status >= 500) {
+        if (status >= HTTP_500) {
             level = "CRITICAL";
         }
         
         if (null != this.iheaders && !this.iheaders.isEmpty()) {
-            Map<String,Object> iheaders = new HashMap<String,Object>();
-            for (String header : this.iheaders) {
-                if (!"".equals(header)) {
+            final Map<String,Object> iheaders = new ConcurrentHashMap<String,Object>();
+            for (final String header : this.iheaders) {
+                if (!EMPTY_STRING.equals(header)) {
                     iheaders.put(header, request.getHeader(header));
                 }
             }
             httpFields.put("request_headers", iheaders);
         }
         if (null != this.oheaders && !this.oheaders.isEmpty()) {
-            Map<String,Object> oheaders = new HashMap<String,Object>();
-            for (String header : this.oheaders) {
-                if (!"".equals(header)) {
+            final Map<String,Object> oheaders = new ConcurrentHashMap<String,Object>();
+            for (final String header : this.oheaders) {
+                if (!EMPTY_STRING.equals(header)) {
                     oheaders.put(header, request.getHeader(header));
                 }
             }
             httpFields.put("response_headers", oheaders);
         }
         if (null != this.cookies && !this.cookies.isEmpty()) {
-            Map<String,Object> cookies = new HashMap<String,Object>();
-            for (String cookie : this.cookies) {
-                if (!"".equals(cookie)) {
+            final Map<String,Object> cookies = new ConcurrentHashMap<String,Object>();
+            for (final String cookie : this.cookies) {
+                if (!EMPTY_STRING.equals(cookie)) {
                     cookies.put(cookie, request.getHeader(cookie));
                 }
             }
@@ -154,8 +156,10 @@ public class Layout implements IFrameworkLayout {
     /**
      * @param layoutType the layoutType to set
      */
-    public void setLayoutType(String layoutType) {
-        LogitLog.debug("Setting property [layoutType] to [" + layoutType + "].");
+    public void setLayoutType(final String layoutType) {
+        if (LogitLog.isDebugEnabled()) {
+            LogitLog.debug("Setting property [layoutType] to [" + layoutType + "].");
+        }
         this.layoutType = layoutType;
     }
 
@@ -169,8 +173,10 @@ public class Layout implements IFrameworkLayout {
     /**
      * @param detailThreshold the detailThreshold to set
      */
-    public void setDetailThreshold(String detailThreshold) {
-        LogitLog.debug("Setting property [detailThreshold] to [" + detailThreshold + "].");
+    public void setDetailThreshold(final String detailThreshold) {
+        if (LogitLog.isDebugEnabled()) {
+            LogitLog.debug("Setting property [detailThreshold] to [" + detailThreshold + "].");
+        }
         this.detailThreshold = detailThreshold;
     }
 
@@ -184,7 +190,7 @@ public class Layout implements IFrameworkLayout {
     /**
      * @param fields the fields to set
      */
-    public void setFields(String fields) {
+    public void setFields(final String fields) {
         this.fields = fields;
     }
 
@@ -198,28 +204,28 @@ public class Layout implements IFrameworkLayout {
     /**
      * @param tags the tags to set
      */
-    public void setTags(String tags) {
+    public void setTags(final String tags) {
         this.tags = tags;
     }
 
     /**
      * @param headers
      */
-    public void setOHeaders(String oheaders) {
+    public void setOHeaders(final String oheaders) {
         this.oheaders = Arrays.asList(oheaders.split("\\s*,\\s*"));
     }
     
     /**
      * @param iheaders
      */
-    public void setIHeaders(String iheaders) {
+    public void setIHeaders(final String iheaders) {
         this.iheaders = Arrays.asList(iheaders.split("\\s*,\\s*"));
     }
     
     /**
      * @param cookies
      */
-    public void setCookies(String cookies) {
+    public void setCookies(final String cookies) {
         this.cookies = Arrays.asList(cookies.split("\\s*,\\s*"));
     }
     
@@ -229,7 +235,7 @@ public class Layout implements IFrameworkLayout {
         
         private String text;
         
-        TCF(String text) {
+        TCF(final String text) {
             this.text = text;
         }
         

@@ -19,15 +19,15 @@ public final class LogstashV0Layout extends LayoutFactory implements ILayout {
      */
     @Override
     public void configure() {
+        // empty
     }
 
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.ILayout#format(com.stuartwarren.logit.layout.Log)
      */
-    public String format(Log log) {
-        LogstashV0Log l = (LogstashV0Log) log;
-        String stringLog = l.toString();
-        return stringLog;
+    public String format(final Log log) {
+        final LogstashV0Log l = (LogstashV0Log) log;
+        return l.toString();
     }
 
     /* (non-Javadoc)

@@ -14,23 +14,23 @@ import com.stuartwarren.logit.layout.Log;
  */
 public final class LogstashV1Layout extends LayoutFactory implements ILayout {
     
-    private String logstashVersion = "1";
+    private final static String LOGSTASH_VERSION = "1";
 
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.ILayout#configure()
      */
     @Override
     public void configure() {
+        // empty
     }
 
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.ILayout#format(com.stuartwarren.logit.layout.Log)
      */
-    public String format(Log log) {
-        LogstashV1Log l = (LogstashV1Log) log;
-        l.setVersion(this.logstashVersion);
-        String stringLog = l.toString();
-        return stringLog;
+    public String format(final Log log) {
+        final LogstashV1Log l = (LogstashV1Log) log;
+        l.setVersion(LOGSTASH_VERSION);
+        return l.toString();
     }
 
     /* (non-Javadoc)

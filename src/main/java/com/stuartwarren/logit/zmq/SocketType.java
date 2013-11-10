@@ -18,7 +18,7 @@ public enum SocketType {
     private final int    clientSocket;
     private final String name;
 
-    SocketType(int clientSocket, int serverSocket, String name) {
+    SocketType(final int clientSocket, final int serverSocket, final String name) {
         this.serverSocket = serverSocket;
         this.clientSocket = clientSocket;
         this.name = name;
@@ -28,9 +28,9 @@ public enum SocketType {
         return name;
     }
 
-    public static int getServerSocket(String name) {
+    public static int getServerSocket(final String name) {
         int serverSocket = ZMQ.PUSH;
-        for (SocketType s : SocketType.values()) {
+        for (final SocketType s : SocketType.values()) {
             if (name.equals(s.name)) {
                 serverSocket = s.serverSocket;
             }
@@ -38,9 +38,9 @@ public enum SocketType {
         return serverSocket;
     }
 
-    public static int getClientSocket(String name) {
+    public static int getClientSocket(final String name) {
         int clientSocket = ZMQ.PULL;
-        for (SocketType s : SocketType.values()) {
+        for (final SocketType s : SocketType.values()) {
             if (name.equals(s.name)) {
                 clientSocket = s.clientSocket;
             }
@@ -48,9 +48,9 @@ public enum SocketType {
         return clientSocket;
     }
 
-    public static boolean isValidType(String name) {
+    public static boolean isValidType(final String name) {
         boolean result = false;
-        for (SocketType s : SocketType.values()) {
+        for (final SocketType s : SocketType.values()) {
             if (name.equalsIgnoreCase(s.name)) {
                 result = true;
             }

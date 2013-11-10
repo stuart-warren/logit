@@ -3,7 +3,7 @@
  */
 package com.stuartwarren.logit.fields;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Stuart Warren 
@@ -12,49 +12,50 @@ import java.util.HashMap;
  */
 public final class LocationField extends Field {
     
-private static final LocationField field = new LocationField();
+private static final LocationField FIELD = new LocationField();
     
     public LocationField() {
-        this.section = RF.LOCATION;
+        super();
+        this.setSection(RF.LOCATION);
     }
     
-    public final static void put(IFieldName key, String s) {
-        if (field != null) {
-            field.put0(key.toString(), s);
+    public final static void put(final IFieldName key, final String s) {
+        if (FIELD != null) {
+            FIELD.put0(key.toString(), s);
         }
     }
     
-    public static Object get(IFieldName key) {
-        if (field != null) {
-            return field.get0(key.toString());
+    public static Object get(final IFieldName key) {
+        if (FIELD != null) {
+            return FIELD.get0(key.toString());
         }
         return null;
     }
     
-    public static HashMap<String, Object> getContext() {
-        if (field != null) {
-            return field.getContext0();
-        } else {
+    public static Map<String, Object> getContext() {
+        if (FIELD == null) {
             return null;
+        } else {
+            return FIELD.getContext0();
         }
     }
     
     public static void clear() {
-        if (field != null) {
-            field.clear0();
+        if (FIELD != null) {
+            FIELD.clear0();
         }
     }
     
     public String toString() {
-        StringBuffer strBuf = new StringBuffer();
+        final StringBuffer strBuf = new StringBuffer();
         strBuf.append(get(LF.CLASS));
-        strBuf.append(".");
+        strBuf.append('.');
         strBuf.append(get(LF.METHOD));
-        strBuf.append("(");
+        strBuf.append('(');
         strBuf.append(get(LF.FILE));
-        strBuf.append(":");
+        strBuf.append(':');
         strBuf.append(get(LF.LINE));
-        strBuf.append(")");
+        strBuf.append(')');
         return strBuf.toString();
     }
     
@@ -82,7 +83,7 @@ private static final LocationField field = new LocationField();
         
         private String text;
         
-        LF(String text) {
+        LF(final String text) {
             this.text = text;
         }
         
