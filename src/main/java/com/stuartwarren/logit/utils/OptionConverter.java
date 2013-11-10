@@ -32,12 +32,7 @@ package com.stuartwarren.logit.utils;
    @author Simon Kitching;
    @author Anders Kristensen
 */
-public class OptionConverter {
-
-  static String DELIM_START = "${";
-  static char   DELIM_STOP  = '}';
-  static int DELIM_START_LEN = 2;
-  static int DELIM_STOP_LEN  = 1;
+public final class OptionConverter {
 
   /** OptionConverter is a static class. */
   private OptionConverter() {}
@@ -54,11 +49,13 @@ public class OptionConverter {
      @since 1.1 */
   public
   static
-  String getSystemProperty(String key, String def) {
+  String getSystemProperty(final String key, final String def) {
     try {
       return System.getProperty(key, def);
-    } catch(Throwable e) { // MS-Java throws com.ms.security.SecurityExceptionEx
-      LogitLog.debug("Was not allowed to read system property \""+key+"\".");
+    } catch(SecurityException e) { // MS-Java throws com.ms.security.SecurityExceptionEx
+      if (LogitLog.isDebugEnabled()) {
+          LogitLog.debug("Was not allowed to read system property \""+key+"\".");
+      }
       return def;
     }
   }
@@ -74,14 +71,17 @@ public class OptionConverter {
      <p>Case of value is unimportant.  */
   public
   static
-  boolean toBoolean(String value, boolean dEfault) {
-    if(value == null)
+  boolean toBoolean(final String value, final boolean dEfault) {
+    if(value == null) {
       return dEfault;
-    String trimmedVal = value.trim();
-    if("true".equalsIgnoreCase(trimmedVal))
+    }
+    final String trimmedVal = value.trim();
+    if("true".equalsIgnoreCase(trimmedVal)) {
       return true;
-    if("false".equalsIgnoreCase(trimmedVal))
+    }
+    if("false".equalsIgnoreCase(trimmedVal)) {
       return false;
+    }
     return dEfault;
   }
 

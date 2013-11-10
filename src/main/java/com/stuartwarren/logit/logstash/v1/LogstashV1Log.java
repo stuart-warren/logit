@@ -6,6 +6,7 @@ package com.stuartwarren.logit.logstash.v1;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -22,15 +23,7 @@ public final class LogstashV1Log extends Log {
 
     private long                    timestamp;
     private String                  version;
-    private HashMap<String, Object> jacksonOutput;
-
-    private ObjectMapper            mapper;
-
-    public LogstashV1Log() {
-        super();
-        this.mapper = new ObjectMapper();
-        this.jacksonOutput = new HashMap<String, Object>();
-    }
+    private transient final Map<String, Object> jacksonOutput = new ConcurrentHashMap<String, Object>();
 
     /**
      * @return the timestamp
@@ -43,7 +36,7 @@ public final class LogstashV1Log extends Log {
      * @param timestamp
      *            the timestamp to set
      */
-    public void setTimestamp(long timestamp) {
+    public void setTimestamp(final long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -58,17 +51,15 @@ public final class LogstashV1Log extends Log {
      * @param version
      *            the version to set
      */
-    public void setVersion(String version) {
+    public void setVersion(final String version) {
         this.version = version;
     }
 
     // TODO: Make me accept enum keys only
     @SuppressWarnings("unchecked")
-    private void addEventData(String key, Object val) {
-        if (val instanceof HashMap) {
-            if (!((HashMap<String, Object>) val).isEmpty()) {
-                jacksonOutput.put(key, val);
-            }
+    private void addEventData(final String key, final Object val) {
+        if (val instanceof HashMap && !((HashMap<String, Object>) val).isEmpty()) {
+            jacksonOutput.put(key, val);
         } else if (null != val) {
             jacksonOutput.put(key, val);
         }
@@ -83,9 +74,9 @@ public final class LogstashV1Log extends Log {
         addEventData("level", this.getLevel());
         addEventData("user", this.getUsername());
         addEventData("hostname", this.getHostname());
-        Map<String, Object> fields = this.getFields();
+        final Map<String, Object> fields = this.getFields();
         if (null != fields) {
-            for (Map.Entry<String, Object> entry : fields.entrySet()) {
+            for (final Map.Entry<String, Object> entry : fields.entrySet()) {
                 addEventData(entry.getKey(), entry.getValue());
             }
         }
@@ -94,6 +85,7 @@ public final class LogstashV1Log extends Log {
         addEventData("@timestamp", new LogstashTimestamp(this.getTimestamp()).toString());
         addEventData("message", this.getMessage());
         try {
+            final ObjectMapper mapper = new ObjectMapper();
             log = mapper.writeValueAsString(jacksonOutput);
         } catch (JsonGenerationException e) {
             log = e.toString();

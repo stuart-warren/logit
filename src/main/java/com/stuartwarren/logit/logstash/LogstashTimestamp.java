@@ -19,7 +19,7 @@ public class LogstashTimestamp extends Timestamp {
     private static final FastDateFormat ISO_DATETIME_TIME_ZONE_FORMAT_WITH_MILLIS_UTC = FastDateFormat.getInstance(
                                                                                           "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", UTC);
 
-    private String dateFormat(long timestamp) {
+    private String dateFormat(final long timestamp) {
         return ISO_DATETIME_TIME_ZONE_FORMAT_WITH_MILLIS_UTC.format(timestamp);
     }
 
@@ -30,12 +30,12 @@ public class LogstashTimestamp extends Timestamp {
     /**
      * @param timestamp
      */
-    public LogstashTimestamp(Long timestamp) {
+    public LogstashTimestamp(final Long timestamp) {
         super(timestamp);
     }
 
     public String toString() {
-        return this.dateFormat(this.timestamp);
+        return this.dateFormat(this.getTimestamp());
     }
 
 }

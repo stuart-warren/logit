@@ -42,7 +42,7 @@ public class LayoutFactory implements ILayout {
      * @see com.stuartwarren.logit.layout.ILayout#getLog()
      */
     public Log getLog() {
-        return this.getLog();
+        return this.layout.getLog();
     }
 
     /* (non-Javadoc)

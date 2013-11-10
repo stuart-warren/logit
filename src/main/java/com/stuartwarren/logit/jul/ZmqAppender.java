@@ -23,15 +23,16 @@ import com.stuartwarren.logit.zmq.ZmqTransport;
  */
 public class ZmqAppender extends Handler implements IZmqTransport {
     
-    final String prefix = ZmqAppender.class.getName();
+    transient private final String prefix = ZmqAppender.class.getName();
     static private final Formatter DEFAULT_FORMATTER = new SimpleFormatter();
     static private final Level DEFAULT_LEVEL = Level.WARNING;
-    private LogManager manager = LogManager.getLogManager();
-    private ZmqTransport appender;
+    transient private final LogManager manager = LogManager.getLogManager();
+    transient private final ZmqTransport appender;
     
     public ZmqAppender() {
+        super();
         LogitLog.debug("Jul ZMQ appender in use.");
-        ShutdownHook sh = new ShutdownHook();
+        final ShutdownHook sh = new ShutdownHook();
         sh.attachShutDownHook();
         this.appender = new ZmqTransport();
         configure();
@@ -42,14 +43,14 @@ public class ZmqAppender extends Handler implements IZmqTransport {
      * 
      */
     private void configure() {
-        String strLevel = manager.getProperty(prefix + ".level");
+        final String strLevel = manager.getProperty(prefix + ".level");
         Level lev = DEFAULT_LEVEL;
-        if (strLevel == null) {
+        if (strLevel != null) {
             try
             {
                 lev = Level.parse(strLevel);
             }
-            catch (Exception ex){
+            catch (IllegalArgumentException ex){
                 LogitLog.error("Error parsing level.", ex);
             }
         }
@@ -71,8 +72,8 @@ public class ZmqAppender extends Handler implements IZmqTransport {
      * @see java.util.logging.Handler#publish(java.util.logging.LogRecord)
      */
     @Override
-    public void publish(LogRecord record) {
-        String log = this.getFormatter().format(record);
+    public void publish(final LogRecord record) {
+        final String log = this.getFormatter().format(record);
         this.appender.appendString(log);
     }
 
@@ -81,7 +82,7 @@ public class ZmqAppender extends Handler implements IZmqTransport {
      */
     @Override
     public void flush() {
-        
+        // empty
     }
 
     /* (non-Javadoc)
@@ -94,7 +95,7 @@ public class ZmqAppender extends Handler implements IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.ITransport#setEndpoints(java.lang.String)
      */
-    public void setEndpoints(String endpoints) {
+    public void setEndpoints(final String endpoints) {
         this.appender.setEndpoints(endpoints);
     }
 
@@ -108,7 +109,7 @@ public class ZmqAppender extends Handler implements IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.ITransport#setSocketType(java.lang.String)
      */
-    public void setSocketType(String socketType) {
+    public void setSocketType(final String socketType) {
         this.appender.setSocketType(socketType);
     }
 
@@ -122,7 +123,7 @@ public class ZmqAppender extends Handler implements IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.ITransport#setLinger(int)
      */
-    public void setLinger(int linger) {
+    public void setLinger(final int linger) {
         this.appender.setLinger(linger);
     }
 
@@ -136,7 +137,7 @@ public class ZmqAppender extends Handler implements IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.ITransport#setBindConnect(java.lang.String)
      */
-    public void setBindConnect(String bindConnect) {
+    public void setBindConnect(final String bindConnect) {
         this.appender.setBindConnect(bindConnect);
     }
 
@@ -150,7 +151,7 @@ public class ZmqAppender extends Handler implements IZmqTransport {
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.appender.ITransport#setSendHWM(int)
      */
-    public void setSendHWM(int sendHWM) {
+    public void setSendHWM(final int sendHWM) {
         this.appender.setSendHWM(sendHWM);
     }
     
@@ -159,9 +160,9 @@ public class ZmqAppender extends Handler implements IZmqTransport {
      * @param formatter
      *          Name of class to use to format the logs.
      */
-    private void setTheFormatter(String formatter) {
+    private void setTheFormatter(final String formatter) {
         if ( null != formatter) {
-            Formatter f = (Formatter) LayoutLoader.instantiateByClassName(formatter, DEFAULT_FORMATTER);
+            final Formatter f = (Formatter) LayoutLoader.instantiateByClassName(formatter, DEFAULT_FORMATTER);
             this.setFormatter(f);
         }
     }
