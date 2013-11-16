@@ -1,5 +1,7 @@
 target/
 *.class
+*.deb
+usr
 
 .DS_Store
 .project
