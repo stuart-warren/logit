@@ -79,6 +79,7 @@ public final class LogstashV1Log extends Log {
         addEventData(ROOT.LEVEL, this.getLevel());
         addEventData(ROOT.USER, this.getUsername());
         addEventData(ROOT.HOSTNAME, this.getHostname());
+        addEventData(ROOT.LOGIT, this.getLogitVersion());
         final Map<IFieldName, Object> fields = this.getFields();
         if (null != fields) {
             for (final Map.Entry<IFieldName, Object> entry : fields.entrySet()) {

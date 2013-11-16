@@ -33,6 +33,7 @@ public class Log {
     private Map<IFieldName,Object>      fields;
     private transient final String  user = details.getUsername();
     private transient final String  hostname = details.getHostname();
+    private transient final String  logitVersion = details.getVersion();
 
     /**
      * @return the timestamp
@@ -207,6 +208,13 @@ public class Log {
     
     public String getHostname() {
         return hostname;
+    }
+    
+    /**
+     * @return the logitVersion
+     */
+    public String getLogitVersion() {
+        return logitVersion;
     }
 
     /**

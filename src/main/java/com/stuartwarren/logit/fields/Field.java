@@ -192,7 +192,12 @@ public class Field {
          * CONFIG - config
          * Fields added in configuration file
          */
-        CONFIG("config")
+        CONFIG("config"),
+        /**
+         * LOGIT - logit
+         * Version of Logit sending this log
+         */
+        LOGIT("logit")
         ;
         
         private String text;
