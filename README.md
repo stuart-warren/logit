@@ -209,6 +209,15 @@ OR during startup:
 -Dlogit.debug
 ```
 
+If you'd like more detail, including the logs sent to the socket, activate trace mode in a similar way:
+```
+in code:
+System.setProperty("logit.trace", "");
+
+OR during startup:
+-Dlogit.trace
+```
+
 Maven
 =====
 
