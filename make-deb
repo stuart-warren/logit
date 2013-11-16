@@ -1,0 +1,44 @@
+#!/bin/bash
+
+installdir='/usr/lib/logit'
+NAME='logit-java'
+VERSION='0.5.5'
+ITERATION='1'
+WEBSITE='https://github.com/stuart-warren/logit'
+REPO='http://nexus.stuartwarren.com/nexus'
+
+echo "Delete ${installdir}"
+rm -rf .${installdir}
+echo "create base dir ${installdir}"
+mkdir -p .${installdir}
+wget ${REPO}/content/repositories/releases/com/stuartwarren/logit/${VERSION}/logit-${VERSION}-tomcatvalve.jar -O .${installdir}/logit-${VERSION}-tomcatvalve.jar
+wget ${REPO}/content/repositories/releases/com/stuartwarren/logit/${VERSION}/logit-${VERSION}-jar-with-dependencies.jar -O .${installdir}/logit-${VERSION}-jar-with-dependencies.jar
+wget https://raw.github.com/stuart-warren/logit/master/LICENSE -O .${installdir}/LICENCE
+wget https://raw.github.com/stuart-warren/logit/master/README.md -O .${installdir}/README.md
+pushd .${installdir}
+ln -sf logit-${VERSION}-tomcatvalve.jar logit-tomcatvalve.jar
+ln -sf logit-${VERSION}-jar-with-dependencies.jar logit-jar-with-dependencies.jar
+popd
+
+echo "Delete old packages"
+rm ${NAME}_*_all.deb
+echo "Build new package"
+fpm \
+        -n $NAME \
+        -v $VERSION \
+        --iteration ${ITERATION} \
+        -a all \
+        -m "Stuart Warren <stuart@stuartwarren.com>" \
+        --description "Library to extend Log4J 1.2 (plus now Logback 1.0, 
+Java.util.logging and Tomcat AccessLog Valve) by providing 
+json layouts (for logstash/greylog) and a zeromq appender" \
+        --url $WEBSITE \
+        --license 'Apache License, Version 2.0' \
+        --vendor 'stuartwarren.com' \
+        -t deb \
+        -s dir \
+        ${installdir:1}
+
+echo "Delete ${installdir}"
+rm -rf .${installdir}
+echo "Done!"
