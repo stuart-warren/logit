@@ -3,7 +3,9 @@
  */
 package com.stuartwarren.logit.layout;
 
+import java.io.InputStream;
 import java.net.UnknownHostException;
+import java.util.Properties;
 
 import com.stuartwarren.logit.utils.LogitLog;
 
@@ -17,6 +19,7 @@ public final class CachedDetails {
     private static volatile CachedDetails uniqueInstance;
     private String hostname;
     private String username;
+    private String version;
     
     private CachedDetails() {
         LogitLog.debug("Trying to resolve hostname. May take some time...");
@@ -39,6 +42,10 @@ public final class CachedDetails {
         if (LogitLog.isDebugEnabled()) {
             LogitLog.debug("Setting property [username] to [" + username + "].");
         }
+        this.setVersion(this.fetchVersion());
+        if (LogitLog.isDebugEnabled()) {
+            LogitLog.debug("Setting property [version] to [" + version + "].");
+        }
     }
     
     public static CachedDetails getInstance() {
@@ -50,6 +57,31 @@ public final class CachedDetails {
             }
         }
         return uniqueInstance;
+    }
+    
+    private String fetchVersion() {
+        // try to load from properties file
+        String version = null;
+        try {
+            Properties p = new Properties();
+            InputStream is = CachedDetails.class.getClassLoader().getResourceAsStream("version.properties");
+            LogitLog.debug("Loading properties file.");
+            if (is != null) {
+                p.load(is);
+                LogitLog.debug("Loaded properties file.");
+                version = p.getProperty("logit.version");
+            }
+        } catch (Exception e) {
+            LogitLog.debug("Error loading properties", e);        
+        }
+
+        if (version == null) {
+            // we could not compute the version so use a blank
+            version = "";
+            LogitLog.debug("Get empty string.");
+        }
+        
+        return version;
     }
 
     /**
@@ -78,6 +110,20 @@ public final class CachedDetails {
      */
     private void setUsername(final String username) {
         this.username = username;
+    }
+
+    /**
+     * @return the version
+     */
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * @param version the version to set
+     */
+    private void setVersion(final String version) {
+        this.version = version;
     }
     
 

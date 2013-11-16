@@ -108,22 +108,25 @@ public class ZmqTransport implements IAppender, IZmqTransport {
      */
     public void appendString(final String line) {
         final String log = line.substring(0, line.length() - 1);
-        if (LogitLog.isDebugEnabled()) {
-            LogitLog.debug("Sending log: [" + log + "].");
+        if (LogitLog.isTraceEnabled()) {
+            LogitLog.trace("Sending log: [" + log + "].");
         }
         try {
             socket.send(log, ZMQ.NOBLOCK);
             // Has occasionally been known to throw a java.nio.channels.ClosedByInterruptException
         } catch (IOException e) {
+            LogitLog.warn("IOException thrown, will try sending log again shortly.", e);
             // Try again after sleeping for a second
             try {
                 Thread.sleep(1000);
                 socket.send(log, ZMQ.NOBLOCK);
             } catch (InterruptedException i) {
-                // do nothing
+                LogitLog.error("Logit got interrupted while waiting to send failed message again.", i);
             } catch (IOException e2) {
                 LogitLog.error("Could not send following log on the second attempt: [" + log + "].", e2);
             }
+        } catch (Exception g) {
+            LogitLog.error("Something threw an exception that wasn't IOException.", g);
         }
     }
 

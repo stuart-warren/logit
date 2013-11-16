@@ -63,6 +63,7 @@ public final class GelfV1Log extends Log {
         addEventData(ROOT.LEVEL, this.getLevelInt(), true);
         addEventData(GELF.HOST, this.getHostname(), true);
         addEventData(ROOT.USER, this.getUsername());
+        addEventData(ROOT.LOGIT, this.getLogitVersion());
         addEventData(ROOT.NDC, this.getNdc());
         addEventData(ROOT.TAGS, this.getTags());
         addEventData(ROOT.THREAD, this.getThreadName());

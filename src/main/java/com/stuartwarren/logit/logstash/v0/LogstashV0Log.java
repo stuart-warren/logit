@@ -81,6 +81,7 @@ public final class LogstashV0Log extends Log {
         addEventData(LOGSTASH.FIELDS, this.getFields());
         addField(ROOT.MDC, this.getMdc());
         addField(ROOT.NDC, this.getNdc());
+        addField(ROOT.LOGIT, this.getLogitVersion());
         //addEventData(LOGSTASH.VERSION, this.getVersion());
         addEventData(LOGSTASH.TIMESTAMP, new LogstashTimestamp(this.getTimestamp()).toString());
         addEventData(LOGSTASH.MESSAGE, this.getMessage());

@@ -35,8 +35,8 @@ public class ZmqOutputStream extends OutputStream {
 
     @Override
     public void write(final byte[] bytes) throws IOException {
-        if (LogitLog.isDebugEnabled()) {
-            LogitLog.debug("Sending log: [" + new String(bytes) + "].");
+        if (LogitLog.isTraceEnabled()) {
+            LogitLog.trace("Sending log: [" + new String(bytes) + "].");
         }
         socket.send(bytes, 0);
     }

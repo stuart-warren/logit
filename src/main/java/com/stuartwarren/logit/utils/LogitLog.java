@@ -48,7 +48,9 @@ public final class LogitLog {
     <p>Note that the search for all option names is case sensitive.  
    */
   public static final String DEBUG_KEY="logit.debug";
-  private static boolean debugEnabled;  
+  public static final String TRACE_KEY="logit.trace";
+  private static boolean debugEnabled;
+  private static boolean traceEnabled;
 
   /**
      In quietMode not even errors generate any output.
@@ -56,14 +58,18 @@ public final class LogitLog {
   private static boolean quietMode;
 
   private static final String PREFIX = "logit: ";
+  private static final String TRACE_PREFIX = "logit:TRACE ";
   private static final String ERR_PREFIX = "logit:ERROR ";
   private static final String WARN_PREFIX = "logit:WARN ";
 
   static {
     final String key = OptionConverter.getSystemProperty(DEBUG_KEY, null);
-
-    if(key != null) { 
-      debugEnabled = OptionConverter.toBoolean(key, true);
+    final String tkey = OptionConverter.getSystemProperty(TRACE_KEY, null);
+    if(key != null || tkey != null) { 
+        debugEnabled = OptionConverter.toBoolean(key, true);
+    }
+    if(tkey != null) {
+        traceEnabled = OptionConverter.toBoolean(tkey, true);
     }
   }
   
@@ -85,7 +91,40 @@ public final class LogitLog {
   boolean isDebugEnabled() {
       return debugEnabled;
   }
+  
+  static
+  public
+  boolean isTraceEnabled() {
+      return traceEnabled;
+  }
 
+  
+  /**
+  This method is used to output logit internal debug
+  statements. Output goes to <code>System.out</code>.
+    */
+    public
+    static
+    void trace(final String msg) {
+     if(traceEnabled && !quietMode) {
+       System.out.println(TRACE_PREFIX+msg);
+     }
+    }
+    
+    /**
+      This method is used to output logit internal debug
+      statements. Output goes to <code>System.out</code>.
+    */
+    public
+    static
+    void trace(final String msg, final Throwable t) {
+     if(traceEnabled && !quietMode) {
+       System.out.println(TRACE_PREFIX+msg);
+       if(t != null) {
+         t.printStackTrace(System.out);
+       }
+     }
+    }
   /**
      This method is used to output logit internal debug
      statements. Output goes to <code>System.out</code>.
