@@ -149,10 +149,10 @@ public class Field {
          */
         USER("user"),
         /**
-         * HOSTNAME - host_name
+         * HOSTNAME - hostname
          * Host the process is running on.
          */
-        HOSTNAME("host_name"),
+        HOSTNAME("hostname"),
         /**
          * LOCATION - location
          * Location information of where in the code this log is.
