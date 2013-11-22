@@ -19,6 +19,8 @@ import org.apache.catalina.connector.Response;
 
 
 
+
+import com.stuartwarren.logit.fields.Field.ROOT;
 import com.stuartwarren.logit.fields.IFieldName;
 import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
@@ -141,7 +143,7 @@ public class Layout implements IFrameworkLayout {
         log.setTags(tags);
         log.setFields(fields);
         log.setMessage(message.toString());
-        log.addField(TCF.HTTP, httpFields);
+        log.addField(ROOT.HTTP, httpFields);
         log.appendTag("valve");
         return log;
     }

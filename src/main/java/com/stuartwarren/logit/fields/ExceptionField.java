@@ -17,23 +17,23 @@ public final class ExceptionField extends Field {
     public ExceptionField() {
         super();
         this.setSection(ROOT.EXCEPTION);
-
+        Field.register(this);
     }
     
     public final static void put(final IFieldName key, final String s) {
         if (FIELD != null) {
-            FIELD.put0(key.toString(), s);
+            FIELD.put0(key, s);
         }
     }
     
     public static Object get(final IFieldName key) {
         if (FIELD != null) {
-            return FIELD.get0(key.toString());
+            return FIELD.get0(key);
         }
         return null;
     }
     
-    public static Map<String, Object> getContext() {
+    public static Map<IFieldName, Object> getContext() {
         if (FIELD == null) {
             return null;
         } else {

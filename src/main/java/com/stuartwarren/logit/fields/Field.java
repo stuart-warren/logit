@@ -3,9 +3,12 @@
  */
 package com.stuartwarren.logit.fields;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.stuartwarren.logit.utils.LogitLog;
 import com.stuartwarren.logit.utils.ThreadLocalMap;
 
 /**
@@ -13,37 +16,39 @@ import com.stuartwarren.logit.utils.ThreadLocalMap;
  * @date 20 Oct 2013
  *
  */
-public class Field {
+public class Field implements IField {
     
 
     private static final Field FIELD = new Field();
+    private static List<IField> fieldList = new ArrayList<IField>();
     private transient Object tlm;
     private IFieldName section;
+    
     
     public Field() {
         tlm = new ThreadLocalMap();
     }
     
-    public static void put(final String key, final Object o) {
+    public static void put(final IFieldName key, final Object o) {
         if (FIELD != null) {
             FIELD.put0(key, o);
         }
     }
     
-    public static Object get(final String key) {
+    public static Object get(final IFieldName key) {
         if (FIELD != null) {
             return FIELD.get0(key);
         }
         return null;
     }
     
-    public static void remove(final String key) {
+    public static void remove(final IFieldName key) {
         if (FIELD != null) {
             FIELD.remove0(key);
         }
     }
     
-    public static Map<String, Object> getContext() {
+    public static Map<IFieldName, Object> getContext() {
         if (FIELD == null) {
             return null;
         } else {
@@ -57,8 +62,8 @@ public class Field {
         }
     }
     
-    public String getSection() {
-        return this.section.toString();
+    public IFieldName getSection() {
+        return this.section;
     }
     
     /**
@@ -68,31 +73,63 @@ public class Field {
         this.section = section;
     }
     
+    public static void register(IField field) {
+        int i = fieldList.indexOf(field);
+        if (i >= 0) {
+            LogitLog.trace("Already Registered: " + field.getClass().getCanonicalName());
+        } else {
+            fieldList.add(field);
+            LogitLog.debug("Registered: " + field.getClass().getCanonicalName());
+        }
+    }
+    
+    public static void unRegister(IField field) {
+        int i = fieldList.indexOf(field);
+        if (i >= 0) {
+            fieldList.remove(i);
+        }
+    }
+  
+    public static Map<IFieldName,Object> list() {
+        Map<IFieldName,Object> result = new HashMap<IFieldName,Object>();
+        for (int i = 0; i < fieldList.size(); i++) {
+            IFieldName section = fieldList.get(i).getSection();
+            result.put(section, fieldList.get(i).get0(section));
+        }
+        return result;
+    }
+    
+    public static void cleanUp() {
+        for (int i = 0; i < fieldList.size(); i++) {
+            fieldList.get(i).clear0();
+        }
+    }
+    
     @SuppressWarnings("unchecked")
-    protected void put0(final String key, final Object o) {
+    protected void put0(final IFieldName key, final Object o) {
         if (tlm == null) {
             return;
         } else {
-            Map<String, Object> ht = (HashMap<String, Object>) ((ThreadLocalMap) tlm).get();
+            Map<IFieldName, Object> ht = (HashMap<IFieldName, Object>) ((ThreadLocalMap) tlm).get();
             if (ht == null) {
-                ht = new HashMap<String, Object>();
+                ht = new HashMap<IFieldName, Object>();
                 ((ThreadLocalMap) tlm).set(ht);
             }
-            HashMap<String, Object> h = (HashMap<String, Object>) get0(getSection());
+            HashMap<IFieldName, Object> h = (HashMap<IFieldName, Object>) get0(getSection());
             if (h == null) {
-                h = new HashMap<String, Object>();
+                h = new HashMap<IFieldName, Object>();
             }
             h.put(key, o);
             ht.put(getSection(), h);
         }
     }
 
-    protected Object get0(String key) {
+    public Object get0(IFieldName key) {
         if (tlm == null) {
             return null;
         } else {
             @SuppressWarnings("unchecked")
-            HashMap<String, Object> ht = (HashMap<String, Object>) ((ThreadLocalMap) tlm).get();
+            HashMap<IFieldName, Object> ht = (HashMap<IFieldName, Object>) ((ThreadLocalMap) tlm).get();
             if (ht != null && key != null) {
                 return ht.get(key);
             } else {
@@ -101,13 +138,14 @@ public class Field {
         }
     }
 
-    protected void remove0(final String key) {
+    public void remove0(final IFieldName key) {
         if (tlm != null) {
             final HashMap<?, ?> ht = (HashMap<?, ?>) ((ThreadLocalMap) tlm).get();
             if (ht != null) {
                 ht.remove(key);
                 // clean up if this was the last key
                 if (ht.isEmpty()) {
+                        LogitLog.trace("Last key removed, cleaning up.");
                         clear0();
                 }
             }
@@ -115,15 +153,15 @@ public class Field {
     }
 
     @SuppressWarnings("unchecked")
-    protected Map<String, Object> getContext0() {
+    public Map<IFieldName, Object> getContext0() {
         if (tlm == null) {
             return null;
         } else {
-            return (HashMap<String, Object>) ((ThreadLocalMap) tlm).get();
+            return (HashMap<IFieldName, Object>) ((ThreadLocalMap) tlm).get();
         }
     }
 
-    protected void clear0() {
+    public void clear0() {
         if (tlm != null) {
             final Map<?, ?> ht = (HashMap<?, ?>) ((ThreadLocalMap) tlm).get();
             if (ht != null) {
@@ -131,7 +169,7 @@ public class Field {
             }
         }
     }
-    
+
     public static enum ROOT implements IFieldName {
         /**
          * MESSAGE - message
@@ -197,7 +235,12 @@ public class Field {
          * LOGIT - logit
          * Version of Logit sending this log
          */
-        LOGIT("logit")
+        LOGIT("logit"),
+        /**
+         * HTTP - http
+         * HTTP specific fields
+         */
+        HTTP("http")
         ;
         
         private String text;
