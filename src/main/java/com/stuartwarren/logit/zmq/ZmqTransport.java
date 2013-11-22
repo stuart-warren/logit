@@ -3,7 +3,7 @@
  */
 package com.stuartwarren.logit.zmq;
 
-import org.jeromq.ZMQ;
+import org.zeromq.ZMQ;
 
 import zmq.ZError.IOException;
 

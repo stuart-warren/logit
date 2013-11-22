@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
-import org.jeromq.ZMQ;
+import org.zeromq.ZMQ;
 
 import com.stuartwarren.logit.utils.LogitLog;
 

@@ -3,7 +3,7 @@
  */
 package com.stuartwarren.logit.zmq;
 
-import org.jeromq.ZMQ;
+import org.zeromq.ZMQ;
 
 /**
  * @author Stuart Warren

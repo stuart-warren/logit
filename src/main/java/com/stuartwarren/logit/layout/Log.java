@@ -6,11 +6,14 @@ package com.stuartwarren.logit.layout;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.stuartwarren.logit.fields.Field.ROOT;
+import com.stuartwarren.logit.fields.Field;
 import com.stuartwarren.logit.fields.IFieldName;
 
 /**
@@ -250,6 +253,21 @@ public class Log {
             }
         } else if (null != val) {
             fields.put(key, val);
+        }
+    }
+    
+    public void addRegisteredFields() {
+ 
+        // add all registered fields to log
+        Map<IFieldName,Object> l = Field.list();
+        Iterator<Entry<IFieldName, Object>> it = l.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<IFieldName,Object> pairs = (Map.Entry<IFieldName,Object>)it.next();
+            IFieldName key = (IFieldName) pairs.getKey();
+            @SuppressWarnings("unchecked")
+            Map<IFieldName,Object> value = (Map<IFieldName,Object>) pairs.getValue();
+            this.addField(key, value);
+            it.remove(); // avoids a ConcurrentModificationException
         }
     }
 
