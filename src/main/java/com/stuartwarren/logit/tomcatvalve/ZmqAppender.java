@@ -44,7 +44,7 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
         if (!this.appender.isConfigured()) {
             this.appender.configure();
         }
-        LogitLog.debug("About to append log.");
+        LogitLog.trace("About to append log.");
         append(request, response, time);
     }
     
