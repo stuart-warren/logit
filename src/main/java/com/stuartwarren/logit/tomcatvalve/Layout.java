@@ -11,17 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.catalina.Session;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
-//import org.apache.catalina.valves.AccessLogValve;
 
-
-
-
-
-
-
-
-import com.stuartwarren.logit.fields.Field.ROOT;
-import com.stuartwarren.logit.fields.IFieldName;
+import com.stuartwarren.logit.fields.HttpField;
+import com.stuartwarren.logit.fields.HttpField.HTTP;
 import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
 import com.stuartwarren.logit.layout.Log;
@@ -74,36 +66,35 @@ public class Layout implements IFrameworkLayout {
     
     private Log doFormat(final Request request, final Response response, final long time) {
         final Log log = this.layout.getLog();
-        final Map<String,Object> httpFields = new ConcurrentHashMap<String,Object>();
         String level = "INFO";
         final StringBuffer message = new StringBuffer();
         final int status = response.getStatus();
         
         log.setTimestamp(request.getCoyoteRequest().getStartTime());
-        httpFields.put("request_parameters", request.getParameterMap());
-        httpFields.put("remote_host", request.getRemoteHost());
-        httpFields.put("remote_user", request.getRemoteUser());
-        httpFields.put("request_method", request.getMethod());
+        HttpField.put(HTTP.REQUEST_PARAMS, request.getParameterMap());
+        HttpField.put(HTTP.REMOTE_HOST, request.getRemoteHost());
+        HttpField.put(HTTP.REMOTE_USER, request.getRemoteUser());
+        HttpField.put(HTTP.REQUEST_METHOD, request.getMethod());
         message.append(request.getMethod());
         message.append(' ');
-        httpFields.put("request_uri", request.getRequestURI());
+        HttpField.put(HTTP.REQUEST_URI, request.getRequestURI());
         message.append(request.getRequestURI());
         message.append('?');
-        httpFields.put("request_querystring", request.getQueryString());
+        HttpField.put(HTTP.REQUEST_QUERYSTRING, request.getQueryString());
         message.append(request.getQueryString());
         message.append(' ');
-        httpFields.put("request_protocol", request.getProtocol());
+        HttpField.put(HTTP.REQUEST_PROTOCOL, request.getProtocol());
         message.append(request.getProtocol());
         message.append(' ');
-        httpFields.put("response_status", status);
+        HttpField.put(HTTP.RESPONSE_STATUS, status);
         message.append(status);
         final Session session = request.getSessionInternal(false);
         if (session != null) {
-            httpFields.put("session_id", session.getIdInternal());
+            HttpField.put(HTTP.SESSION_ID, session.getIdInternal());
         }
-        httpFields.put("response_size", response.getBytesWritten(false));
-        httpFields.put("server_name", request.getServerName());
-        httpFields.put("response_duration", time);
+        HttpField.put(HTTP.RESPONSE_SIZE, response.getBytesWritten(false));
+        HttpField.put(HTTP.SERVER_NAME, request.getServerName());
+        HttpField.put(HTTP.RESPONSE_DURATION, time);
         if (status >= HTTP_400) {
             level = "ERROR";
         }
@@ -118,7 +109,7 @@ public class Layout implements IFrameworkLayout {
                     iheaders.put(header, request.getHeader(header));
                 }
             }
-            httpFields.put("request_headers", iheaders);
+            HttpField.put(HTTP.REQUEST_HEADERS, iheaders);
         }
         if (null != this.oheaders && !this.oheaders.isEmpty()) {
             final Map<String,Object> oheaders = new ConcurrentHashMap<String,Object>();
@@ -127,7 +118,7 @@ public class Layout implements IFrameworkLayout {
                     oheaders.put(header, request.getHeader(header));
                 }
             }
-            httpFields.put("response_headers", oheaders);
+            HttpField.put(HTTP.RESPONSE_HEADERS, oheaders);
         }
         if (null != this.cookies && !this.cookies.isEmpty()) {
             final Map<String,Object> cookies = new ConcurrentHashMap<String,Object>();
@@ -136,15 +127,17 @@ public class Layout implements IFrameworkLayout {
                     cookies.put(cookie, request.getHeader(cookie));
                 }
             }
-            httpFields.put("cookies", cookies);
+            HttpField.put(HTTP.COOKIES, cookies);
         }
         
         log.setLevel(level);
         log.setTags(tags);
         log.setFields(fields);
         log.setMessage(message.toString());
-        log.addField(ROOT.HTTP, httpFields);
         log.appendTag("valve");
+        
+        log.addRegisteredFields();
+        HttpField.clear();
         return log;
     }
 
@@ -231,19 +224,4 @@ public class Layout implements IFrameworkLayout {
         this.cookies = Arrays.asList(cookies.split("\\s*,\\s*"));
     }
     
-    public static enum TCF implements IFieldName {
-        
-        HTTP("http");
-        
-        private String text;
-        
-        TCF(final String text) {
-            this.text = text;
-        }
-        
-        public String toString() {
-            return this.text;
-        }
-    }
-
 }

@@ -3,8 +3,6 @@
  */
 package com.stuartwarren.logit.fields;
 
-import java.util.Map;
-
 /**
  * @author Stuart Warren 
  * @date 20 Oct 2013
@@ -12,7 +10,7 @@ import java.util.Map;
  */
 public final class LocationField extends Field {
     
-private static final LocationField FIELD = new LocationField();
+    private static final LocationField FIELD = new LocationField();
     
     public LocationField() {
         super();
@@ -33,14 +31,6 @@ private static final LocationField FIELD = new LocationField();
         return null;
     }
     
-    public static Map<IFieldName, Object> getContext() {
-        if (FIELD == null) {
-            return null;
-        } else {
-            return FIELD.getContext0();
-        }
-    }
-    
     public static void clear() {
         if (FIELD != null) {
             FIELD.clear0();
@@ -49,42 +39,42 @@ private static final LocationField FIELD = new LocationField();
     
     public String toString() {
         final StringBuffer strBuf = new StringBuffer();
-        strBuf.append(get(LF.CLASS));
+        strBuf.append(get(LOCATION.CLASS));
         strBuf.append('.');
-        strBuf.append(get(LF.METHOD));
+        strBuf.append(get(LOCATION.METHOD));
         strBuf.append('(');
-        strBuf.append(get(LF.FILE));
+        strBuf.append(get(LOCATION.FILE));
         strBuf.append(':');
-        strBuf.append(get(LF.LINE));
+        strBuf.append(get(LOCATION.LINE));
         strBuf.append(')');
         return strBuf.toString();
     }
     
-    public static enum LF implements IFieldName {
+    public static enum LOCATION implements IFieldName {
         /**
-         * FILE - file_name
+         * FILE - file_name<br/>
          * File name log occured in.
          */
         FILE("file_name"),
         /**
-         * CLASS - class_name
+         * CLASS - class_name<br/>
          * Class name log occured in.
          */
         CLASS("class_name"),
         /**
-         * METHOD - method_name
+         * METHOD - method_name<br/>
          * Method name log occured in.
          */
         METHOD("method_name"),
         /**
-         * LINE - line_number
+         * LINE - line_number<br/>
          * Line number log occured on.
          */
         LINE("line_number");
         
         private String text;
         
-        LF(final String text) {
+        LOCATION(final String text) {
             this.text = text;
         }
         

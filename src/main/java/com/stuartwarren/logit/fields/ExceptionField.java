@@ -3,8 +3,6 @@
  */
 package com.stuartwarren.logit.fields;
 
-import java.util.Map;
-
 /**
  * @author Stuart Warren 
  * @date 20 Oct 2013
@@ -33,14 +31,6 @@ public final class ExceptionField extends Field {
         return null;
     }
     
-    public static Map<IFieldName, Object> getContext() {
-        if (FIELD == null) {
-            return null;
-        } else {
-            return FIELD.getContext0();
-        }
-    }
-    
     public static void clear() {
         if (FIELD != null) {
             FIELD.clear0();
@@ -49,35 +39,35 @@ public final class ExceptionField extends Field {
     
     public String toString() {
         final StringBuffer strBuf = new StringBuffer();
-        strBuf.append(get(EF.CLASS));
+        strBuf.append(get(EXCEPTION.CLASS));
         strBuf.append(": ");
-        strBuf.append(get(EF.MESSAGE));
+        strBuf.append(get(EXCEPTION.MESSAGE));
         strBuf.append("/n");
-        strBuf.append(get(EF.STACKTRACE));
+        strBuf.append(get(EXCEPTION.STACKTRACE));
         strBuf.append("/n");
         return strBuf.toString();
     }
     
-    public static enum EF implements IFieldName {
+    public static enum EXCEPTION implements IFieldName {
         /**
-         * CLASS - exeption_class
+         * CLASS - exeption_class<br/>
          * Class in which exception occured.
          */
         CLASS("exception_class"),
         /**
-         * MESSAGE - exception_message
+         * MESSAGE - exception_message<br/>
          * Message passed as part of exception.
          */
         MESSAGE("exception_message"),
         /**
-         * STACKTRACE - stacktrace
+         * STACKTRACE - stacktrace<br/>
          * Full thrown stacktrace
          */
         STACKTRACE("stacktrace");
         
         private String text;
         
-        EF(final String text) {
+        EXCEPTION(final String text) {
             this.text = text;
         }
         

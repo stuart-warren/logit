@@ -15,27 +15,27 @@ public class GelfV1Field {
     public static enum GELF implements IFieldName {
         
         /**
-         * HOST - host
+         * HOST - host<br/>
          * host machine sending log
          */
         HOST("host"),
         /**
-         * FACILITY - facility
+         * FACILITY - facility<br/>
          * type of log
          */
         FACILITY("facility"),
         /**
-         * VERSION - version
+         * VERSION - version<br/>
          * Version of Gelf specification
          */
         VERSION("version"),
         /**
-         * TIMESTAMP - timestamp
+         * TIMESTAMP - timestamp<br/>
          * Time of event
          */
         TIMESTAMP("timestamp"),
         /**
-         * SHORTMESSAGE - short_message
+         * SHORTMESSAGE - short_message<br/>
          * Original logged message
          */
         SHORTMESSAGE("short_message")

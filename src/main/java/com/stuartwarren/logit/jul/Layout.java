@@ -18,8 +18,8 @@ import java.util.logging.LogRecord;
 
 import com.stuartwarren.logit.fields.ExceptionField;
 import com.stuartwarren.logit.fields.LocationField;
-import com.stuartwarren.logit.fields.ExceptionField.EF;
-import com.stuartwarren.logit.fields.LocationField.LF;
+import com.stuartwarren.logit.fields.ExceptionField.EXCEPTION;
+import com.stuartwarren.logit.fields.LocationField.LOCATION;
 import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
 import com.stuartwarren.logit.layout.Log;
@@ -125,16 +125,16 @@ public class Layout extends Formatter implements IFrameworkLayout {
             final Throwable throwableInformation = loggingEvent
                     .getThrown();
             if (throwableInformation.getClass() != null) {
-                ExceptionField.put(EF.CLASS, throwableInformation.getClass().getCanonicalName());
+                ExceptionField.put(EXCEPTION.CLASS, throwableInformation.getClass().getCanonicalName());
             }
             if (throwableInformation.getMessage() != null) {
-                ExceptionField.put(EF.MESSAGE, throwableInformation.getMessage());
+                ExceptionField.put(EXCEPTION.MESSAGE, throwableInformation.getMessage());
             }
             if (throwableInformation.getStackTrace() != null) {              
                 final Writer writer = new StringWriter();
                 final PrintWriter printWriter = new PrintWriter(writer);
                 throwableInformation.printStackTrace(printWriter);
-                ExceptionField.put(EF.STACKTRACE, writer.toString());
+                ExceptionField.put(EXCEPTION.STACKTRACE, writer.toString());
             }
         }
     }
@@ -148,8 +148,8 @@ public class Layout extends Formatter implements IFrameworkLayout {
     protected void locationInformation(
             final LogRecord loggingEvent) {
         if (getLocationInfo) {
-            LocationField.put(LF.CLASS, loggingEvent.getSourceClassName());
-            LocationField.put(LF.METHOD, loggingEvent.getSourceMethodName());
+            LocationField.put(LOCATION.CLASS, loggingEvent.getSourceClassName());
+            LocationField.put(LOCATION.METHOD, loggingEvent.getSourceMethodName());
         }
     }
 

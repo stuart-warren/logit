@@ -134,15 +134,15 @@ public class Log {
     }
 
     /**
-     * @return the loggerNameString
+     * @return the loggerName
      */
     public String getLoggerName() {
         return loggerName;
     }
 
     /**
-     * @param loggerNameString
-     *            the loggerNameString to set
+     * @param loggerName
+     *            the loggerName to set
      */
     public void setLoggerName(final String loggerName) {
         if (null != loggerName) {
@@ -205,10 +205,18 @@ public class Log {
         return fields;
     }
     
+    /**
+     * 
+     * @return the username
+     */
     public String getUsername() {
         return user;
     }
     
+    /**
+     * 
+     * @return the hostname
+     */
     public String getHostname() {
         return hostname;
     }
@@ -241,7 +249,7 @@ public class Log {
     }
     
     @SuppressWarnings("unchecked")
-    public void addField(final IFieldName key, final Object val) {
+    private void addField(final IFieldName key, final Object val) {
     	if (null == fields) {
             this.fields = new LinkedHashMap<IFieldName, Object>();
         }
@@ -256,6 +264,10 @@ public class Log {
         }
     }
     
+    /**
+     * Add all registered fields and their values into the current log<br/>
+     * Classes implementing IField should register themselves in their constructor
+     */
     public void addRegisteredFields() {
  
         // add all registered fields to log
@@ -271,6 +283,9 @@ public class Log {
         }
     }
 
+    /**
+     * @return a string representation of the current log.
+     */
     public String toString() {
         final StringBuffer strBuf = new StringBuffer();
         strBuf.append(getTimestamp());

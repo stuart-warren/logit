@@ -15,27 +15,27 @@ public class LogstashField {
     public static enum LOGSTASH implements IFieldName {
         
         /**
-         * MESSAGE - @message
+         * MESSAGE - @message<br/>
          * Original log message - Logstash v0 only
          */
         MESSAGE("@message"),
         /**
-         * FIELDS - @fields
+         * FIELDS - @fields<br/>
          * Custom fields added inside fields object - Logstash v0 only
          */
         FIELDS("@fields"),
         /**
-         * TAGS - @tags
+         * TAGS - @tags<br/>
          * List of strings to assist with filtering - Logstash v0 only
          */
         TAGS("@tags"),
         /**
-         * TIMESTAMP - @timestamp
+         * TIMESTAMP - @timestamp<br/>
          * Time event occured, in ISO8601 format
          */
         TIMESTAMP("@timestamp"),
         /**
-         * VERSION - @version
+         * VERSION - @version<br/>
          * Version of logstash JSON spec
          */
         VERSION("@version")
