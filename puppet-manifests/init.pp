@@ -4,7 +4,7 @@ $TOMCAT_PKG    = 'tomcat7'
 $CATALINA_BASE = "/var/lib/${TOMCAT_PKG}"
 $CATALINA_HOME = "/usr/share/${TOMCAT_PKG}"
 $JAVA_HOME     = '/usr/lib/jvm/default-java/jre'
-$LOGIT_VERSION = '0.5.7-SNAPSHOT'
+$LOGIT_VERSION = '0.5.8-SNAPSHOT'
 
 exec {
     'apt-get_update':

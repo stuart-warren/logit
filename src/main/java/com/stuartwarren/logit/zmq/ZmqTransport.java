@@ -97,6 +97,7 @@ public class ZmqTransport implements IAppender, IZmqTransport {
             LogitLog.debug("Closing socket.");
             socket.close();
             context.term();
+            setConfigured(false);
             //zcontext.destroy();
             socket = null; // NOPMD by stuart on 10/11/13 20:11
         }
@@ -120,7 +121,8 @@ public class ZmqTransport implements IAppender, IZmqTransport {
             try {
                 // TODO: See if this gets around issues with threads being killed?
                 // kill the socket
-                stop();
+                socket.close();
+                this.setConfigured(true);
                 // Recreate it
                 configure();                
                 socket.send(log, ZMQ.NOBLOCK);
