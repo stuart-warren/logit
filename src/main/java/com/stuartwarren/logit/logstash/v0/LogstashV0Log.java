@@ -73,15 +73,15 @@ public final class LogstashV0Log extends Log {
         String log;
         
         addEventData(LOGSTASH.TAGS, this.getTags());
-        addField(ROOT.THREAD, this.getThreadName());
-        addField(ROOT.LOGGER, this.getLoggerName());
-        addField(ROOT.LEVEL, this.getLevel());
-        addField(ROOT.USER, this.getUsername());
-        addField(ROOT.HOSTNAME, this.getHostname());
+        addEventData(ROOT.THREAD, this.getThreadName());
+        addEventData(ROOT.LOGGER, this.getLoggerName());
+        addEventData(ROOT.LEVEL, this.getLevel());
+        addEventData(ROOT.USER, this.getUsername());
+        addEventData(ROOT.HOSTNAME, this.getHostname());
         addEventData(LOGSTASH.FIELDS, this.getFields());
-        addField(ROOT.MDC, this.getMdc());
-        addField(ROOT.NDC, this.getNdc());
-        addField(ROOT.LOGIT, this.getLogitVersion());
+        addEventData(ROOT.MDC, this.getMdc());
+        addEventData(ROOT.NDC, this.getNdc());
+        addEventData(ROOT.LOGIT, this.getLogitVersion());
         //addEventData(LOGSTASH.VERSION, this.getVersion());
         addEventData(LOGSTASH.TIMESTAMP, new LogstashTimestamp(this.getTimestamp()).toString());
         addEventData(LOGSTASH.MESSAGE, this.getMessage());

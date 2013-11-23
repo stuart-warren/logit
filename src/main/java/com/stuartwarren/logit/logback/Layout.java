@@ -15,8 +15,8 @@ import ch.qos.logback.core.LayoutBase;
 
 import com.stuartwarren.logit.fields.ExceptionField;
 import com.stuartwarren.logit.fields.LocationField;
-import com.stuartwarren.logit.fields.ExceptionField.EF;
-import com.stuartwarren.logit.fields.LocationField.LF;
+import com.stuartwarren.logit.fields.ExceptionField.EXCEPTION;
+import com.stuartwarren.logit.fields.LocationField.LOCATION;
 import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
 import com.stuartwarren.logit.layout.Log;
@@ -106,15 +106,15 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
                 .getThrowableProxy();
         if (throwableInformation != null) {
             if (throwableInformation.getClassName() != null) {
-                ExceptionField.put(EF.CLASS, throwableInformation.getClassName());
+                ExceptionField.put(EXCEPTION.CLASS, throwableInformation.getClassName());
             }
             if (throwableInformation.getMessage() != null) {
-                ExceptionField.put(EF.MESSAGE, throwableInformation.getMessage());
+                ExceptionField.put(EXCEPTION.MESSAGE, throwableInformation.getMessage());
             }
             if (throwableInformation.getStackTraceElementProxyArray() != null) {
                 final String stackTrace = StringUtils.join(
                         throwableInformation.getStackTraceElementProxyArray(), "\n");
-                ExceptionField.put(EF.STACKTRACE, stackTrace);
+                ExceptionField.put(EXCEPTION.STACKTRACE, stackTrace);
             }
         }
     }
@@ -130,10 +130,10 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
         if (getLocationInfo) {
             // TODO: May need to change this? 
             info = ((LoggingEvent) loggingEvent).getCallerData()[0];
-            LocationField.put(LF.CLASS, info.getClassName());
-            LocationField.put(LF.METHOD, info.getMethodName());
-            LocationField.put(LF.FILE, info.getFileName());
-            LocationField.put(LF.LINE, Integer.toString(info.getLineNumber()));
+            LocationField.put(LOCATION.CLASS, info.getClassName());
+            LocationField.put(LOCATION.METHOD, info.getMethodName());
+            LocationField.put(LOCATION.FILE, info.getFileName());
+            LocationField.put(LOCATION.LINE, Integer.toString(info.getLineNumber()));
         }
     }
 

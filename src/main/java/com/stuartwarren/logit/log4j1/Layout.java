@@ -12,9 +12,9 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
 import com.stuartwarren.logit.fields.ExceptionField;
-import com.stuartwarren.logit.fields.ExceptionField.EF;
+import com.stuartwarren.logit.fields.ExceptionField.EXCEPTION;
 import com.stuartwarren.logit.fields.LocationField;
-import com.stuartwarren.logit.fields.LocationField.LF;
+import com.stuartwarren.logit.fields.LocationField.LOCATION;
 import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
 import com.stuartwarren.logit.layout.Log;
@@ -110,16 +110,16 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
                     .getThrowableInformation();
             if (throwableInformation.getThrowable().getClass()
                     .getCanonicalName() != null) {
-                ExceptionField.put(EF.CLASS, throwableInformation.getThrowable().getClass()
+                ExceptionField.put(EXCEPTION.CLASS, throwableInformation.getThrowable().getClass()
                         .getCanonicalName());
             }
             if (throwableInformation.getThrowable().getMessage() != null) {
-                ExceptionField.put(EF.MESSAGE, throwableInformation.getThrowable().getMessage());
+                ExceptionField.put(EXCEPTION.MESSAGE, throwableInformation.getThrowable().getMessage());
             }
             if (throwableInformation.getThrowableStrRep() != null) {
                 final String stackTrace = StringUtils.join(
                         throwableInformation.getThrowableStrRep(), "\n");
-                ExceptionField.put(EF.STACKTRACE, stackTrace);
+                ExceptionField.put(EXCEPTION.STACKTRACE, stackTrace);
             }
         }
     }
@@ -134,10 +134,10 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
             final LoggingEvent loggingEvent) {
         if (getLocationInfo) {
             info = loggingEvent.getLocationInformation();
-            LocationField.put(LF.CLASS, info.getClassName());
-            LocationField.put(LF.METHOD, info.getMethodName());
-            LocationField.put(LF.FILE, info.getFileName());
-            LocationField.put(LF.LINE, info.getLineNumber());
+            LocationField.put(LOCATION.CLASS, info.getClassName());
+            LocationField.put(LOCATION.METHOD, info.getMethodName());
+            LocationField.put(LOCATION.FILE, info.getFileName());
+            LocationField.put(LOCATION.LINE, info.getLineNumber());
         }
     }
 
