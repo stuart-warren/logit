@@ -2,7 +2,7 @@
 
 installdir='/usr/lib/logit'
 NAME='logit-java'
-VERSION='0.5.7'
+VERSION='0.5.8'
 ITERATION='1'
 WEBSITE='https://github.com/stuart-warren/logit'
 REPO='http://nexus.stuartwarren.com/nexus'
