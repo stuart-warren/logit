@@ -19,7 +19,11 @@ import com.stuartwarren.logit.fields.IFieldName;
 /**
  * @author Stuart Warren 
  * @date 6 Oct 2013
- *
+ * <br/>
+ * Base Log object.<br/>
+ * Can be extended/specialized to handle extra functionality.<br/>
+ * Each ILayout implementing class specifies which Log class they use.<br/>
+ * Users specify the layout in config and the LayoutFactory creates the right log type.
  */
 public class Log {
     
@@ -33,7 +37,7 @@ public class Log {
     private String                  threadName;
     private String                  message;
     private List<String>            tags;
-    private Map<IFieldName,Object>      fields;
+    private Map<IFieldName,Object>  fields;
     private transient final String  user = details.getUsername();
     private transient final String  hostname = details.getHostname();
     private transient final String  logitVersion = details.getVersion();
@@ -168,44 +172,6 @@ public class Log {
     }
     
     /**
-     * @return the tags
-     */
-    public List<String> getTags() {
-        return tags;
-    }
-
-    /**
-     * @param tags 
-     *      the tags to set
-     */
-    public void setTags(final String tags) {
-        // Split string on commas. Ignore whitespace.
-        if (null != tags) {
-            this.tags = new ArrayList<String>(Arrays.asList(tags.split("\\s*,\\s*")));
-        }
-    }
-    
-    /**
-     * @param tag 
-     *      the tag to add to the list
-     */
-    public void appendTag(final String tag) {
-        if (null != tag) {
-            if (null == this.tags) {
-                this.tags = new ArrayList<String>();
-            }
-            this.tags.add(tag);
-        }
-    }
-
-    /**
-     * @return the fields
-     */
-    public Map<IFieldName,Object> getFields() {
-        return fields;
-    }
-    
-    /**
      * 
      * @return the username
      */
@@ -227,13 +193,60 @@ public class Log {
     public String getLogitVersion() {
         return logitVersion;
     }
+    
+    /**
+     * @return the tags
+     */
+    public List<String> getTags() {
+        return tags;
+    }
+    
+    /**
+     * @param tags 
+     *      the tags to set<br/>
+     * String split on ,<br/>
+     * eg <pre>'tag1,tag2,tag3'</pre><br/>
+     */
+    public void setTags(final String tags) {
+        // Split string on commas. Ignore whitespace.
+        if (null != tags) {
+            ArrayList<String> tagList = new ArrayList<String>(Arrays.asList(tags.split("\\s*,\\s*")));
+            for (int i = 0; i < tagList.size(); i++){
+                this.appendTag(tagList.get(i));
+            }
+        }
+    }
+    
+    /**
+     * Append a single tag to the log
+     * @param tag 
+     *      the tag to add to the list
+     */
+    public void appendTag(final String tag) {
+        if (null != tag) {
+            if (null == this.tags) {
+                this.tags = new ArrayList<String>();
+            }
+            this.tags.add(tag);
+        }
+    }
 
     /**
-     * @param fields the fields to set
+     * @return the fields
+     */
+    public Map<IFieldName,Object> getFields() {
+        return fields;
+    }
+
+    /**
+     * @param fields the fields to set<br/>
+     * List of key:value pairs<br/>
+     * String split on : and ,<br/>
+     * eg <pre>'field1:value,field2:value'</pre><br/>
+     * Added into a config object.<br/>
+     * eg <pre>"config":{"field1":"value1"}</pre>
      */
     public void setFields(final String fields) {
-        // Split string on : and ,
-        //eg field1:value,field2:value
         if (null == this.fields) {
             this.fields = new LinkedHashMap<IFieldName, Object>();
         }
@@ -246,22 +259,6 @@ public class Log {
             addField(ROOT.CONFIG, configFields);
         }
 
-    }
-    
-    @SuppressWarnings("unchecked")
-    private void addField(final IFieldName key, final Object val) {
-    	if (null == fields) {
-            this.fields = new LinkedHashMap<IFieldName, Object>();
-        }
-        if (val instanceof HashMap) {
-            if (!((HashMap<String, Object>) val).isEmpty()) {
-                if (null != val) {
-                    fields.put(key,(HashMap<String, Object>) val);
-                }
-            }
-        } else if (null != val) {
-            fields.put(key, val);
-        }
     }
     
     /**
@@ -310,6 +307,22 @@ public class Log {
         strBuf.append(' ');
         strBuf.append(getHostname());
         return strBuf.toString();
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void addField(final IFieldName key, final Object val) {
+        if (null == fields) {
+            this.fields = new LinkedHashMap<IFieldName, Object>();
+        }
+        if (val instanceof HashMap) {
+            if (!((HashMap<String, Object>) val).isEmpty()) {
+                if (null != val) {
+                    fields.put(key,(HashMap<String, Object>) val);
+                }
+            }
+        } else if (null != val) {
+            fields.put(key, val);
+        }
     }
 
 }

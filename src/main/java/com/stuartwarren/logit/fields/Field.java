@@ -216,9 +216,10 @@ public class Field implements IField {
      * 
      * @author Stuart Warren 
      * @date 22 Nov 2013
+     * <br/>
      * An enum of fieldnames to be used when building a log<br/>
-     * Enums are used in order to have a documented list of field names<br/>
-     * rather than random strings scattered through code with mispellings.<br/>
+     * Static Enums (implementing IFieldName) are used in order to have a documented
+     * list of field names, rather than random strings scattered through code with mispellings.<br/>
      * This assists users to use existing fieldnames rather than creating their own.
      */
     public static enum ROOT implements IFieldName {
@@ -244,11 +245,13 @@ public class Field implements IField {
         HOSTNAME("hostname"),
         /**
          * LOCATION - location<br/>
+         * Object containg other fields<br/>
          * Location information of where in the code this log is.
          */
         LOCATION("location"),
         /**
          * EXCEPTION - exception<br/>
+         * Object containg other fields<br/>
          * Exception details including full stacktrace.
          */
         EXCEPTION("exception"),
@@ -269,16 +272,19 @@ public class Field implements IField {
         LEVEL("level"),
         /**
          * MDC - mdc<br/>
+         * Object containg other fields<br/>
          * Mapped Diagnostic Context
          */
         MDC("mdc"),
         /**
          * NDC - ndc<br/>
+         * List of Strings<br/>
          * Nested Diagnostic Context
          */
         NDC("ndc"),
         /**
          * CONFIG - config<br/>
+         * Object containg other fields<br/>
          * Fields added in configuration file
          */
         CONFIG("config"),
@@ -289,6 +295,7 @@ public class Field implements IField {
         LOGIT("logit"),
         /**
          * HTTP - http<br/>
+         * Object containg other fields<br/>
          * HTTP specific fields
          */
         HTTP("http")
