@@ -27,7 +27,6 @@ import com.stuartwarren.logit.fields.IFieldName;
  */
 public class Log {
     
-    private static CachedDetails    details = CachedDetails.getInstance();
     private long                    timestamp;
     private String                  ndc;
     private Map<String, Object>     mdc;
@@ -38,9 +37,9 @@ public class Log {
     private String                  message;
     private List<String>            tags;
     private Map<IFieldName,Object>  fields;
-    private transient final String  user = details.getUsername();
-    private transient final String  hostname = details.getHostname();
-    private transient final String  logitVersion = details.getVersion();
+    private transient final String  user = CachedDetails.INSTANCE.getUsername();
+    private transient final String  hostname = CachedDetails.INSTANCE.getHostname();
+    private transient final String  logitVersion = CachedDetails.INSTANCE.getVersion();
 
     /**
      * @return the timestamp
