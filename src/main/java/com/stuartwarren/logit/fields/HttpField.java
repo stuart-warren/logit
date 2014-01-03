@@ -18,7 +18,7 @@ public class HttpField extends Field {
         Field.register(this);
     }
     
-    public final static void put(final IFieldName key, final String s) {
+    public final static void put(final IFieldName key, final Object s) {
         if (FIELD != null) {
             FIELD.put0(key, s);
         }

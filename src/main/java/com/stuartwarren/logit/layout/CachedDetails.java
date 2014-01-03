@@ -12,51 +12,49 @@ import com.stuartwarren.logit.utils.LogitLog;
 /**
  * @author Stuart Warren 
  * @date 8 Oct 2013
+ * 
+ * Enum Singleton to fetch expensive details only once on first use.
  *
  */
-public final class CachedDetails {
+public enum CachedDetails {
     
-    private static volatile CachedDetails uniqueInstance;
-    private String hostname;
-    private String username;
-    private String version;
+    INSTANCE;
+    private final String hostname;
+    private final String username;
+    private final String version;
     
     private CachedDetails() {
+        String tempHostname;
+        String tempUsername;
+        
         LogitLog.debug("Trying to resolve hostname. May take some time...");
         System.setProperty("java.net.preferIPv4Stack" , "true");
         try {
-            this.setHostname(java.net.InetAddress.getLocalHost().getHostName());
+            tempHostname = java.net.InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
             LogitLog.warn("Unable to resolve [hostname]. Setting default.", e);
-            this.setHostname("unknown");
+            tempHostname = "unknown";
         }
+        hostname = tempHostname;
         if (LogitLog.isDebugEnabled()) {
             LogitLog.debug("Setting property [hostname] to [" + hostname + "].");
         }
+        
         try {
-            this.setUsername(System.getProperty("user.name").toLowerCase());
+            tempUsername = System.getProperty("user.name").toLowerCase();
         } catch (NullPointerException e) {
             LogitLog.warn("Unable to resolve [username]. Setting default.", e);
-            this.setUsername("unknown");
+            tempUsername = "unknown";
         }
+        username = tempUsername;
         if (LogitLog.isDebugEnabled()) {
             LogitLog.debug("Setting property [username] to [" + username + "].");
         }
-        this.setVersion(this.fetchVersion());
+        
+        version = this.fetchVersion();
         if (LogitLog.isDebugEnabled()) {
             LogitLog.debug("Setting property [version] to [" + version + "].");
         }
-    }
-    
-    public static CachedDetails getInstance() {
-        if (uniqueInstance == null) {
-            synchronized (CachedDetails.class) {
-                if (uniqueInstance == null) {
-                    uniqueInstance = new CachedDetails();
-                }
-            }
-        }
-        return uniqueInstance;
     }
     
     private String fetchVersion() {
@@ -92,24 +90,10 @@ public final class CachedDetails {
     }
 
     /**
-     * @param hostname the hostname to set
-     */
-    private void setHostname(final String hostname) {
-        this.hostname = hostname;
-    }
-
-    /**
      * @return the username
      */
     public String getUsername() {
         return username;
-    }
-
-    /**
-     * @param username the username to set
-     */
-    private void setUsername(final String username) {
-        this.username = username;
     }
 
     /**
@@ -118,13 +102,5 @@ public final class CachedDetails {
     public String getVersion() {
         return version;
     }
-
-    /**
-     * @param version the version to set
-     */
-    private void setVersion(final String version) {
-        this.version = version;
-    }
-    
 
 }

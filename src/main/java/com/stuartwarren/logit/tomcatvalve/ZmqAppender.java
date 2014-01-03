@@ -44,7 +44,7 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
         if (!this.appender.isConfigured()) {
             this.appender.configure();
         }
-        LogitLog.trace("About to append log.");
+        LogitLog.trace("TomcatValve About to append log.");
         append(request, response, time);
     }
     
@@ -67,11 +67,11 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
      */
     public void close() {
         this.appender.stop();
-        LogitLog.debug("ZMQ context should now be closed!");
+        LogitLog.debug("TomcatValve ZMQ context should now be closed!");
     }
     
     public void activateOptions() {
-        //this.appender.configure();
+        LogitLog.debug("TomcatValve activateOptions");
     }
 
     /* (non-Javadoc)
@@ -86,7 +86,7 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
      */
     protected void append(final Request request, final Response response, final long time) {
         final String log = this.layout.format(request, response, time);
-        LogitLog.debug("Appending.");
+        LogitLog.trace("TomcatValve Appending.");
         this.appender.appendString(log);
     }
 
@@ -101,7 +101,7 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
      * @see com.stuartwarren.logit.appender.ITransport#setEndpoints(java.lang.String)
      */
     public void setEndpoints(final String endpoints) {
-        LogitLog.debug("setEndpoints.");
+        LogitLog.debug("TomcatValve setEndpoints.");
         this.appender.setEndpoints(endpoints);
     }
 
@@ -116,7 +116,7 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
      * @see com.stuartwarren.logit.appender.ITransport#setSocketType(java.lang.String)
      */
     public void setSocketType(final String socketType) {
-        LogitLog.debug("setSocketType.");
+        LogitLog.debug("TomcatValve setSocketType.");
         this.appender.setSocketType(socketType);
     }
 
@@ -131,7 +131,7 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
      * @see com.stuartwarren.logit.appender.ITransport#setLinger(int)
      */
     public void setLinger(final String linger) {
-        LogitLog.debug("setLinger.");
+        LogitLog.debug("TomcatValve setLinger.");
         this.appender.setLinger(Integer.parseInt(linger));
     }
 
@@ -146,7 +146,7 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
      * @see com.stuartwarren.logit.appender.ITransport#setBindConnect(java.lang.String)
      */
     public void setBindConnect(final String bindConnect) {
-        LogitLog.debug("setBindConnect.");
+        LogitLog.debug("TomcatValve setBindConnect.");
         this.appender.setBindConnect(bindConnect);
     }
 
@@ -161,7 +161,7 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
      * @see com.stuartwarren.logit.appender.ITransport#setSendHWM(int)
      */
     public void setSendHWM(final String sendHWM) {
-        LogitLog.debug("setSendHWM.");
+        LogitLog.debug("TomcatValve setSendHWM.");
         this.appender.setSendHWM(Integer.parseInt(sendHWM));
     }
     
@@ -171,11 +171,12 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
      *          Name of class to use to format the logs.
      */
     public void setLayout(final String layout) {
-        LogitLog.debug("setLayout.");
+        LogitLog.debug("TomcatValve setLayout to " + layout);
         if ( null != layout) {
+            LogitLog.debug("Pre LayoutLoader.instantiateByClassName()");
             final Layout l = (Layout) LayoutLoader.instantiateByClassName(layout, DEFAULT_LAYOUT);
             if (LogitLog.isDebugEnabled()) {
-                LogitLog.debug("Loading layout class: " + layout);
+                LogitLog.debug("TomcatValve Loading layout class: " + layout);
             }
             this.layout = l;
         }
@@ -192,8 +193,9 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
      * @see com.stuartwarren.logit.layout.IFrameworkLayout#setLayoutType(java.lang.String)
      */
     public void setLayoutType(final String layoutType) {
-        LogitLog.debug("setLayoutType.");
+        LogitLog.debug("TomcatValve setLayoutType to " + layoutType);
         this.layout.setLayoutType(layoutType);
+        this.layout.activateOptions();
     }
 
     /* (non-Javadoc)
@@ -207,7 +209,7 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
      * @see com.stuartwarren.logit.layout.IFrameworkLayout#setDetailThreshold(java.lang.String)
      */
     public void setDetailThreshold(final String detailThreshold) {
-        LogitLog.debug("setDetailThreshold.");
+        LogitLog.debug("TomcatValve setDetailThreshold.");
         this.layout.setDetailThreshold(detailThreshold);        
     }
 
@@ -222,7 +224,7 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
      * @see com.stuartwarren.logit.layout.IFrameworkLayout#setFields(java.lang.String)
      */
     public void setFields(final String fields) {
-        LogitLog.debug("setFields.");
+        LogitLog.debug("TomcatValve setFields.");
         this.layout.setFields(fields);
     }
 
@@ -237,7 +239,7 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
      * @see com.stuartwarren.logit.layout.IFrameworkLayout#setTags(java.lang.String)
      */
     public void setTags(final String tags) {
-        LogitLog.debug("setTags.");
+        LogitLog.debug("TomcatValve setTags.");
         this.layout.setTags(tags);   
     }
 
@@ -245,14 +247,14 @@ public class ZmqAppender extends AccessLogValve implements IZmqTransport, IFrame
      * @see com.stuartwarren.logit.zmq.IZmqTransport#setLinger(int)
      */
     public void setLinger(final int linger) {
-        LogitLog.debug("Calling unexpected method signature: linger");
+        LogitLog.debug("TomcatValve Calling unexpected method signature: linger");
     }
 
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.zmq.IZmqTransport#setSendHWM(int)
      */
     public void setSendHWM(final int sendHWM) {
-        LogitLog.debug("Calling unexpected method signature: sendHWM");
+        LogitLog.debug("TomcatValve Calling unexpected method signature: sendHWM");
     }
     
     public void setIHeaders(final String headers) {

@@ -34,7 +34,7 @@ file { "${CATALINA_BASE}/bin/setenv.sh":
         ensure      => present,
         content     => "# Add logit.jar to classpath
 if [ -r \"${JAVA_HOME}/lib/ext/logit.jar\" ] ; then
-  CATALINA_OPTS=\"${CATALINA_OPTS} -Dlogit.debug -Djava.security.egd=file:/dev/./urandom\"
+  CATALINA_OPTS=\"${CATALINA_OPTS} -Dlogit.trace -Djava.security.egd=file:/dev/./urandom\"
 fi
 ",
         mode        => '0755',
