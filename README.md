@@ -170,7 +170,7 @@ Vagrantfile supplied to hopefully make testing easier
 ```
 vagrant up
 vagrant ssh
-python /vagrant/src/test/resources/test.py &
+python /vagrant/src/test/resources/test.py -v &
 sudo service tomcat7 restart
 wget 'http://localhost:8080/testurl/?param1=value1'
 ```

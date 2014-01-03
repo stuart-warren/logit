@@ -45,14 +45,13 @@ public class Layout implements IFrameworkLayout {
     public Layout() {
         LogitLog.debug("TomcatValve layout in use.");
         layoutFactory = new LayoutFactory();
-        activateOptions();
     }
 
     /* (non-Javadoc)
      * @see org.apache.log4j.spi.OptionHandler#activateOptions()
      */
     public final void activateOptions() {
-        LogitLog.debug("Initialise Logfactory.");
+        LogitLog.debug("TomcatValve Initialise Logfactory.");
         this.layout = layoutFactory.createLayout(this.layoutType);
     }
 
@@ -94,7 +93,8 @@ public class Layout implements IFrameworkLayout {
         }
         HttpField.put(HTTP.RESPONSE_SIZE, response.getBytesWritten(false));
         HttpField.put(HTTP.SERVER_NAME, request.getServerName());
-        HttpField.put(HTTP.RESPONSE_DURATION, time);
+        // Tomcat duration is in milliseconds, convert to seconds.
+        HttpField.put(HTTP.RESPONSE_DURATION, (double) time/1000.0);
         if (status >= HTTP_400) {
             level = "ERROR";
         }
@@ -103,28 +103,37 @@ public class Layout implements IFrameworkLayout {
         }
         
         if (null != this.iheaders && !this.iheaders.isEmpty()) {
-            final Map<String,Object> iheaders = new ConcurrentHashMap<String,Object>();
-            for (final String header : this.iheaders) {
+            Map<String,Object> iheaders = new ConcurrentHashMap<String,Object>();
+            for (String header : this.iheaders) {
                 if (!EMPTY_STRING.equals(header)) {
-                    iheaders.put(header, request.getHeader(header));
+                    String headerValue = request.getHeader(header);
+                    if (null != headerValue) {
+                        iheaders.put(header, headerValue);
+                    }
                 }
             }
             HttpField.put(HTTP.REQUEST_HEADERS, iheaders);
         }
         if (null != this.oheaders && !this.oheaders.isEmpty()) {
-            final Map<String,Object> oheaders = new ConcurrentHashMap<String,Object>();
-            for (final String header : this.oheaders) {
+            Map<String,Object> oheaders = new ConcurrentHashMap<String,Object>();
+            for (String header : this.oheaders) {
                 if (!EMPTY_STRING.equals(header)) {
-                    oheaders.put(header, request.getHeader(header));
+                    String headerValue = response.getHeader(header);
+                    if (null != headerValue) {
+                        oheaders.put(header, headerValue);
+                    }
                 }
             }
             HttpField.put(HTTP.RESPONSE_HEADERS, oheaders);
         }
         if (null != this.cookies && !this.cookies.isEmpty()) {
-            final Map<String,Object> cookies = new ConcurrentHashMap<String,Object>();
-            for (final String cookie : this.cookies) {
+            Map<String,Object> cookies = new ConcurrentHashMap<String,Object>();
+            for (String cookie : this.cookies) {
                 if (!EMPTY_STRING.equals(cookie)) {
-                    cookies.put(cookie, request.getHeader(cookie));
+                    String cookieValue = request.getHeader(cookie);
+                    if (null != cookieValue) {
+                        cookies.put(cookie, cookieValue);
+                    }
                 }
             }
             HttpField.put(HTTP.COOKIES, cookies);
@@ -153,7 +162,7 @@ public class Layout implements IFrameworkLayout {
      */
     public void setLayoutType(final String layoutType) {
         if (LogitLog.isDebugEnabled()) {
-            LogitLog.debug("Setting property [layoutType] to [" + layoutType + "].");
+            LogitLog.debug("TomcatValve Setting property [layoutType] to [" + layoutType + "].");
         }
         this.layoutType = layoutType;
     }
@@ -170,7 +179,7 @@ public class Layout implements IFrameworkLayout {
      */
     public void setDetailThreshold(final String detailThreshold) {
         if (LogitLog.isDebugEnabled()) {
-            LogitLog.debug("Setting property [detailThreshold] to [" + detailThreshold + "].");
+            LogitLog.debug("TomcatValve Setting property [detailThreshold] to [" + detailThreshold + "].");
         }
         this.detailThreshold = detailThreshold;
     }
