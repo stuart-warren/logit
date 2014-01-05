@@ -99,7 +99,7 @@ public class ZmqTransport implements IAppender, IZmqTransport {
             context.term();
             setConfigured(false);
             //zcontext.destroy();
-            socket = null; // NOPMD by stuart on 10/11/13 20:11
+            socket = null; 
         }
         LogitLog.debug("Socket should be closed.");
     }
