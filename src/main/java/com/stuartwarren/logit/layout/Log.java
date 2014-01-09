@@ -52,8 +52,9 @@ public class Log {
      * @param timestamp
      *            the timestamp to set
      */
-    public void setTimestamp(final long timestamp) {
+    public Log setTimestamp(final long timestamp) {
         this.timestamp = timestamp;
+        return this;
     }
 
     /**
@@ -67,10 +68,11 @@ public class Log {
      * @param ndc
      *            the ndc to set
      */
-    public void setNdc(final String ndc) {
+    public Log setNdc(final String ndc) {
         if (null != ndc) {
             this.ndc = ndc;
         }
+        return this;
     }
 
     /**
@@ -84,8 +86,9 @@ public class Log {
      * @param properties
      *            the mdc to set
      */
-    public void setMdc(final Map<String, Object> properties) {
+    public Log setMdc(final Map<String, Object> properties) {
         this.mdc = properties;
+        return this;
     }
 
     /**
@@ -99,10 +102,11 @@ public class Log {
      * @param message
      *            the message to set
      */
-    public void setMessage(final String message) {
+    public Log setMessage(final String message) {
         if (null != message) {
             this.message = message;
         }
+        return this;
     }
 
     /**
@@ -116,10 +120,11 @@ public class Log {
      * @param level
      *            the level to set
      */
-    public void setLevel(final String level) {
+    public Log setLevel(final String level) {
         if (null != level) {
             this.level = level;
         }
+        return this;
     }
 
     /**
@@ -132,8 +137,9 @@ public class Log {
     /**
      * @param levelInt the level_int to set
      */
-    public void setLevelInt(final int levelInt) {
+    public Log setLevelInt(final int levelInt) {
         this.levelInt = levelInt;
+        return this;
     }
 
     /**
@@ -147,10 +153,11 @@ public class Log {
      * @param loggerName
      *            the loggerName to set
      */
-    public void setLoggerName(final String loggerName) {
+    public Log setLoggerName(final String loggerName) {
         if (null != loggerName) {
             this.loggerName = loggerName;
         }
+        return this;
     }
 
     /**
@@ -164,10 +171,11 @@ public class Log {
      * @param threadName
      *            the threadName to set
      */
-    public void setThreadName(final String threadName) {
+    public Log setThreadName(final String threadName) {
         if (null != threadName) {
             this.threadName = threadName;
         }
+        return this;
     }
     
     /**
@@ -206,7 +214,7 @@ public class Log {
      * String split on ,<br/>
      * eg <pre>'tag1,tag2,tag3'</pre><br/>
      */
-    public void setTags(final String tags) {
+    public Log setTags(final String tags) {
         // Split string on commas. Ignore whitespace.
         if (null != tags) {
             ArrayList<String> tagList = new ArrayList<String>(Arrays.asList(tags.split("\\s*,\\s*")));
@@ -214,6 +222,7 @@ public class Log {
                 this.appendTag(tagList.get(i));
             }
         }
+        return this;
     }
     
     /**
@@ -221,13 +230,14 @@ public class Log {
      * @param tag 
      *      the tag to add to the list
      */
-    public void appendTag(final String tag) {
+    public Log appendTag(final String tag) {
         if (null != tag) {
             if (null == this.tags) {
                 this.tags = new ArrayList<String>();
             }
             this.tags.add(tag);
         }
+        return this;
     }
 
     /**
@@ -245,11 +255,11 @@ public class Log {
      * Added into a config object.<br/>
      * eg <pre>"config":{"field1":"value1"}</pre>
      */
-    public void setFields(final String fields) {
+    public Log setFields(final String fields) {
         if (null == this.fields) {
             this.fields = new LinkedHashMap<IFieldName, Object>();
         }
-        final Map<String,String> configFields = new HashMap<String,String>();
+        final Map<String,String> configFields = new LinkedHashMap<String,String>();
         if (null != fields) {
             for(final String keyValue : fields.split("\\s*,\\s*")) {
                 final String[] pairs = keyValue.split("\\s*:\\s*", 2);
@@ -257,14 +267,14 @@ public class Log {
             }
             addField(ROOT.CONFIG, configFields);
         }
-
+        return this;
     }
     
     /**
      * Add all registered fields and their values into the current log<br/>
      * Classes implementing IField should register themselves in their constructor
      */
-    public void addRegisteredFields() {
+    public Log addRegisteredFields() {
  
         // add all registered fields to log
         Map<IFieldName,Object> l = Field.list();
@@ -277,6 +287,7 @@ public class Log {
             this.addField(key, value);
             it.remove(); // avoids a ConcurrentModificationException
         }
+        return this;
     }
 
     /**
@@ -309,19 +320,20 @@ public class Log {
     }
     
     @SuppressWarnings("unchecked")
-    private void addField(final IFieldName key, final Object val) {
+    private Log addField(final IFieldName key, final Object val) {
         if (null == fields) {
             this.fields = new LinkedHashMap<IFieldName, Object>();
         }
         if (val instanceof HashMap) {
-            if (!((HashMap<String, Object>) val).isEmpty()) {
+            if (!((LinkedHashMap<String, Object>) val).isEmpty()) {
                 if (null != val) {
-                    fields.put(key,(HashMap<String, Object>) val);
+                    fields.put(key,(LinkedHashMap<String, Object>) val);
                 }
             }
         } else if (null != val) {
             fields.put(key, val);
         }
+        return this;
     }
 
 }

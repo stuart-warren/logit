@@ -4,7 +4,7 @@
 package com.stuartwarren.logit.fields;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -130,7 +130,7 @@ public class Field implements IField {
      * @return a Map of all the registered IField objects and their sections
      */
     public static Map<IFieldName,Object> list() {
-        Map<IFieldName,Object> result = new HashMap<IFieldName,Object>();
+        Map<IFieldName,Object> result = new LinkedHashMap<IFieldName,Object>();
         for (int i = 0; i < fieldList.size(); i++) {
             IFieldName section = fieldList.get(i).getSection();
             result.put(section, fieldList.get(i).get0(section));
@@ -152,14 +152,14 @@ public class Field implements IField {
         if (tlm == null) {
             return;
         } else {
-            Map<IFieldName, Object> ht = (HashMap<IFieldName, Object>) ((ThreadLocalMap) tlm).get();
+            Map<IFieldName, Object> ht = (LinkedHashMap<IFieldName, Object>) ((ThreadLocalMap) tlm).get();
             if (ht == null) {
-                ht = new HashMap<IFieldName, Object>();
+                ht = new LinkedHashMap<IFieldName, Object>();
                 ((ThreadLocalMap) tlm).set(ht);
             }
-            HashMap<IFieldName, Object> h = (HashMap<IFieldName, Object>) get0(getSection());
+            Map<IFieldName, Object> h = (LinkedHashMap<IFieldName, Object>) get0(getSection());
             if (h == null) {
-                h = new HashMap<IFieldName, Object>();
+                h = new LinkedHashMap<IFieldName, Object>();
             }
             h.put(key, o);
             ht.put(getSection(), h);
@@ -171,7 +171,7 @@ public class Field implements IField {
             return null;
         } else {
             @SuppressWarnings("unchecked")
-            HashMap<IFieldName, Object> ht = (HashMap<IFieldName, Object>) ((ThreadLocalMap) tlm).get();
+            Map<IFieldName, Object> ht = (LinkedHashMap<IFieldName, Object>) ((ThreadLocalMap) tlm).get();
             if (ht != null && key != null) {
                 return ht.get(key);
             } else {
@@ -182,7 +182,7 @@ public class Field implements IField {
 
     public void remove0(final IFieldName key) {
         if (tlm != null) {
-            final HashMap<?, ?> ht = (HashMap<?, ?>) ((ThreadLocalMap) tlm).get();
+            final Map<?, ?> ht = (LinkedHashMap<?, ?>) ((ThreadLocalMap) tlm).get();
             if (ht != null) {
                 ht.remove(key);
                 // clean up if this was the last key
@@ -199,13 +199,13 @@ public class Field implements IField {
         if (tlm == null) {
             return null;
         } else {
-            return (HashMap<IFieldName, Object>) ((ThreadLocalMap) tlm).get();
+            return (LinkedHashMap<IFieldName, Object>) ((ThreadLocalMap) tlm).get();
         }
     }
 
     public void clear0() {
         if (tlm != null) {
-            final Map<?, ?> ht = (HashMap<?, ?>) ((ThreadLocalMap) tlm).get();
+            final Map<?, ?> ht = (LinkedHashMap<?, ?>) ((ThreadLocalMap) tlm).get();
             if (ht != null) {
                 ht.clear();
             }
