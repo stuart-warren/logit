@@ -12,29 +12,21 @@ public final class ExceptionField extends Field {
     
     private static final ExceptionField FIELD = new ExceptionField();
     
-    public ExceptionField() {
-        super();
+    private ExceptionField() {
         this.setSection(ROOT.EXCEPTION);
         Field.register(this);
     }
     
     public final static void put(final IFieldName key, final String s) {
-        if (FIELD != null) {
-            FIELD.put0(key, s);
-        }
+        FIELD.put0(key, s);
     }
     
     public static Object get(final IFieldName key) {
-        if (FIELD != null) {
-            return FIELD.get0(key);
-        }
-        return null;
+        return FIELD.get0(key);
     }
     
     public static void clear() {
-        if (FIELD != null) {
-            FIELD.clear0();
-        }
+        FIELD.clear0();
     }
     
     public String toString() {

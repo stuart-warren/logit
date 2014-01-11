@@ -148,7 +148,7 @@ public class Field implements IField {
     }
     
     @SuppressWarnings("unchecked")
-    protected void put0(final IFieldName key, final Object o) {
+    public void put0(final IFieldName key, final Object o) {
         if (tlm == null) {
             return;
         } else {
