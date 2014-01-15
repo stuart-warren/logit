@@ -3,18 +3,20 @@
  */
 package com.stuartwarren.logit.logstash.v0;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map.Entry;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stuartwarren.logit.fields.IFieldName;
 import com.stuartwarren.logit.fields.Field.ROOT;
 import com.stuartwarren.logit.layout.Log;
 import com.stuartwarren.logit.logstash.LogstashField.LOGSTASH;
 import com.stuartwarren.logit.logstash.LogstashTimestamp;
+import com.stuartwarren.logit.utils.LogitLog;
 
 /**
  * @author Stuart Warren
@@ -24,7 +26,6 @@ public final class LogstashV0Log extends Log {
 
     private long                    timestamp;
     private String                  version;
-    private HashMap<IFieldName, Object> jacksonOutput = new HashMap<IFieldName, Object>();
 
     /**
      * @return the timestamp
@@ -39,8 +40,9 @@ public final class LogstashV0Log extends Log {
      *            the timestamp to set
      */
     @Override
-    public void setTimestamp(long timestamp) {
+    public Log setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+        return this;
     }
 
     /**
@@ -54,48 +56,54 @@ public final class LogstashV0Log extends Log {
      * @param version
      *            the version to set
      */
-    public void setVersion(String version) {
+    public Log setVersion(String version) {
         this.version = version;
+        return this;
     }
 
-    @SuppressWarnings("unchecked")
-    private void addEventData(IFieldName key, Object val) {
-        if (val instanceof HashMap) {
-            if (!((HashMap<String, Object>) val).isEmpty()) {
-                jacksonOutput.put(key, val);
-            }
-        } else if (null != val) {
-            jacksonOutput.put(key, val);
-        }
+    public ByteArrayOutputStream toJson() throws IOException {
+        JsonFactory jsonF = new JsonFactory();
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        JsonGenerator jg = jsonF.createGenerator(os, JsonEncoding.UTF8);
+        // Should really just extend ObjectCodec rather than use ObjectMapper here...
+        jg.setCodec(new ObjectMapper());
+        jg.writeStartObject();
+            jg.writeStringField(LOGSTASH.TIMESTAMP.toString(), new LogstashTimestamp(this.getTimestamp()).toString());
+            jg.writeStringField(LOGSTASH.MESSAGE.toString(), this.getMessage());
+            jg.writeArrayFieldStart(LOGSTASH.TAGS.toString());
+                for(String tag: this.getTags())
+                    jg.writeString(tag);
+            jg.writeEndArray();
+            jg.writeObjectFieldStart(LOGSTASH.FIELDS.toString());
+                jg.writeStringField(ROOT.LEVEL.toString(), this.getLevel());
+                jg.writeStringField(ROOT.USER.toString(), this.getUsername());
+                jg.writeStringField(ROOT.HOSTNAME.toString(), this.getHostname());
+                jg.writeStringField(ROOT.LOGGER.toString(), this.getLoggerName());
+                jg.writeStringField(ROOT.LOGIT.toString(), this.getLogitVersion());
+                jg.writeStringField(ROOT.THREAD.toString(), this.getThreadName());
+                if (null != this.getNdc())
+                    jg.writeStringField(ROOT.NDC.toString(), this.getNdc());
+                if (null != this.getMdc())
+                    jg.writeObjectField(ROOT.MDC.toString(), this.getMdc());
+                for(Entry<IFieldName, Object> field: this.getFields().entrySet()) {
+                    IFieldName key = field.getKey();
+                    Object value = field.getValue();
+                    jg.writeFieldName(key.toString());
+                    jg.writeObject(value);
+                }
+            jg.writeEndObject(); // end @fields
+        jg.writeEndObject(); // end
+        jg.flush();
+        jg.close();
+        return os;
     }
-
+    
     public String toString() {
-        String log;
-        
-        addEventData(LOGSTASH.TAGS, this.getTags());
-        addEventData(ROOT.THREAD, this.getThreadName());
-        addEventData(ROOT.LOGGER, this.getLoggerName());
-        addEventData(ROOT.LEVEL, this.getLevel());
-        addEventData(ROOT.USER, this.getUsername());
-        addEventData(ROOT.HOSTNAME, this.getHostname());
-        addEventData(LOGSTASH.FIELDS, this.getFields());
-        addEventData(ROOT.MDC, this.getMdc());
-        addEventData(ROOT.NDC, this.getNdc());
-        addEventData(ROOT.LOGIT, this.getLogitVersion());
-        //addEventData(LOGSTASH.VERSION, this.getVersion());
-        addEventData(LOGSTASH.TIMESTAMP, new LogstashTimestamp(this.getTimestamp()).toString());
-        addEventData(LOGSTASH.MESSAGE, this.getMessage());
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            log = mapper.writeValueAsString(jacksonOutput);
-        } catch (JsonGenerationException e) {
-            log = e.toString();
-        } catch (JsonMappingException e) {
-            log = e.toString();
+            return toJson().toString("UTF-8");
         } catch (IOException e) {
-            log = e.toString();
+            LogitLog.error("Failed to create JSON", e);
+            return "{\"@version\": \"1\", \"@timestamp\": \"" + new LogstashTimestamp(this.getTimestamp()).toString() + "\", \"message\": \"Error creating JSON\"}";
         }
-        return log + "\n";
     }
-
 }

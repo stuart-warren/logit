@@ -188,10 +188,6 @@ logstashv0:
 ```
 {"@fields":{"level":"ERROR","location":{"methodName":"main","fileName":"LogIt.java","lineNumber":"30","className":"com.stuartwarren.test_logit.log4j1.LogIt"},"mdc":{"tags":"other"},"exception":{"stackTrace":"java.lang.NullPointerException: Fake error thrown\\n\\tat com.stuartwarren.test_logit.log4j1.LogIt.main(LogIt.java:30)","exceptionClass":"java.lang.NullPointerException","exceptionMessage":"Fake error thrown"},"thread":"main","logger":"com.stuartwarren.test_logit.log4j1.LogIt"},"@timestamp":"2013-10-06T21:41:59.043Z","@message":"There\'s been an error"}
 ```
-gelfv1 - Graylog2 (Still needs work):
-```
-{"timestamp":"1381095788192","_thread":"main","level":40000,"facility":"com.stuartwarren.test_logit.log4j1.LogIt","file":"LogIt.java","full_message":"java.lang.NullPointerException: Fake error thrown/njava.lang.NullPointerException: Fake error thrown\\n\\tat com.stuartwarren.test_logit.log4j1.LogIt.main(LogIt.java:30)/n","short_message":"There\'s been an error","line":"30","_location":"com.stuartwarren.test_logit.log4j1.LogIt.main(LogIt.java:30)","_tags":"other","version":"1.0"}
-```
 
 Just change the layoutType parameter.
 

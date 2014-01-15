@@ -99,7 +99,7 @@ public class ZmqTransport implements IAppender, IZmqTransport {
             context.term();
             setConfigured(false);
             //zcontext.destroy();
-            socket = null; // NOPMD by stuart on 10/11/13 20:11
+            socket = null; 
         }
         LogitLog.debug("Socket should be closed.");
     }
@@ -108,7 +108,7 @@ public class ZmqTransport implements IAppender, IZmqTransport {
      * @see com.stuartwarren.logit.ITransport#append(java.lang.String)
      */
     public void appendString(final String line) {
-        final String log = line.substring(0, line.length() - 1);
+        final String log = line;
         if (LogitLog.isTraceEnabled()) {
             LogitLog.trace("Sending log: [" + log + "].");
         }

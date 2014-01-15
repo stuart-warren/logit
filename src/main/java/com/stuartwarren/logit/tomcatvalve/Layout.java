@@ -69,7 +69,6 @@ public class Layout implements IFrameworkLayout {
         final StringBuffer message = new StringBuffer();
         final int status = response.getStatus();
         
-        log.setTimestamp(request.getCoyoteRequest().getStartTime());
         HttpField.put(HTTP.REQUEST_PARAMS, request.getParameterMap());
         HttpField.put(HTTP.REMOTE_HOST, request.getRemoteHost());
         HttpField.put(HTTP.REMOTE_USER, request.getRemoteUser());
@@ -139,13 +138,14 @@ public class Layout implements IFrameworkLayout {
             HttpField.put(HTTP.COOKIES, cookies);
         }
         
-        log.setLevel(level);
-        log.setTags(tags);
-        log.setFields(fields);
-        log.setMessage(message.toString());
-        log.appendTag("valve");
+        log.setTimestamp(request.getCoyoteRequest().getStartTime())
+            .setLevel(level)
+            .setTags(tags)
+            .setFields(fields)
+            .setMessage(message.toString())
+            .appendTag("valve")
+            .addRegisteredFields();
         
-        log.addRegisteredFields();
         HttpField.clear();
         return log;
     }

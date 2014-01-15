@@ -4,7 +4,7 @@
 package com.stuartwarren.logit.fields;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,8 +13,10 @@ import com.stuartwarren.logit.utils.ThreadLocalMap;
 
 /**
  * @author Stuart Warren 
- * @date 20 Oct 2013
- *
+ * @date 20 Oct 2013<br/>
+ * 
+ * @see ExampleCustomField
+ * 
  */
 public class Field implements IField {
     
@@ -34,11 +36,33 @@ public class Field implements IField {
      * @param key must be an IFieldName
      * @param o can be any object accepted by the Jackson JSON library
      */
-    public static void put(final IFieldName key, final Object o) {
-        if (FIELD != null) {
-            FIELD.put0(key, o);
-        }
-    }
+//    public static <K, V> void put(final IFieldName key, final LinkedHashMap<K,V> o) {
+//        FIELD.put0(key, o);
+//    }
+//    
+//    public static void put(final IFieldName key, final ArrayList<String> o) {
+//        FIELD.put0(key, o);
+//    }
+//    
+//    public static void put(final IFieldName key, final String o) {
+//        FIELD.put0(key, o);
+//    }
+//    
+//    public static void put(final IFieldName key, final int o) {
+//        FIELD.put0(key, o);
+//    }
+//    
+//    public static void put(final IFieldName key, final long o) {
+//        FIELD.put0(key, o);
+//    }
+//    
+//    public static void put(final IFieldName key, final double o) {
+//        FIELD.put0(key, o);
+//    }
+//    
+//    public static void put(final IFieldName key, final boolean o) {
+//        FIELD.put0(key, o);
+//    }
     
     /**
      * 
@@ -126,11 +150,10 @@ public class Field implements IField {
     }
   
     /**
-     * 
      * @return a Map of all the registered IField objects and their sections
      */
     public static Map<IFieldName,Object> list() {
-        Map<IFieldName,Object> result = new HashMap<IFieldName,Object>();
+        Map<IFieldName,Object> result = new LinkedHashMap<IFieldName,Object>();
         for (int i = 0; i < fieldList.size(); i++) {
             IFieldName section = fieldList.get(i).getSection();
             result.put(section, fieldList.get(i).get0(section));
@@ -147,31 +170,41 @@ public class Field implements IField {
         }
     }
     
+    /**
+     * Should not be used outside of a custom Field
+     * @param key
+     * @param o
+     */
     @SuppressWarnings("unchecked")
-    protected void put0(final IFieldName key, final Object o) {
+    public void put0(final IFieldName key, final Object o) {
         if (tlm == null) {
             return;
         } else {
-            Map<IFieldName, Object> ht = (HashMap<IFieldName, Object>) ((ThreadLocalMap) tlm).get();
+            Map<IFieldName, Object> ht = (LinkedHashMap<IFieldName, Object>) ((ThreadLocalMap) tlm).get();
             if (ht == null) {
-                ht = new HashMap<IFieldName, Object>();
+                ht = new LinkedHashMap<IFieldName, Object>();
                 ((ThreadLocalMap) tlm).set(ht);
             }
-            HashMap<IFieldName, Object> h = (HashMap<IFieldName, Object>) get0(getSection());
+            Map<IFieldName, Object> h = (LinkedHashMap<IFieldName, Object>) get0(getSection());
             if (h == null) {
-                h = new HashMap<IFieldName, Object>();
+                h = new LinkedHashMap<IFieldName, Object>();
             }
             h.put(key, o);
             ht.put(getSection(), h);
         }
     }
 
+    /**
+     * Should not be used outside of a custom Field
+     * @param key
+     * @param o
+     */
     public Object get0(IFieldName key) {
         if (tlm == null) {
             return null;
         } else {
             @SuppressWarnings("unchecked")
-            HashMap<IFieldName, Object> ht = (HashMap<IFieldName, Object>) ((ThreadLocalMap) tlm).get();
+            Map<IFieldName, Object> ht = (LinkedHashMap<IFieldName, Object>) ((ThreadLocalMap) tlm).get();
             if (ht != null && key != null) {
                 return ht.get(key);
             } else {
@@ -180,9 +213,14 @@ public class Field implements IField {
         }
     }
 
+    /**
+     * Should not be used outside of a custom Field
+     * @param key
+     * @param o
+     */
     public void remove0(final IFieldName key) {
         if (tlm != null) {
-            final HashMap<?, ?> ht = (HashMap<?, ?>) ((ThreadLocalMap) tlm).get();
+            final Map<?, ?> ht = (LinkedHashMap<?, ?>) ((ThreadLocalMap) tlm).get();
             if (ht != null) {
                 ht.remove(key);
                 // clean up if this was the last key
@@ -194,18 +232,28 @@ public class Field implements IField {
         }
     }
 
+    /**
+     * Should not be used outside of a custom Field
+     * @param key
+     * @param o
+     */
     @SuppressWarnings("unchecked")
     protected Map<IFieldName, Object> getContext0() {
         if (tlm == null) {
             return null;
         } else {
-            return (HashMap<IFieldName, Object>) ((ThreadLocalMap) tlm).get();
+            return (LinkedHashMap<IFieldName, Object>) ((ThreadLocalMap) tlm).get();
         }
     }
 
+    /**
+     * Should not be used outside of a custom Field
+     * @param key
+     * @param o
+     */
     public void clear0() {
         if (tlm != null) {
-            final Map<?, ?> ht = (HashMap<?, ?>) ((ThreadLocalMap) tlm).get();
+            final Map<?, ?> ht = (LinkedHashMap<?, ?>) ((ThreadLocalMap) tlm).get();
             if (ht != null) {
                 ht.clear();
             }

@@ -62,17 +62,24 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
     
     @SuppressWarnings("unchecked")
     private Log doFormat(final LoggingEvent event) {
-        final Log log = this.layout.getLog();
-        log.setTimestamp(event.getTimeStamp());
         final Level level = event.getLevel();
         if (level.isGreaterOrEqual(Level.toLevel(this.detailThreshold))) {
             getLocationInfo = true;
         }
-        log.setLevel(level.toString());
-        log.setLevelInt(level.toInt());
         final Map<String, Object> properties = event.getProperties();
-        log.setMdc(properties);
-        log.setNdc(event.getNDC());
+        
+        final Log log = this.layout.getLog()
+                .setTimestamp(event.getTimeStamp())
+                .setLevel(level.toString())
+                .setLevelInt(level.toInt())
+                .setMdc(properties)
+                .setNdc(event.getNDC())
+                .setLoggerName(event.getLoggerName())
+                .setThreadName(event.getThreadName())
+                .setMessage(event.getRenderedMessage())
+                .setTags(tags)
+                .setFields(fields)
+                .appendTag("log4j");
         
         // get exception details
         exceptionInformation(event);
@@ -88,12 +95,6 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
         LocationField.clear();
         getLocationInfo = false;
         
-        log.setLoggerName(event.getLoggerName());
-        log.setThreadName(event.getThreadName());
-        log.setMessage(event.getRenderedMessage());
-        log.setTags(tags);
-        log.setFields(fields);
-        log.appendTag("log4j");
         return log;
     }
     
