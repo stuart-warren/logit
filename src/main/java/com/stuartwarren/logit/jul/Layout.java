@@ -74,22 +74,19 @@ public class Layout extends Formatter implements IFrameworkLayout {
     
     private Log doFormat(final LogRecord event) {
         final Log log = this.layout.getLog();
-        log.setTimestamp(event.getMillis());
+        
         final Level level = event.getLevel();
-        //LogitLog.debug("Level(int): " + level.intValue());
-        //LogitLog.debug("DetailThreshold Level(int): " + Level.parse(this.detailThreshold).intValue());
         if (level.intValue() >= (Level.parse(this.detailThreshold).intValue())) {
             getLocationInfo = true;
         }
-        log.setLevel(level.toString());
-        log.setLevelInt(level.intValue());
-        final Map<String, Object> properties = new ConcurrentHashMap<String,Object>();
-        try {
-            final List<Object> propertiesList = new ArrayList<Object>(Arrays.asList(event.getParameters()));
-            properties.put("properties", propertiesList);
-            log.setMdc(properties);
-        } catch (NullPointerException e) {}
         
+        final Map<String, Object> properties = new ConcurrentHashMap<String,Object>();
+        final Object[] params =  event.getParameters();
+        if (null != params) {
+            final List<Object> propertiesList = new ArrayList<Object>(Arrays.asList(params));
+            properties.put("properties", propertiesList);
+        }
+
         // get exception details
         exceptionInformation(event);
         
@@ -97,19 +94,23 @@ public class Layout extends Formatter implements IFrameworkLayout {
         locationInformation(event);
         
         // add all registered fields to log
-        log.addRegisteredFields();
+        log.addRegisteredFields()
+            .setMdc(properties)
+            .setLevel(level.toString())
+            .setLevelInt(level.intValue())
+            .setTimestamp(event.getMillis())
+            .setLoggerName(event.getLoggerName())
+            .setThreadName(Integer.toString(event.getThreadID()))
+            .setMessage(event.getMessage())
+            .setTags(tags)
+            .setFields(fields)
+            .appendTag("jul");
         
         // Clear locally used custom fields
         ExceptionField.clear();
         LocationField.clear();
         getLocationInfo = false;
         
-        log.setLoggerName(event.getLoggerName());
-        log.setThreadName(Integer.toString(event.getThreadID()));
-        log.setMessage(event.getMessage());
-        log.setTags(tags);
-        log.setFields(fields);
-        log.appendTag("jul");
         return log;
     }
     

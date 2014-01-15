@@ -30,7 +30,7 @@ public final class ExceptionField extends Field {
     }
     
     public String toString() {
-        final StringBuffer strBuf = new StringBuffer();
+        final StringBuilder strBuf = new StringBuilder();
         strBuf.append(get(EXCEPTION.CLASS));
         strBuf.append(": ");
         strBuf.append(get(EXCEPTION.MESSAGE));

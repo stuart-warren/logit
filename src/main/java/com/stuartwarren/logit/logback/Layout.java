@@ -61,15 +61,11 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Log doFormat(final ILoggingEvent event) {
         final Log log = this.layout.getLog();
-        log.setTimestamp(event.getTimeStamp());
         final Level level = event.getLevel();
         if (level.isGreaterOrEqual(Level.toLevel(this.detailThreshold))) {
             getLocationInfo = true;
         }
-        log.setLevel(level.toString());
-        log.setLevelInt(level.toInt());
         final Map<String, String> properties = event.getMDCPropertyMap();
-        log.setMdc((Map)properties);
         
         // get exception details
         exceptionInformation(event);
@@ -78,19 +74,23 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
         locationInformation(event);
         
         // add all registered fields to log
-        log.addRegisteredFields();
+        log.addRegisteredFields()
+            .setTimestamp(event.getTimeStamp())
+            .setLevel(level.toString())
+            .setLevelInt(level.toInt())
+            .setMdc((Map)properties)
+            .setLoggerName(event.getLoggerName())
+            .setThreadName(event.getThreadName())
+            .setMessage(event.getFormattedMessage())
+            .setTags(tags)
+            .setFields(fields)
+            .appendTag("logback");
         
         // Clear locally used custom fields
         ExceptionField.clear();
         LocationField.clear();
         getLocationInfo = false;
         
-        log.setLoggerName(event.getLoggerName());
-        log.setThreadName(event.getThreadName());
-        log.setMessage(event.getFormattedMessage());
-        log.setTags(tags);
-        log.setFields(fields);
-        log.appendTag("logback");
         return log;
     }
     

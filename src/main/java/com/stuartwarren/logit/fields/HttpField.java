@@ -30,7 +30,7 @@ public class HttpField extends Field {
     }
     
     public String toString() {
-        final StringBuffer strBuf = new StringBuffer();
+        final StringBuilder strBuf = new StringBuilder();
         strBuf.append(get(HTTP.REQUEST_METHOD));
         strBuf.append(' ');
         strBuf.append(get(HTTP.REQUEST_URI));

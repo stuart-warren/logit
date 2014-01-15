@@ -30,7 +30,7 @@ public final class LocationField extends Field {
     }
     
     public String toString() {
-        final StringBuffer strBuf = new StringBuffer();
+        final StringBuilder strBuf = new StringBuilder();
         strBuf.append(get(LOCATION.CLASS));
         strBuf.append('.');
         strBuf.append(get(LOCATION.METHOD));

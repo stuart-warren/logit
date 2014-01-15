@@ -13,8 +13,10 @@ import com.stuartwarren.logit.utils.ThreadLocalMap;
 
 /**
  * @author Stuart Warren 
- * @date 20 Oct 2013
- *
+ * @date 20 Oct 2013<br/>
+ * 
+ * @see ExampleCustomField
+ * 
  */
 public class Field implements IField {
     
@@ -34,11 +36,33 @@ public class Field implements IField {
      * @param key must be an IFieldName
      * @param o can be any object accepted by the Jackson JSON library
      */
-    public static void put(final IFieldName key, final Object o) {
-        if (FIELD != null) {
-            FIELD.put0(key, o);
-        }
-    }
+//    public static <K, V> void put(final IFieldName key, final LinkedHashMap<K,V> o) {
+//        FIELD.put0(key, o);
+//    }
+//    
+//    public static void put(final IFieldName key, final ArrayList<String> o) {
+//        FIELD.put0(key, o);
+//    }
+//    
+//    public static void put(final IFieldName key, final String o) {
+//        FIELD.put0(key, o);
+//    }
+//    
+//    public static void put(final IFieldName key, final int o) {
+//        FIELD.put0(key, o);
+//    }
+//    
+//    public static void put(final IFieldName key, final long o) {
+//        FIELD.put0(key, o);
+//    }
+//    
+//    public static void put(final IFieldName key, final double o) {
+//        FIELD.put0(key, o);
+//    }
+//    
+//    public static void put(final IFieldName key, final boolean o) {
+//        FIELD.put0(key, o);
+//    }
     
     /**
      * 
@@ -126,7 +150,6 @@ public class Field implements IField {
     }
   
     /**
-     * 
      * @return a Map of all the registered IField objects and their sections
      */
     public static Map<IFieldName,Object> list() {
@@ -147,6 +170,11 @@ public class Field implements IField {
         }
     }
     
+    /**
+     * Should not be used outside of a custom Field
+     * @param key
+     * @param o
+     */
     @SuppressWarnings("unchecked")
     public void put0(final IFieldName key, final Object o) {
         if (tlm == null) {
@@ -166,6 +194,11 @@ public class Field implements IField {
         }
     }
 
+    /**
+     * Should not be used outside of a custom Field
+     * @param key
+     * @param o
+     */
     public Object get0(IFieldName key) {
         if (tlm == null) {
             return null;
@@ -180,6 +213,11 @@ public class Field implements IField {
         }
     }
 
+    /**
+     * Should not be used outside of a custom Field
+     * @param key
+     * @param o
+     */
     public void remove0(final IFieldName key) {
         if (tlm != null) {
             final Map<?, ?> ht = (LinkedHashMap<?, ?>) ((ThreadLocalMap) tlm).get();
@@ -194,6 +232,11 @@ public class Field implements IField {
         }
     }
 
+    /**
+     * Should not be used outside of a custom Field
+     * @param key
+     * @param o
+     */
     @SuppressWarnings("unchecked")
     protected Map<IFieldName, Object> getContext0() {
         if (tlm == null) {
@@ -203,6 +246,11 @@ public class Field implements IField {
         }
     }
 
+    /**
+     * Should not be used outside of a custom Field
+     * @param key
+     * @param o
+     */
     public void clear0() {
         if (tlm != null) {
             final Map<?, ?> ht = (LinkedHashMap<?, ?>) ((ThreadLocalMap) tlm).get();
