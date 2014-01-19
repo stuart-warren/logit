@@ -28,6 +28,7 @@ import com.stuartwarren.logit.fields.IFieldName;
 public class Log {
     
     private long                    timestamp;
+    private String                  strTimestamp;
     private String                  ndc;
     private Map<String, Object>     mdc;
     private String                  level;
@@ -52,8 +53,26 @@ public class Log {
      * @param timestamp
      *            the timestamp to set
      */
-    public Log setTimestamp(final long timestamp) {
+    public Log setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+        setStrTimestamp(timestamp);
+        return this;
+    }
+    
+    /**
+     * @return the strTimestamp
+     */
+    public String getStrTimestamp() {
+        return strTimestamp;
+    }
+
+    /**
+     * Set to ISO8601 format timestamp.
+     * Generating timestamp now due to use of {@link System.nanoTime} 
+     * @param strTimestamp the strTimestamp to set
+     */
+    private Log setStrTimestamp(long timestamp) {
+        this.strTimestamp = MicroTimestamp.INSTANCE.get(timestamp);
         return this;
     }
 

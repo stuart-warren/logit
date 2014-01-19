@@ -14,8 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stuartwarren.logit.fields.IFieldName;
 import com.stuartwarren.logit.fields.Field.ROOT;
 import com.stuartwarren.logit.layout.Log;
+import com.stuartwarren.logit.layout.MicroTimestamp;
 import com.stuartwarren.logit.logstash.LogstashField.LOGSTASH;
-import com.stuartwarren.logit.logstash.LogstashTimestamp;
 import com.stuartwarren.logit.utils.LogitLog;
 
 /**
@@ -24,26 +24,7 @@ import com.stuartwarren.logit.utils.LogitLog;
  */
 public final class LogstashV0Log extends Log {
 
-    private long                    timestamp;
     private String                  version;
-
-    /**
-     * @return the timestamp
-     */
-    @Override
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    /**
-     * @param timestamp
-     *            the timestamp to set
-     */
-    @Override
-    public Log setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-        return this;
-    }
 
     /**
      * @return the version
@@ -68,7 +49,7 @@ public final class LogstashV0Log extends Log {
         // Should really just extend ObjectCodec rather than use ObjectMapper here...
         jg.setCodec(new ObjectMapper());
         jg.writeStartObject();
-            jg.writeStringField(LOGSTASH.TIMESTAMP.toString(), new LogstashTimestamp(this.getTimestamp()).toString());
+            jg.writeStringField(LOGSTASH.TIMESTAMP.toString(), this.getStrTimestamp());
             jg.writeStringField(LOGSTASH.MESSAGE.toString(), this.getMessage());
             jg.writeArrayFieldStart(LOGSTASH.TAGS.toString());
                 for(String tag: this.getTags())
@@ -103,7 +84,7 @@ public final class LogstashV0Log extends Log {
             return toJson().toString("UTF-8");
         } catch (IOException e) {
             LogitLog.error("Failed to create JSON", e);
-            return "{\"@version\": \"1\", \"@timestamp\": \"" + new LogstashTimestamp(this.getTimestamp()).toString() + "\", \"message\": \"Error creating JSON\"}";
+            return "{\"@version\": \"1\", \"@timestamp\": \"" + MicroTimestamp.INSTANCE.get(this.getTimestamp()) + "\", \"message\": \"Error creating JSON\"}";
         }
     }
 }
