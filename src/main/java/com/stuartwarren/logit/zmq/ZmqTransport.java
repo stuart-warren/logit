@@ -98,7 +98,6 @@ public class ZmqTransport implements IAppender, IZmqTransport {
             socket.close();
             context.term();
             setConfigured(false);
-            //zcontext.destroy();
             socket = null; 
         }
         LogitLog.debug("Socket should be closed.");
@@ -116,19 +115,7 @@ public class ZmqTransport implements IAppender, IZmqTransport {
             socket.send(log, ZMQ.NOBLOCK);
             // Has occasionally been known to throw a java.nio.channels.ClosedByInterruptException
         } catch (IOException e) {
-            LogitLog.warn("IOException thrown, will try sending log again shortly after recreating the connection", e);
-            // Try again after sleeping for a second
-            try {
-                // TODO: See if this gets around issues with threads being killed?
-                // kill the socket
-                socket.close();
-                this.setConfigured(true);
-                // Recreate it
-                configure();                
-                socket.send(log, ZMQ.NOBLOCK);
-            } catch (IOException e2) {
-                LogitLog.error("Could not send following log on the second attempt: [" + log + "].", e2);
-            }
+            LogitLog.warn("IOException thrown, need to fix this", e);
         } catch (Exception g) {
             LogitLog.error("Something threw an exception that wasn't IOException.", g);
         }
