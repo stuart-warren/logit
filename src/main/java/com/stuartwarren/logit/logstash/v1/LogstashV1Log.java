@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stuartwarren.logit.fields.Field.ROOT;
 import com.stuartwarren.logit.fields.IFieldName;
 import com.stuartwarren.logit.layout.Log;
-import com.stuartwarren.logit.layout.MicroTimestamp;
 import com.stuartwarren.logit.logstash.LogstashField.LOGSTASH;
 import com.stuartwarren.logit.utils.LogitLog;
 
@@ -84,7 +83,7 @@ public final class LogstashV1Log extends Log {
             return toJson().toString("UTF-8");
         } catch (IOException e) {
             LogitLog.error("Failed to create JSON", e);
-            return "{\"@version\": \"1\", \"@timestamp\": \"" + MicroTimestamp.INSTANCE.get(this.getTimestamp()) + "\", \"message\": \"Error creating JSON\"}";
+            return "{\"@version\": \"1\", \"@timestamp\": \"" + this.getStrTimestamp() + "\", \"message\": \"Error creating JSON\"}";
         }
     }
 }

@@ -72,7 +72,8 @@ public class Log {
      * @param strTimestamp the strTimestamp to set
      */
     private Log setStrTimestamp(long timestamp) {
-        this.strTimestamp = MicroTimestamp.INSTANCE.get(timestamp);
+        Timestamp ts = new Timestamp(timestamp);
+        this.strTimestamp = ts.toString();
         return this;
     }
 
