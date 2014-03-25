@@ -3,9 +3,9 @@
  */
 package com.stuartwarren.logit.layout;
 
-import java.util.TimeZone;
+import ch.qos.logback.core.util.CachingDateFormatter;
 
-import org.apache.commons.lang3.time.FastDateFormat;
+import java.util.TimeZone;
 
 /**
  * @author Stuart Warren 
@@ -16,12 +16,14 @@ public class Timestamp {
 
     private long                         timestamp;
 
-    private static final TimeZone       THISTZ   = TimeZone.getDefault();
-    private static final FastDateFormat ISO_DATETIME_TIME_ZONE_FORMAT_WITH_MILLIS = 
-            FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSZ", THISTZ);
+    static CachingDateFormatter cachingDateFormatter = new CachingDateFormatter("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+    static {
+        cachingDateFormatter.setTimeZone(TimeZone.getDefault());
+    }
 
     private String dateFormat(long timestamp) {
-        return ISO_DATETIME_TIME_ZONE_FORMAT_WITH_MILLIS.format(this.timestamp);
+        return cachingDateFormatter.format(timestamp);
     }
 
     public Timestamp() {
