@@ -3,14 +3,6 @@
  */
 package com.stuartwarren.logit.log4j1;
 
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.spi.LocationInfo;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.ThrowableInformation;
-
 import com.stuartwarren.logit.fields.ExceptionField;
 import com.stuartwarren.logit.fields.ExceptionField.EXCEPTION;
 import com.stuartwarren.logit.fields.LocationField;
@@ -19,6 +11,14 @@ import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
 import com.stuartwarren.logit.layout.Log;
 import com.stuartwarren.logit.utils.LogitLog;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Level;
+import org.apache.log4j.spi.LocationInfo;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.ThrowableInformation;
+
+import java.util.Map;
 
 /**
  * @author Stuart Warren 
@@ -31,6 +31,7 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
     private String detailThreshold = Level.ERROR.toString();
     private String fields;
     private String tags;
+    private Map<String, String> parsedFields;
     
     private transient final LayoutFactory layoutFactory = new LayoutFactory();
     private transient LayoutFactory layout;
@@ -78,7 +79,7 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
                 .setThreadName(event.getThreadName())
                 .setMessage(event.getRenderedMessage())
                 .setTags(tags)
-                .setFields(fields)
+                .setFields(parsedFields)
                 .appendTag("log4j");
         
         // get exception details
@@ -199,6 +200,7 @@ public class Layout extends org.apache.log4j.Layout implements IFrameworkLayout 
             LogitLog.debug("setFields: " + fields);
         }
         this.fields = fields;
+        this.parsedFields = Log.parseFields(fields);
     }
 
     /**

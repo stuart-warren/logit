@@ -3,21 +3,21 @@
  */
 package com.stuartwarren.logit.tomcatvalve;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.catalina.Session;
-import org.apache.catalina.connector.Request;
-import org.apache.catalina.connector.Response;
-
 import com.stuartwarren.logit.fields.HttpField;
 import com.stuartwarren.logit.fields.HttpField.HTTP;
 import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
 import com.stuartwarren.logit.layout.Log;
 import com.stuartwarren.logit.utils.LogitLog;
+
+import org.apache.catalina.Session;
+import org.apache.catalina.connector.Request;
+import org.apache.catalina.connector.Response;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Stuart Warren 
@@ -36,6 +36,7 @@ public class Layout implements IFrameworkLayout {
     private final static String EMPTY_STRING = "";
 
     private String fields;
+    private Map<String, String> parsedFields;
     private String tags;
     private transient List<String> iheaders;
     private transient List<String> oheaders;
@@ -141,7 +142,7 @@ public class Layout implements IFrameworkLayout {
         log.setTimestamp(request.getCoyoteRequest().getStartTime())
             .setLevel(level)
             .setTags(tags)
-            .setFields(fields)
+                .setFields(parsedFields)
             .setMessage(message.toString())
             .appendTag("valve")
             .addRegisteredFields();
@@ -196,6 +197,7 @@ public class Layout implements IFrameworkLayout {
      */
     public void setFields(final String fields) {
         this.fields = fields;
+        this.parsedFields = Log.parseFields(fields);
     }
 
     /**

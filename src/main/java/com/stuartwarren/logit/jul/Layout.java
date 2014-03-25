@@ -3,6 +3,15 @@
  */
 package com.stuartwarren.logit.jul;
 
+import com.stuartwarren.logit.fields.ExceptionField;
+import com.stuartwarren.logit.fields.ExceptionField.EXCEPTION;
+import com.stuartwarren.logit.fields.LocationField;
+import com.stuartwarren.logit.fields.LocationField.LOCATION;
+import com.stuartwarren.logit.layout.IFrameworkLayout;
+import com.stuartwarren.logit.layout.LayoutFactory;
+import com.stuartwarren.logit.layout.Log;
+import com.stuartwarren.logit.utils.LogitLog;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -15,15 +24,6 @@ import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
-
-import com.stuartwarren.logit.fields.ExceptionField;
-import com.stuartwarren.logit.fields.LocationField;
-import com.stuartwarren.logit.fields.ExceptionField.EXCEPTION;
-import com.stuartwarren.logit.fields.LocationField.LOCATION;
-import com.stuartwarren.logit.layout.IFrameworkLayout;
-import com.stuartwarren.logit.layout.LayoutFactory;
-import com.stuartwarren.logit.layout.Log;
-import com.stuartwarren.logit.utils.LogitLog;
 
 /**
  * @author Stuart Warren 
@@ -38,6 +38,7 @@ public class Layout extends Formatter implements IFrameworkLayout {
     private String layoutType = "log";
     private String detailThreshold = Level.WARNING.toString();
     private String fields;
+    private Map<String, String> parsedFields;
     private String tags;
     
     private transient final LayoutFactory layoutFactory = new LayoutFactory();
@@ -103,7 +104,7 @@ public class Layout extends Formatter implements IFrameworkLayout {
             .setThreadName(Integer.toString(event.getThreadID()))
             .setMessage(event.getMessage())
             .setTags(tags)
-            .setFields(fields)
+                .setFields(parsedFields)
             .appendTag("jul");
         
         // Clear locally used custom fields
