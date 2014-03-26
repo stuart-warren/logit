@@ -3,18 +3,19 @@
  */
 package com.stuartwarren.logit.layout;
 
+import com.stuartwarren.logit.fields.Field;
+import com.stuartwarren.logit.fields.Field.ROOT;
+import com.stuartwarren.logit.fields.IFieldName;
+
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.stuartwarren.logit.fields.Field.ROOT;
-import com.stuartwarren.logit.fields.Field;
-import com.stuartwarren.logit.fields.IFieldName;
 
 /**
  * @author Stuart Warren 
@@ -237,9 +238,9 @@ public class Log {
     public Log setTags(final String tags) {
         // Split string on commas. Ignore whitespace.
         if (null != tags) {
-            ArrayList<String> tagList = new ArrayList<String>(Arrays.asList(tags.split("\\s*,\\s*")));
-            for (int i = 0; i < tagList.size(); i++){
-                this.appendTag(tagList.get(i));
+            String[] splitTags = StringUtils.split(tags, ",");
+            for (String tag : splitTags) {
+                this.appendTag(tag.trim());
             }
         }
         return this;
@@ -267,6 +268,13 @@ public class Log {
         return fields;
     }
 
+    public Log setFields(Map<String, String> fields) {
+        if (fields != null) {
+            addField(ROOT.CONFIG, fields);
+        }
+        return this;
+    }
+
     /**
      * @param fields the fields to set<br/>
      * List of key:value pairs<br/>
@@ -275,19 +283,16 @@ public class Log {
      * Added into a config object.<br/>
      * eg <pre>"config":{"field1":"value1"}</pre>
      */
-    public Log setFields(final String fields) {
-        if (null == this.fields) {
-            this.fields = new LinkedHashMap<IFieldName, Object>();
-        }
+    public static Map<String, String> parseFields(final String fields) {
         final Map<String,String> configFields = new LinkedHashMap<String,String>();
         if (null != fields) {
-            for(final String keyValue : fields.split("\\s*,\\s*")) {
-                final String[] pairs = keyValue.split("\\s*:\\s*", 2);
-                configFields.put(pairs[0], pairs.length == 1 ? "" : pairs[1]);
+            for (final String keyValue : StringUtils.split(fields, ",")) {
+                final String[] pairs = StringUtils.split(keyValue.trim(), ":", 2);
+                configFields.put(pairs[0].trim(), pairs.length == 1 ? "" : pairs[1].trim());
             }
-            addField(ROOT.CONFIG, configFields);
+
         }
-        return this;
+        return configFields;
     }
     
     /**

@@ -3,10 +3,6 @@
  */
 package com.stuartwarren.logit.logback;
 
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
@@ -14,13 +10,17 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
 import com.stuartwarren.logit.fields.ExceptionField;
-import com.stuartwarren.logit.fields.LocationField;
 import com.stuartwarren.logit.fields.ExceptionField.EXCEPTION;
+import com.stuartwarren.logit.fields.LocationField;
 import com.stuartwarren.logit.fields.LocationField.LOCATION;
 import com.stuartwarren.logit.layout.IFrameworkLayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
 import com.stuartwarren.logit.layout.Log;
 import com.stuartwarren.logit.utils.LogitLog;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Map;
 
 /**
  * @author Stuart Warren 
@@ -33,6 +33,7 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
     private String detailThreshold = Level.ERROR.toString();
     private String fields;
     private String tags;
+    private Map<String, String> parsedFields;
     
     private transient final LayoutFactory layoutFactory = new LayoutFactory();
     private transient LayoutFactory layout;
@@ -83,7 +84,7 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
             .setThreadName(event.getThreadName())
             .setMessage(event.getFormattedMessage())
             .setTags(tags)
-            .setFields(fields)
+            .setFields(parsedFields)
             .appendTag("logback");
         
         // Clear locally used custom fields
@@ -177,6 +178,7 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
      */
     public void setFields(final String fields) {
         this.fields = fields;
+        this.parsedFields = Log.parseFields(fields);
     }
 
     /**

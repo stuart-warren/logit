@@ -16,22 +16,22 @@ public enum SocketType {
 
     private final int    serverSocket;
     private final int    clientSocket;
-    private final String name;
+    private final String prettyName;
 
     SocketType(final int clientSocket, final int serverSocket, final String name) {
         this.serverSocket = serverSocket;
         this.clientSocket = clientSocket;
-        this.name = name;
+        this.prettyName = name;
     }
 
     public String toString() {
-        return name;
+        return prettyName;
     }
 
     public static int getServerSocket(final String name) {
-        int serverSocket = ZMQ.PUSH;
+        int serverSocket = ZMQ.PULL;
         for (final SocketType s : SocketType.values()) {
-            if (name.equals(s.name)) {
+            if (name.equalsIgnoreCase(s.prettyName)) {
                 serverSocket = s.serverSocket;
             }
         }
@@ -39,9 +39,9 @@ public enum SocketType {
     }
 
     public static int getClientSocket(final String name) {
-        int clientSocket = ZMQ.PULL;
+        int clientSocket = ZMQ.PUSH;
         for (final SocketType s : SocketType.values()) {
-            if (name.equals(s.name)) {
+            if (name.equalsIgnoreCase(s.prettyName)) {
                 clientSocket = s.clientSocket;
             }
         }
@@ -51,7 +51,7 @@ public enum SocketType {
     public static boolean isValidType(final String name) {
         boolean result = false;
         for (final SocketType s : SocketType.values()) {
-            if (name.equalsIgnoreCase(s.name)) {
+            if (name.equalsIgnoreCase(s.prettyName)) {
                 result = true;
             }
         }
