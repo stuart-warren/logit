@@ -1,5 +1,5 @@
 /**
- * 
+ * Note this is not maintained like LogstashV1Log
  */
 package com.stuartwarren.logit.logstash.v0;
 

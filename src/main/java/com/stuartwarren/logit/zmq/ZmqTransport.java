@@ -113,7 +113,9 @@ public class ZmqTransport implements IAppender, IZmqTransport {
         }
         try {
             boolean result = socket.send(log, ZMQ.NOBLOCK);
-            System.out.println("Sending result " + result);
+            if (LogitLog.isTraceEnabled()) {
+                LogitLog.trace("Sending result " + result);
+            }
             // Has occasionally been known to throw a java.nio.channels.ClosedByInterruptException
         } catch (IOException e) {
             LogitLog.warn("IOException thrown, need to fix this", e);

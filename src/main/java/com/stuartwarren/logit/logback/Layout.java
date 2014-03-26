@@ -84,7 +84,7 @@ public class Layout extends LayoutBase<ILoggingEvent> implements IFrameworkLayou
             .setThreadName(event.getThreadName())
             .setMessage(event.getFormattedMessage())
             .setTags(tags)
-                .setFields(parsedFields)
+            .setFields(parsedFields)
             .appendTag("logback");
         
         // Clear locally used custom fields

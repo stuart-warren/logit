@@ -104,7 +104,7 @@ public class Layout extends Formatter implements IFrameworkLayout {
             .setThreadName(Integer.toString(event.getThreadID()))
             .setMessage(event.getMessage())
             .setTags(tags)
-                .setFields(parsedFields)
+            .setFields(parsedFields)
             .appendTag("jul");
         
         // Clear locally used custom fields
@@ -195,6 +195,7 @@ public class Layout extends Formatter implements IFrameworkLayout {
      */
     public void setFields(final String fields) {
         this.fields = fields;
+        this.parsedFields = Log.parseFields(fields);
     }
 
     /**

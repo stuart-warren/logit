@@ -30,7 +30,10 @@ public class ZmqOutputStream extends OutputStream {
     public void write(final int i) throws IOException {
         final ByteBuffer b = ByteBuffer.allocate(4);
         b.putInt(i);
-        socket.send(b.array(), ZMQ.NOBLOCK);
+        boolean result = socket.send(b.array(), ZMQ.NOBLOCK);
+        if (LogitLog.isTraceEnabled()) {
+            LogitLog.trace("Sending result " + result);
+        }
     }
 
     @Override
@@ -38,7 +41,10 @@ public class ZmqOutputStream extends OutputStream {
         if (LogitLog.isTraceEnabled()) {
             LogitLog.trace("Sending log: [" + new String(bytes) + "].");
         }
-        socket.send(bytes, ZMQ.NOBLOCK);
+        boolean result = socket.send(bytes, ZMQ.NOBLOCK);
+        if (LogitLog.isTraceEnabled()) {
+            LogitLog.trace("Sending result " + result);
+        }
     }
 
     @Override

@@ -142,7 +142,7 @@ public class Layout implements IFrameworkLayout {
         log.setTimestamp(request.getCoyoteRequest().getStartTime())
             .setLevel(level)
             .setTags(tags)
-                .setFields(parsedFields)
+            .setFields(parsedFields)
             .setMessage(message.toString())
             .appendTag("valve")
             .addRegisteredFields();

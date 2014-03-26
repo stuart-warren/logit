@@ -238,8 +238,8 @@ public class Log {
     public Log setTags(final String tags) {
         // Split string on commas. Ignore whitespace.
         if (null != tags) {
-            String[] splittedTags = StringUtils.split(tags, ",");
-            for (String tag : splittedTags) {
+            String[] splitTags = StringUtils.split(tags, ",");
+            for (String tag : splitTags) {
                 this.appendTag(tag.trim());
             }
         }

@@ -7,7 +7,6 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stuartwarren.logit.fields.Field.ROOT;
-import com.stuartwarren.logit.fields.IFieldName;
 import com.stuartwarren.logit.layout.Log;
 import com.stuartwarren.logit.logstash.LogstashField.LOGSTASH;
 import com.stuartwarren.logit.utils.LogitLog;
@@ -15,8 +14,8 @@ import com.stuartwarren.logit.utils.LogitLog;
 import org.apache.commons.lang3.text.StrBuilder;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * @author Stuart Warren
@@ -74,36 +73,40 @@ public final class LogstashV1Log extends Log {
         writeFieldMap(jg, this.getMdc());
         jg.writeEndObject();
         writeFieldMap(jg, this.getFields());
-        for (Entry<IFieldName, Object> field : this.getFields().entrySet()) {
-            IFieldName key = field.getKey();
-            Object value = field.getValue();
-            jg.writeFieldName(key.toString());
-            if (value instanceof String) {
-                jg.writeString((String) value);
-            } else if (value instanceof Map) {
-                writeFieldMap(jg, (Map) value);
-            } else {
-                jg.writeObject(value);
-            }
-        }
         jg.writeEndObject();
         jg.close();
         return sb.toString();
     }
     
+    /**
+     * @param jg
+     * @param value
+     */
+    private <E> void writeFieldList(JsonGenerator jg, List<E> list) throws IOException {
+        jg.writeStartArray();
+        for(E tag: list)
+            jg.writeString((String) tag);
+        jg.writeEndArray();
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private <K, V> void writeFieldMap(JsonGenerator jg, Map<K, V> map) throws IOException {
-        for (Map.Entry<K, V> field : map.entrySet()) {
-            K key = field.getKey();
-            V value = field.getValue();
-            jg.writeFieldName(key.toString());
-            if (value instanceof String) {
-                jg.writeString((String) value);
-            } else if (value instanceof Map) {
-                jg.writeStartObject();
-                writeFieldMap(jg, (Map) value);
-                jg.writeEndObject();
-            } else {
-                jg.writeObject(value);
+        if (null != map) {
+            for (Map.Entry<K, V> field : map.entrySet()) {
+                K key = field.getKey();
+                V value = field.getValue();
+                jg.writeFieldName(key.toString());
+                if (value instanceof String) {
+                    jg.writeString((String) value);
+                } else if (value instanceof Map) {
+                    jg.writeStartObject();
+                    writeFieldMap(jg, (Map) value);
+                    jg.writeEndObject();
+                } else if (value instanceof List) {
+                    writeFieldList(jg, (List) value);
+                } else {
+                    jg.writeObject(value);
+                }
             }
         }
     }
