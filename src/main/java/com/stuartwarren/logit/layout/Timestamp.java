@@ -3,8 +3,6 @@
  */
 package com.stuartwarren.logit.layout;
 
-import ch.qos.logback.core.util.CachingDateFormatter;
-
 import java.util.TimeZone;
 
 /**
@@ -19,7 +17,7 @@ public class Timestamp {
     static CachingDateFormatter cachingDateFormatter = new CachingDateFormatter("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     static {
-        cachingDateFormatter.setTimeZone(TimeZone.getDefault());
+        cachingDateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
     private String dateFormat(long timestamp) {
