@@ -3,6 +3,7 @@
  */
 package com.stuartwarren.logit.logstash.v1;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stuartwarren.logit.layout.ILayout;
 import com.stuartwarren.logit.layout.LayoutFactory;
 import com.stuartwarren.logit.layout.Log;
@@ -15,6 +16,8 @@ import com.stuartwarren.logit.layout.Log;
 public final class LogstashV1Layout extends LayoutFactory implements ILayout {
     
     private final static String LOGSTASH_VERSION = "1";
+
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     /* (non-Javadoc)
      * @see com.stuartwarren.logit.layout.ILayout#configure()
@@ -38,7 +41,7 @@ public final class LogstashV1Layout extends LayoutFactory implements ILayout {
      */
     @Override
     public Log getLog() {
-        return new LogstashV1Log();
+        return new LogstashV1Log(objectMapper);
     }
 
 }

@@ -5,8 +5,6 @@ package com.stuartwarren.logit.layout;
 
 import java.util.TimeZone;
 
-import org.apache.commons.lang3.time.FastDateFormat;
-
 /**
  * @author Stuart Warren 
  * @date 24 Mar 2014
@@ -16,12 +14,14 @@ public class Timestamp {
 
     private long                         timestamp;
 
-    private static final TimeZone       THISTZ   = TimeZone.getDefault();
-    private static final FastDateFormat ISO_DATETIME_TIME_ZONE_FORMAT_WITH_MILLIS = 
-            FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSZ", THISTZ);
+    static CachingDateFormatter cachingDateFormatter = new CachingDateFormatter("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+    static {
+        cachingDateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
 
     private String dateFormat(long timestamp) {
-        return ISO_DATETIME_TIME_ZONE_FORMAT_WITH_MILLIS.format(this.timestamp);
+        return cachingDateFormatter.format(timestamp);
     }
 
     public Timestamp() {

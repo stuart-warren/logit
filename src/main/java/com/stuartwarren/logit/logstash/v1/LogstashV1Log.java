@@ -3,11 +3,6 @@
  */
 package com.stuartwarren.logit.logstash.v1;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Map.Entry;
-
-import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,14 +12,26 @@ import com.stuartwarren.logit.layout.Log;
 import com.stuartwarren.logit.logstash.LogstashField.LOGSTASH;
 import com.stuartwarren.logit.utils.LogitLog;
 
+import org.apache.commons.lang3.text.StrBuilder;
+
+import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
+
 /**
  * @author Stuart Warren
  * @date 22 Sep 2013
  */
 public final class LogstashV1Log extends Log {
 
+    private ObjectMapper objectMapper;
 
     private String                  version;
+
+    public LogstashV1Log(ObjectMapper objectMapper) {
+        super();
+        this.objectMapper = objectMapper;
+    }
 
     /**
      * @return the version
@@ -42,13 +49,11 @@ public final class LogstashV1Log extends Log {
         return this;
     }
     
-    public ByteArrayOutputStream toJson() throws IOException {
+    public String toJson() throws IOException {
+        StrBuilder sb = new StrBuilder();
         JsonFactory jsonF = new JsonFactory();
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        JsonGenerator jg;
-        jg = jsonF.createGenerator(os, JsonEncoding.UTF8);
-        // Should really just extend ObjectCodec rather than use ObjectMapper here...
-        jg.setCodec(new ObjectMapper());
+        JsonGenerator jg = jsonF.createGenerator(sb.asWriter());
+        jg.setCodec(objectMapper);
         jg.writeStartObject();
         jg.writeStringField(LOGSTASH.VERSION.toString(), this.getVersion());
         jg.writeStringField(LOGSTASH.TIMESTAMP.toString(), this.getStrTimestamp());
@@ -65,22 +70,47 @@ public final class LogstashV1Log extends Log {
         jg.writeEndArray();
         if (null != this.getNdc())
             jg.writeStringField(ROOT.NDC.toString(), this.getNdc());
-        if (null != this.getMdc())
-            jg.writeObjectField(ROOT.MDC.toString(), this.getMdc());
-        for(Entry<IFieldName, Object> field: this.getFields().entrySet()) {
+        jg.writeObjectFieldStart(ROOT.MDC.toString());
+        writeFieldMap(jg, this.getMdc());
+        jg.writeEndObject();
+        writeFieldMap(jg, this.getFields());
+        for (Entry<IFieldName, Object> field : this.getFields().entrySet()) {
             IFieldName key = field.getKey();
             Object value = field.getValue();
             jg.writeFieldName(key.toString());
-            jg.writeObject(value);
+            if (value instanceof String) {
+                jg.writeString((String) value);
+            } else if (value instanceof Map) {
+                writeFieldMap(jg, (Map) value);
+            } else {
+                jg.writeObject(value);
+            }
         }
         jg.writeEndObject();
         jg.close();
-        return os;
+        return sb.toString();
     }
     
+    private <K, V> void writeFieldMap(JsonGenerator jg, Map<K, V> map) throws IOException {
+        for (Map.Entry<K, V> field : map.entrySet()) {
+            K key = field.getKey();
+            V value = field.getValue();
+            jg.writeFieldName(key.toString());
+            if (value instanceof String) {
+                jg.writeString((String) value);
+            } else if (value instanceof Map) {
+                jg.writeStartObject();
+                writeFieldMap(jg, (Map) value);
+                jg.writeEndObject();
+            } else {
+                jg.writeObject(value);
+            }
+        }
+    }
+
     public String toString() {
         try {
-            return toJson().toString("UTF-8");
+            return toJson();
         } catch (IOException e) {
             LogitLog.error("Failed to create JSON", e);
             return "{\"@version\": \"1\", \"@timestamp\": \"" + this.getStrTimestamp() + "\", \"message\": \"Error creating JSON\"}";

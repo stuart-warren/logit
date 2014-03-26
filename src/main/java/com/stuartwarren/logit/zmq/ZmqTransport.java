@@ -3,12 +3,12 @@
  */
 package com.stuartwarren.logit.zmq;
 
+import com.stuartwarren.logit.appender.IAppender;
+import com.stuartwarren.logit.utils.LogitLog;
+
 import org.zeromq.ZMQ;
 
 import zmq.ZError.IOException;
-
-import com.stuartwarren.logit.appender.IAppender;
-import com.stuartwarren.logit.utils.LogitLog;
 
 /**
  * @author Stuart Warren 
@@ -27,8 +27,8 @@ public class ZmqTransport implements IAppender, IZmqTransport {
     private String              endpoints   = "tcp://localhost:2120";
     private String              socketType  = SocketType.PUSHPULL.toString();
     private String              bindConnect = CONNECTMODE;
-    private int                 sendHWM     = 1;
-    private int                 linger      = 1;
+    private int sendHWM = 1;
+    private int linger = 1;
     private boolean             configured;
     
     /**
@@ -55,7 +55,7 @@ public class ZmqTransport implements IAppender, IZmqTransport {
         if (LogitLog.isDebugEnabled()) {
             LogitLog.debug("Setting property [socketType] to [" + socketType + "].");
         }
-        sender = context.socket(SocketType.getServerSocket(socketType));
+        sender = context.socket(SocketType.getClientSocket(socketType));
         //sender = context.createSocket(SocketType.getClientSocket(socketType));
         if (LogitLog.isDebugEnabled()) {
             LogitLog.debug("Setting property [linger] to [" + linger + "].");
@@ -112,7 +112,8 @@ public class ZmqTransport implements IAppender, IZmqTransport {
             LogitLog.trace("Sending log: [" + log + "].");
         }
         try {
-            socket.send(log, ZMQ.NOBLOCK);
+            boolean result = socket.send(log, ZMQ.NOBLOCK);
+            System.out.println("Sending result " + result);
             // Has occasionally been known to throw a java.nio.channels.ClosedByInterruptException
         } catch (IOException e) {
             LogitLog.warn("IOException thrown, need to fix this", e);
