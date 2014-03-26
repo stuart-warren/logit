@@ -6,7 +6,7 @@ logit
 Library to extend Log4J1.2 (and other logging frameworks) by providing a json layout (for logstash) and a zeromq appender (jeromq)
 This is my first real attack at a java project, so you have been warned!
 
-v0.5.10
+v0.5.11
 
 Log4j1
 ------
@@ -137,7 +137,7 @@ System.exit(0);
 Tomcat AccessLog Valve
 ----------------------
 
-Initial work on Tomcat AccessLog Valve
+Initial work on Tomcat 7 AccessLog Valve
 
 Put jar-with-dependancies into $JAVA_HOME/lib/ext/
 Put logit-tomcatvalve into $CATALINA_HOME/lib/
